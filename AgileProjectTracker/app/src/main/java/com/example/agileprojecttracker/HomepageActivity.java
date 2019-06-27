@@ -78,6 +78,7 @@ public class HomepageActivity extends AppCompatActivity {
         boolean completato = false;
 
         try {
+            Log.w("data:",data);
             JSONObject json = new JSONObject(data);
             JSONObject arr = json.getJSONObject("project");
             Iterator<String> keys = arr.keys();
@@ -126,7 +127,7 @@ public class HomepageActivity extends AppCompatActivity {
             @Override
             public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                 //ricezione dati json (in caso di fallimento 'getResult' dà eccezione
-                String result = (String) task.getResult().getData();
+                String result = task.getResult().getData().toString();
                 return result;
             }
         });
