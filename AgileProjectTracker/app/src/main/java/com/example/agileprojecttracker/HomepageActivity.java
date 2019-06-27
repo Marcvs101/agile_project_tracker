@@ -78,6 +78,7 @@ public class HomepageActivity extends AppCompatActivity {
         boolean completato = false;
 
         try {
+            Log.w("data:",data);
             JSONObject json = new JSONObject(data);
             JSONObject arr = json.getJSONObject("project");
             Iterator<String> keys = arr.keys();
