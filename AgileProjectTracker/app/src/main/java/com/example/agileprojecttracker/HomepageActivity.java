@@ -126,7 +126,7 @@ public class HomepageActivity extends AppCompatActivity {
             @Override
             public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                 //ricezione dati json (in caso di fallimento 'getResult' dà eccezione
-                String result = (String) task.getResult().getData();
+                String result = task.getResult().getData().toString();
                 return result;
             }
         });

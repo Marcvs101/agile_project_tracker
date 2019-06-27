@@ -197,7 +197,6 @@ public class SigninActivity extends AppCompatActivity implements
     }
 
     public void authWithGithub() {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         // [START auth_with_github]
         String token = "2bea893c98456dad2b6500935ae502317626a583";
