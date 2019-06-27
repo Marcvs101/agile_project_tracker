@@ -16,6 +16,7 @@
 
 package com.example.agileprojecttracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -104,6 +105,7 @@ public class SigninActivity extends AppCompatActivity implements
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            startActivity(new Intent(SigninActivity.this, HomepageActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -138,6 +140,7 @@ public class SigninActivity extends AppCompatActivity implements
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            startActivity(new Intent(SigninActivity.this, HomepageActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
