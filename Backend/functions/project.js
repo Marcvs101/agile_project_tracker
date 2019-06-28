@@ -18,10 +18,12 @@ db.collection('utenti').get()
 */
 
 //Crea progetto
-exports.CreateNewProject = functions.https.onCall((data, context) => {
-	const uid = context.auth.uid;
-	const projectId = data.projectId;
-	const nome = data.nome;
+exports.CreateNewProject = functions.https.onRequest((req, res) => {
+	const uid = req.url.replace('/','').split("&")[1];
+	//let utente = admin.database().ref("Utenti").child(uid).once("value");
+	
+	const projectId = req.url.replace('/','').split("&")[2];
+	const nome = req.url.replace('/','').split("&")[3];
 
 	let check = db.collection('progetti').doc(projectId);
 	let getCheck = check.get()
@@ -49,13 +51,14 @@ exports.CreateNewProject = functions.https.onCall((data, context) => {
 });
 
 //Rimuovi progetto
-exports.DeleteProject = functions.https.onCall((data, context) => {
+exports.DeleteProject = functions.https.onRequest((req, res) => {
 
 });
 
 //Prendi tutti i progetti per un singolo utente
-exports.GetProjectsForUser = functions.https.onCall((data, context) => {
-	const uid = context.auth.uid;
+exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
+	let uid = req.url.replace('/',''); 
+    //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = { 'project': {} };
 
@@ -83,9 +86,10 @@ exports.GetProjectsForUser = functions.https.onCall((data, context) => {
 	});
 
 	console.log("uid: ",String(uid)," ha richiesto di visionare tutti i suoi progetti");
+	
 });
 
 //Prendi un singolo progetto
-exports.GetProject = functions.https.onCall((data, context) => {
+exports.GetProject = functions.https.onRequest((req, res) => {
 
 });
