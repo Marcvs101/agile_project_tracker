@@ -1,0 +1,8 @@
+Name: 7zip command line (de)compressor.
+Short Name: 7zip
+URL: http://www.7-zip.org/
+Version: 9.20
+Date: 2010-11-18
+License: LGPL, http://www.gnu.org/licenses/lgpl.txt
+Description:
+A command-line compressor and decompressor for use on Windows.

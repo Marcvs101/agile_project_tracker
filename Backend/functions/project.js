@@ -30,12 +30,12 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 		.then(doc => {
 			if (doc.exists) {
 				console.log("progetto già esistente");
-				throw new functions.https.HttpsError("already-exists", "progetto già esistente");
+				return res.status(500).send("Progetto gia esistente");
 			}
 		})
 		.catch(err => {
 			console.log('errore database')
-			throw new functions.https.HttpsError("internal", "errore database");
+			return res.status(500).send("Errore database");
 		});
 
 	let docRef = db.collection("progetti").doc(projectId);
@@ -48,6 +48,7 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	});
 
 	console.log("L'utente " + String(uid) + " ha creato il progetto " + String(projectId));
+	return res.status(200).send('Progetto creato');
 });
 
 //Rimuovi progetto
