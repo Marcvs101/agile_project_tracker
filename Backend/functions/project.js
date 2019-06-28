@@ -19,18 +19,19 @@ db.collection('utenti').get()
 
 //Crea progetto
 exports.CreateNewProject = functions.https.onRequest((req, res) => {
-	const uid = req.url.replace('/','').split("&")[1];
+	const JSONreq = JSON.parse(req.url.replace('/',''));
+	const uid = JSONreq['uid'];
 	//let utente = admin.database().ref("Utenti").child(uid).once("value");
 	
-	const projectId = req.url.replace('/','').split("&")[2];
-	const nome = req.url.replace('/','').split("&")[3];
+	const projectId = JSONreq['projectId'];
+	const nome = JSONreq['nome'];
 
 	let check = db.collection('progetti').doc(projectId);
 	let getCheck = check.get()
 		.then(doc => {
 			if (doc.exists) {
 				console.log("progetto già esistente");
-				return res.status(500).send("Progetto gia esistente");
+				return res.status(409).send("Progetto gia esistente");
 			}
 		})
 		.catch(err => {
@@ -48,12 +49,12 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	});
 
 	console.log("L'utente " + String(uid) + " ha creato il progetto " + String(projectId));
-	return res.status(200).send('Progetto creato');
+	return res.status(201).send('Progetto creato');
 });
 
 //Rimuovi progetto
 exports.DeleteProject = functions.https.onRequest((req, res) => {
-
+	return res.status(501).send('Non implementato');
 });
 
 //Prendi tutti i progetti per un singolo utente
@@ -79,18 +80,18 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 			});
 		}
 
-		return result;
+		//Add json to answer
+		return res.status(200).send(JSON.stringify(result));
 
 	}).catch((err) => {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError("internal", "Errore nel database (GetProjectsForUser)\n",err.toString());
+		return res.status(500).send("Errore database");
 	});
 
 	console.log("uid: ",String(uid)," ha richiesto di visionare tutti i suoi progetti");
-	
 });
 
 //Prendi un singolo progetto
 exports.GetProject = functions.https.onRequest((req, res) => {
-
+	return res.status(501).send('Non implementato');
 });
