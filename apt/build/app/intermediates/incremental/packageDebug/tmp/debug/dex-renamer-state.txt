@@ -1,0 +1,4 @@
+#Fri Jun 28 15:03:36 CEST 2019
+base.0=C\:\\Users\\Leonardo\\source\\apt\\build\\app\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex
