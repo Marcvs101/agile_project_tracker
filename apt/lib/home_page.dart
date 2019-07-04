@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'project_page.dart';
 
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key key, @required this.user}) : super(key: key);
 
-  final String title = 'A.P.T';
+  final FirebaseUser user;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage>{
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-      title: Text(widget.title),
+      title: Text(widget.user.displayName),
     );
 
     return Scaffold(

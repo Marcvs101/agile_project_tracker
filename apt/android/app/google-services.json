@@ -8,35 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1016950806371:android:f06a4a16b36e16b0",
-        "android_client_info": {
-          "package_name": "com.example.agileprojecttracker"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1016950806371-cdj5dfle4j8fdjgbk4hd94dg1t272jtm.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCfg3m4xo0CqyyBs6xMuG18kgvQvV1KA48"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1016950806371-cdj5dfle4j8fdjgbk4hd94dg1t272jtm.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1016950806371:android:acdc9b04addb9c41",
         "android_client_info": {
           "package_name": "com.macc.apt"
@@ -44,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1016950806371-oet9pude54spi04cp5i0iud7n5l3v6u3.apps.googleusercontent.com",
+          "client_id": "1016950806371-pa4aatrqo1roc1kof032qais1tbsokg6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.macc.apt",
-            "certificate_hash": "7fc22d83b6a8bcda47739051306cc74669b6cf64"
+            "certificate_hash": "f009beb69f3710eeea768af3d199d15be199e7d8"
           }
         },
         {

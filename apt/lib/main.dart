@@ -1,5 +1,5 @@
+import 'package:apt/github_sign_in.dart';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 
 void main() => runApp(new MyApp());
 
@@ -8,10 +8,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'A.P.T',
+      title: 'Agile Project Tracker',
       theme: new ThemeData(
           primaryColor: Color.fromRGBO(58, 66, 86, 1), fontFamily: 'Raleway'),
-      home: new HomePage(),
+      home: GithubSignInPage(),
     );
   }
 }
