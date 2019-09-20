@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'developer.dart';
 
+import 'package:cloud_functions/cloud_functions.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+
+
 class Project {
   
   final String id;
@@ -62,15 +69,44 @@ class Project {
     return this._c;
   }
   
-  static List getProjects(){
+  
+  //prendo in input l'id dell'utente
+  static List<Project> getProjects(String uid) {
     /* 
      * Query da implementare:
      * la chiamata proviene dal costruttore in homepage
-     * dovrebbe prendere in input l'id dell'utente
+     * dovrebbe prendere in input l'id dell'utente -> viene passato tramite user.uid
      * e ritornare una List dei progetti cui l'utente
      * ha collaborato, non solo quelli in cui
      * è il proprietario
      */
-    return pp;
+    print(uid);
+    var a = query(uid);
+    a.then((val){
+      return val;
+    });
+    //List<Project> res = Future..result(a, secondsToWait 1);
+
+    //var future = new Future(query(uid).then(value){return value;}
+    //return l;
   }
+
+  static Future<List> query(String uid) async {
+
+    var url = 'https://us-central1-agile-project-tracker.cloudfunctions.net/GetProjectsForUser'+'/'+uid;
+    var response = await http.get(url);//, body: {uid});
+    
+    //http.post(url, body);
+    print('Response status: ${response.statusCode}');
+    print('Response parsed:${json.decode(response.body)}');
+    
+    List<Project> projects = [];
+    Map<String, dynamic> projectsMap = json.decode(response.body);
+    projectsMap.forEach( (k,v) =>  
+        projects.add(new Project(v['nome'],v['proprietario'],v['descrizione'],v['completato'],k))
+    );
+
+    return projects;
+  }
+
 }

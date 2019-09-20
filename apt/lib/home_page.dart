@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage>{
 
   @override
   void initState(){
-    projects = Project.getProjects();
+    projects = Project.getProjects(widget.user.uid);
     super.initState();
   }
 
