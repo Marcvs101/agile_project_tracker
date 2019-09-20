@@ -33,14 +33,13 @@ exports.UnregisterUser = functions.auth.user().onDelete((user) => {
 });
 
 exports.GetUser = functions.https.onRequest((req, res) => {
-	const JSONreq = JSON.parse(req.url.replace('/',''));
-	const my_uid = JSONreq['uid'];
-	const target_uid = JSONreq['uid_target'];
+    let uid = req.url.replace('/','');
+    let token = req.get("token");
     //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
 
-	let userRef = db.collection("utenti").doc(String(target_uid));
+	let userRef = db.collection("utenti").doc(String(uid));
     let getUser = userRef.get().then(doc => {
 
         if (!doc.exists) {

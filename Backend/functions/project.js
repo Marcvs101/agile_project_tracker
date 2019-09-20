@@ -99,9 +99,8 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 
 //Prendi un singolo progetto
 exports.GetProject = functions.https.onRequest((req, res) => {
-	const JSONreq = JSON.parse(req.url.replace('/',''));
-	const uid = JSONreq['uid'];
-	const pid = JSONreq['pid'];
+	let uid = req.url.replace('/','');
+	let token = req.get("token");
     //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
