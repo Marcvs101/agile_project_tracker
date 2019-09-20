@@ -31,3 +31,32 @@ exports.UnregisterUser = functions.auth.user().onDelete((user) => {
 
     console.log("User " + String(uid) + " aka " + String(displayName) + " left the world");
 });
+
+exports.GetUser = functions.https.onRequest((req, res) => {
+	const JSONreq = JSON.parse(req.url.replace('/',''));
+	const my_uid = JSONreq['uid'];
+	const target_uid = JSONreq['uid_target'];
+    //let utente = admin.database().ref("Utenti").child(uid).once("value");
+
+	let result = {};
+
+	let userRef = db.collection("utenti").doc(String(target_uid));
+    let getUser = userRef.get().then(doc => {
+
+        if (!doc.exists) {
+            console.log('Utente inesistente');
+            return res.status(404).send(JSON.stringify(result));
+        } else {
+            console.log('Utente trovato', doc.data());
+            result["nome"] = doc.get("nome");
+            result["email"] = doc.get("email");//Qui saranno necessari controlli di sicurezza
+            return res.status(200).send(JSON.stringify(result));
+        }
+    
+    }).catch(err => {
+        console.log("Errore Database");
+        return res.status(500).send("Errore database");
+    });
+
+	console.log("Sono state richieste informazioni su uid: ",String(uid));
+});

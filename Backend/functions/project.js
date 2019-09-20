@@ -62,7 +62,8 @@ exports.DeleteProject = functions.https.onRequest((req, res) => {
 
 //Prendi tutti i progetti per un singolo utente
 exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
-	let uid = req.url.replace('/',''); 
+	const JSONreq = JSON.parse(req.url.replace('/',''));
+	const uid = JSONreq['uid']; 
     //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
@@ -78,6 +79,7 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 					result[element.id]['nome'] = element.get('nome');
 					result[element.id]['descrizione'] = element.get('descrizione');
 					result[element.id]['proprietario'] = element.get('proprietario');
+					result[element.id]['sviluppatori'] = element.get('sviluppatori');
 					result[element.id]['amministratori'] = element.get('amministratori');
 					result[element.id]['completato'] = element.get('completato');
 				}
@@ -97,5 +99,32 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 
 //Prendi un singolo progetto
 exports.GetProject = functions.https.onRequest((req, res) => {
-	return res.status(501).send('Non implementato');
+	const JSONreq = JSON.parse(req.url.replace('/',''));
+	const uid = JSONreq['uid'];
+	const pid = JSONreq['pid'];
+    //let utente = admin.database().ref("Utenti").child(uid).once("value");
+
+	let result = {};
+
+	let projectRef = db.collection("progetti").doc(String(uid));
+    let getProject = projectRef.get().then(doc => {
+
+        if (!doc.exists) {
+            console.log('Progetto inesistente');
+            return res.status(404).send(JSON.stringify(result));
+        } else {
+			console.log('Progetto trovato', doc.data());
+			//Qui saranno necessari controlli di sicurezza
+			result["repository"] = doc.get("repository");
+			result["nome"] = doc.get("nome");
+			result["descrizione"] = doc.get("descrizione");
+            return res.status(200).send(JSON.stringify(result));
+        }
+    
+    }).catch(err => {
+        console.log("Errore Database");
+        return res.status(500).send("Errore database");
+    });
+
+	console.log("Sono state richieste informazioni sul progetto: ",String(pid)," dall'utente uid: not impl");
 });
