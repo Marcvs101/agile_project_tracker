@@ -21,6 +21,7 @@ db.collection('utenti').get()
 exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	const JSONreq = JSON.parse(req.url.replace('/',''));
 	const uid = JSONreq['uid'];
+	let token = req.get("token");
 	//let utente = admin.database().ref("Utenti").child(uid).once("value");
 	
 	const projectId = JSONreq['projectId'];
@@ -62,8 +63,8 @@ exports.DeleteProject = functions.https.onRequest((req, res) => {
 
 //Prendi tutti i progetti per un singolo utente
 exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
-	const JSONreq = JSON.parse(req.url.replace('/',''));
-	const uid = JSONreq['uid']; 
+	let uid = req.url.replace('/','');
+	let token = req.get("token");
     //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
