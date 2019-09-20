@@ -25,6 +25,7 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	
 	const projectId = JSONreq['projectId'];
 	const nome = JSONreq['nome'];
+	const descrizione = JSONreq['descrizione'];
 
 	let check = db.collection('progetti').doc(projectId);
 	let getCheck = check.get()
@@ -42,8 +43,10 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	let docRef = db.collection("progetti").doc(projectId);
 	let progetto = docRef.set({
 		"nome": nome,
+		"descrizione": descrizione,
 		"proprietario": uid,
 		"sviluppatori": [uid],
+		"amministratori": [uid],
 		"user_story": [],
 		"completato": false
 	});
@@ -62,7 +65,7 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 	let uid = req.url.replace('/',''); 
     //let utente = admin.database().ref("Utenti").child(uid).once("value");
 
-	let result = { 'project': {} };
+	let result = {};
 
 	let projectsRef = db.collection("progetti");
 	let projectsQuery = projectsRef.where('sviluppatori', 'array-contains', String(uid));
@@ -75,6 +78,7 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 					result[element.id]['nome'] = element.get('nome');
 					result[element.id]['descrizione'] = element.get('descrizione');
 					result[element.id]['proprietario'] = element.get('proprietario');
+					result[element.id]['amministratori'] = element.get('amministratori');
 					result[element.id]['completato'] = element.get('completato');
 				}
 			});
