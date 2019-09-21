@@ -15,14 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>{
 
-  List projects;
-
-  @override
-  void initState(){
-    projects = Project.getProjects(widget.user.uid);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context){
 
@@ -84,22 +76,6 @@ class _HomePageState extends State<HomePage>{
       ),
     ); 
 
-
-
-/*
- * crea la sezione scrollabile che conterrà le card
- */
-    final makeBody = Container(
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: projects.length,
-        itemBuilder: (BuildContext context, int index){
-          return makeCard(projects[index]);
-        },
-      ),
-    );
-
 /*
  * crea la barra superiore
  */
@@ -112,7 +88,27 @@ class _HomePageState extends State<HomePage>{
     return Scaffold(
       appBar: topAppBar,
       backgroundColor: Colors.grey,
-      body: makeBody,
+      body: new FutureBuilder(
+        future: Project.getProjects(widget.user.uid),
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot){
+          if (!snapshot.hasData)
+            return new Container();
+          var content = snapshot.data;
+          /*
+           * crea la sezione scrollabile che conterrà le card
+           */
+          return new ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: content.length,
+            itemBuilder: (BuildContext context, int index){
+              Project pr = content[index] as Project;
+              return makeCard(pr);
+            }
+          );
+        }
+
+      )
     );
   }
 }

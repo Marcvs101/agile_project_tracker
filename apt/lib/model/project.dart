@@ -69,7 +69,7 @@ class Project {
     return this._c;
   }
   
-  
+ /* 
   //prendo in input l'id dell'utente
   static List<Project> getProjects(String uid) {
     /* 
@@ -89,10 +89,17 @@ class Project {
 
     //var future = new Future(query(uid).then(value){return value;}
     //return l;
-  }
+  }*/
 
-  static Future<List> query(String uid) async {
-
+  static Future<List> getProjects(String uid) async {
+    /* 
+     * Query da implementare:
+     * la chiamata proviene dal costruttore in homepage
+     * dovrebbe prendere in input l'id dell'utente -> viene passato tramite user.uid
+     * e ritornare una List dei progetti cui l'utente
+     * ha collaborato, non solo quelli in cui
+     * è il proprietario
+     */
     var url = 'https://us-central1-agile-project-tracker.cloudfunctions.net/GetProjectsForUser'+'/'+uid;
     var response = await http.get(url);//, body: {uid});
     
