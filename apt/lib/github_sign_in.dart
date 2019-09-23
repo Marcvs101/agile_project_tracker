@@ -5,7 +5,10 @@ import 'dart:async';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
+import 'package:apt/common/helpers/github_helpers.dart';
 import 'package:http/http.dart' as http;
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class GithubSignInPage extends StatefulWidget {
   @override
@@ -65,9 +68,21 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
 
   void initState() {
     _initDeepLinkListener();
-
+    print("init state");
     super.initState();
+    getUser().then((user) {
+      if (user != null) {
+        // send the user to the home page
+        // homePage();
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
+      }
+    });
   }
+
+  Future<FirebaseUser> getUser() async {
+    return await _auth.currentUser();
+  }
+
   @override
 
   void dispose() {
@@ -136,37 +151,8 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
       token: loginResponse.accessToken,
     );
 
-    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential);
+    final FirebaseUser user = await _auth.signInWithCredential(credential);
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
   }
-}
-
-//Classi e funzioni ausiliarie per gestire il ritorno dal login su pagina web
-class GitHubLoginRequest {
-  String clientId;
-  String clientSecret;
-  String code;
-  GitHubLoginRequest({
-    this.clientId, this.clientSecret, this.code});
-
-  dynamic toJson() => {
-    "client_id": clientId,
-    "client_secret": clientSecret,
-    "code": code,
-  };
-}
-class GitHubLoginResponse {
-  String accessToken;
-  String tokenType;
-  String scope;
-  GitHubLoginResponse({
-    this.accessToken, this.tokenType, this.scope});
-
-  factory GitHubLoginResponse.fromJson(Map<String, dynamic> json) =>
-      GitHubLoginResponse(
-        accessToken: json["access_token"],
-        tokenType: json["token_type"],
-        scope: json["scope"],
-      );
 }
