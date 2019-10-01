@@ -5,12 +5,17 @@ import 'dart:async';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
-import 'package:apt/common/helpers/github_helpers.dart';
+import 'package:apt/common/helpers/github_login_request.dart';
+import 'package:apt/common/helpers/github_login_response.dart';
 import 'package:http/http.dart' as http;
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
 class GithubSignInPage extends StatefulWidget {
+  GithubSignInPage({Key key, @required this.auth});
+
+  final FirebaseAuth auth;
+
   @override
   _GithubSignInPageState createState() => _GithubSignInPageState();
 }
@@ -23,11 +28,10 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
     return Scaffold(
         backgroundColor: Colors.grey,
       appBar: AppBar(
-
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1),
         title: Text('Agile Project Tracker'),
       ),
       body: Center(
-
         child: RaisedButton(
           color: Color.fromRGBO(58, 66, 86, 1),
           onPressed: onClickGitHubLoginButton,
@@ -68,19 +72,11 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
 
   void initState() {
     _initDeepLinkListener();
-    print("init state");
     super.initState();
-    getUser().then((user) {
-      if (user != null) {
-        // send the user to the home page
-        // homePage();
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
-      }
-    });
   }
 
   Future<FirebaseUser> getUser() async {
-    return await _auth.currentUser();
+    return await widget.auth.currentUser();
   }
 
   @override
@@ -90,7 +86,6 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
 
     super.dispose();
   }
-  // ...
 
   void _initDeepLinkListener() async {
     _subs = getLinksStream().listen((String link) {
@@ -104,9 +99,7 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
     if (link != null) {
       String code = link.substring(link.indexOf(RegExp('code=')) + 5);
 
-      loginWithGitHub(code)
-
-          .then((firebaseUser) {
+      loginWithGitHub(code).then((firebaseUser) {
         //print("LOGGED IN AS: " + firebaseUser.displayName);
       }).catchError((e) {
         print("LOGIN ERROR: " + e.toString());
@@ -151,8 +144,8 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
       token: loginResponse.accessToken,
     );
 
-    final FirebaseUser user = await _auth.signInWithCredential(credential);
+    final FirebaseUser user = await widget.auth.signInWithCredential(credential);
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
   }
 }
