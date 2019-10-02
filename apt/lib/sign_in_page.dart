@@ -11,20 +11,21 @@ import 'package:http/http.dart' as http;
 
 
 
-class GithubSignInPage extends StatefulWidget {
-  GithubSignInPage({Key key, @required this.auth});
+class SignInPage extends StatefulWidget {
+  SignInPage({Key key, @required this.auth});
 
   final FirebaseAuth auth;
 
   @override
-  _GithubSignInPageState createState() => _GithubSignInPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _GithubSignInPageState extends State<GithubSignInPage> {
+class _SignInPageState extends State<SignInPage> {
   static const String GITHUB_CLIENT_ID = "6693b7c583388aca6c3a";
   static const String GITHUB_CLIENT_SECRET = "96bb2935260ab3ae9ea7507ae0eb071167721477";
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Colors.grey,
       appBar: AppBar(
@@ -38,7 +39,6 @@ class _GithubSignInPageState extends State<GithubSignInPage> {
           textColor: Colors.white,
           child: Text("Sign in with Github"),
         ),
-
       )
     );
   }

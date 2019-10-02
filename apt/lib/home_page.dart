@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage>{
  * Viene chiamato dalla funzione makecard
  * genera il contenuto che va all'interno della card
  */
+
     ListTile makeListTile(Project project) => ListTile(
       contentPadding: 
         EdgeInsets.symmetric(horizontal: 20.0,vertical: 10.0),
