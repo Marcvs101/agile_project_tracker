@@ -196,11 +196,13 @@ class _HomePageState extends State<HomePage>{
                 direction: DismissDirection.endToStart,
                 onDismissed: (DismissDirection direction){
                   setState(() {
-                    Firestore.instance.collection('progetti').document(pr.id).delete();
+                    if(widget.user.uid == pr.proprietario){
+                      Firestore.instance.collection('progetti').document(pr.id).delete();
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
+                    }
+                    else Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" cannot be removed")));
                   });
-                  Scaffold
-                    .of(context)
-                    .showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
+                  //Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
                 },
                 child: makeCard(pr),
               );
