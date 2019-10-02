@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage>{
     Future<Null> _showAddUserDialogBox(BuildContext context) {
       TextEditingController _nameTextController = new TextEditingController(); 
       TextEditingController _descrTextController = new TextEditingController();
-
+ 
       return showDialog<Null>(
         context: context,
         builder: (BuildContext context) {
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage>{
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                   ),
-                ],
+                ]
               ),
             ),
             actions: <Widget>[
@@ -127,7 +127,6 @@ class _HomePageState extends State<HomePage>{
               // This button results in adding the contact to the database
               new FlatButton(
                   onPressed: () {
-//------------------NEW CODE---------------------------------------------
                     CloudFunctions.instance.call(
                       functionName: "CreateNewProject",
                       parameters: {
@@ -136,11 +135,10 @@ class _HomePageState extends State<HomePage>{
                         "proprietario": widget.user.uid,
                         "user_story": [],
                         "completato": false,
-		                    "sviluppatori": [],
-		                    "amministratori": [widget.user.uid],
+		                    "sviluppatori": [widget.user.uid],
+		                    "amministratori": [],
 		                  }
                     );
-// ------------END OF NEW CODE-------------------------------------------
                     Navigator.of(context).pop();
                 },
                 child: const Text("Confirm")
@@ -182,20 +180,30 @@ class _HomePageState extends State<HomePage>{
     FutureBuilder _loadProject(){
       return new FutureBuilder<List>(
         future: Project.getProjects(widget.user.uid),
-        builder: (context, AsyncSnapshot<List> snapshot) {
+        builder: (context, AsyncSnapshot<dynamic> snapshot) {
           if (!snapshot.hasData)
             return new Container();
           var content = snapshot.data;
-          /*
-           * crea la sezione scrollabile che conterrà le card
-           */
           return new ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: content.length,
             itemBuilder: (BuildContext context, int index){
               Project pr = content[index] as Project;
-              return makeCard(pr);
+              return Dismissible(
+                key: Key(UniqueKey().toString()),
+                background: Container(color: Colors.red),
+                direction: DismissDirection.endToStart,
+                onDismissed: (DismissDirection direction){
+                  setState(() {
+                    Firestore.instance.collection('progetti').document(pr.id).delete();
+                  });
+                  Scaffold
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
+                },
+                child: makeCard(pr),
+              );
             }
           );
         }
@@ -206,15 +214,14 @@ class _HomePageState extends State<HomePage>{
     return Scaffold(
       appBar: topAppBar,
       backgroundColor: Colors.grey,
-      //body: _retrieveProject(),
-      
       body: _loadProject(),
      
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
         onPressed: () => _showAddUserDialogBox(context),
         tooltip: 'Increment',
-        child: new Icon(Icons.add),
+        label: Text("new project!"),
+        icon: new Icon(Icons.add),
       ),
     );
   }
