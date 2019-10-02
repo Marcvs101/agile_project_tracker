@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'project_page.dart';
-import 'package:async/async.dart';
+
 
 
 class HomePage extends StatefulWidget {
@@ -149,34 +149,6 @@ class _HomePageState extends State<HomePage>{
       );
     }
 
-    
-    StreamBuilder<QuerySnapshot> _retrieveProject() {
-      return new StreamBuilder<QuerySnapshot>(
-      // Interacts with Firestore (not CloudFunction)
-      //stream: new CollectionReference collection('progetti').snapshots(),
-      stream: Firestore.instance.collection('progetti').where('sviluppatori', arrayContains: widget.user.uid ).snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData || snapshot.data == null) {
-            return Container();
-          }
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              var v = snapshot.data.documents[index];
-              Project p = new Project(v['nome'],v['proprietario'],v['descrizione'],v['completato'],v['uid']);
-              return makeCard(p);
-              //return new ListTile(
-              //  title: new Text(snapshot.data.documents[index]['name']),
-              //  subtitle: new Text(snapshot.data.documents[index]['email'])
-              //);
-            }
-          );
-        }
-      );
-    }
-
     FutureBuilder _loadProject(){
       return new FutureBuilder<List>(
         future: Project.getProjects(widget.user.uid),
@@ -195,13 +167,15 @@ class _HomePageState extends State<HomePage>{
                 background: Container(color: Colors.red),
                 direction: DismissDirection.endToStart,
                 onDismissed: (DismissDirection direction){
+                  bool removed = false;
                   setState(() {
                     if(widget.user.uid == pr.proprietario){
                       Firestore.instance.collection('progetti').document(pr.id).delete();
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
                     }
-                    else Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" cannot be removed")));
                   });
+                  removed?
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed"))):
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" cannot be removed")));
                   //Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed")));
                 },
                 child: makeCard(pr),
