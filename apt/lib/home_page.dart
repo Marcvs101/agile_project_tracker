@@ -1,3 +1,4 @@
+import 'package:apt/sign_in_page.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,13 +86,25 @@ class _HomePageState extends State<HomePage>{
 /*
  * crea la barra superiore
  */
+
+    void logout() {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInPage(auth: FirebaseAuth.instance)));
+    }
+
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1),
       title: Text(widget.user.displayName),
+      actions: <Widget>[
+        new IconButton(icon: new Icon(Icons.exit_to_app),
+          onPressed: (){
+              logout();
+            },
+        ),
+      ],
     );
 
-    
     FutureBuilder _loadProject(){
       return new FutureBuilder<List>(
         future: Project.getProjects(widget.user.uid),
