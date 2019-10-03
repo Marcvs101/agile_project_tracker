@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthHelper {
 
-  String retrieveToken(FirebaseUser user) {
+  static String retrieveToken(FirebaseUser user) {
     String idToken = "";
     user.getIdToken().then((token) {
       idToken = token;

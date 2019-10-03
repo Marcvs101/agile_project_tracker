@@ -146,6 +146,6 @@ class _SignInPageState extends State<SignInPage> {
 
     final FirebaseUser user = await widget.auth.signInWithCredential(credential);
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
   }
 }

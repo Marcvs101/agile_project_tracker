@@ -1,19 +1,18 @@
+import 'package:apt/main.dart';
 import 'package:apt/sign_in_page.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase/firestore.dart';
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'project_page.dart';
 import 'new_project.dart';
 
 
-
 class HomePage extends StatefulWidget {
-  HomePage({Key key, @required this.user}) : super(key: key);
+  HomePage({Key key, @required this.user, @required this.auth,}) : super(key: key);
 
   final FirebaseUser user;
+  final FirebaseAuth auth;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -86,10 +85,38 @@ class _HomePageState extends State<HomePage>{
 /*
  * crea la barra superiore
  */
-
     void logout() {
-      FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInPage(auth: FirebaseAuth.instance)));
+      widget.auth.signOut();
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => new SignInPage(auth: widget.auth)), (route)=>false);
+    }
+
+    Future<void> logoutAlert() async{
+      return showDialog<void>(
+        context: context,
+        //barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Logout'),
+            content: SingleChildScrollView(
+                child: new Text('Are you sure you want to log out?.'),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('no'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text('yes'),
+                onPressed: () {
+                  logout();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
 
     final topAppBar = AppBar(
@@ -99,11 +126,13 @@ class _HomePageState extends State<HomePage>{
       actions: <Widget>[
         new IconButton(icon: new Icon(Icons.exit_to_app),
           onPressed: (){
-              logout();
+              logoutAlert();
             },
         ),
       ],
     );
+
+
 
     FutureBuilder _loadProject(){
       return new FutureBuilder<List>(

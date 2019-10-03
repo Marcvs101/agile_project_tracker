@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       if (user != null) {
         // send the user to the home page
         // homePage();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user,)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
       }
     });
     return new SignInPage(auth: widget.auth);
