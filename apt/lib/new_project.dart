@@ -12,21 +12,23 @@ class NewProjectPage extends StatefulWidget {
 }
 
 class _NewProjectPageState extends State<NewProjectPage> {
+  
   TextEditingController _nameTextController = new TextEditingController();
   TextEditingController _descrTextController = new TextEditingController();
-  bool admin = false;
+  
   bool developer = false;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    
     final makeBottom = Container(
         width: MediaQuery.of(context).size.width,
         height: 65.0,
         child: BottomAppBar(
             child: Center(
-          child: Column(children: <Widget>[
+              child: Column(children: <Widget>[
             Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
@@ -57,8 +59,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                   "completato": false,
                                   "sviluppatori":
                                       developer ? [widget.user.uid] : [],
-                                  "amministratori":
-                                      admin ? [widget.user.uid] : [],
+                                  "amministratori":[widget.user.uid],
                                 });
                             Navigator.of(context).pop();
                           }
@@ -109,24 +110,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                             }
                             return null;
                           },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 50.0),
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("Admin"),
-                              Checkbox(
-                                value: admin,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    admin = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
