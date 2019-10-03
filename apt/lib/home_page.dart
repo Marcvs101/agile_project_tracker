@@ -134,6 +134,7 @@ class _HomePageState extends State<HomePage>{
                   removed?
                   Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" removed"))):
                   Scaffold.of(context).showSnackBar(SnackBar(content: Text("Project "+pr.nome+" cannot be removed")));
+                  
                 },
                 //child: makeCard(pr),
               );

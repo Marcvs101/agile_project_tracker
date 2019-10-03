@@ -17,45 +17,56 @@ class _NewProjectPageState extends State<NewProjectPage> {
   bool admin = false;
   bool developer = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    
     final makeBottom = Container(
         width: MediaQuery.of(context).size.width,
         height: 65.0,
         child: BottomAppBar(
             child: Center(
           child: Column(children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new FlatButton(
-                    padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 7.0),
-                    color: Color.fromRGBO(58, 66, 86, 1.0),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("Cancel", style: TextStyle(color: Colors.white))),
-                new FlatButton(
-                    color: Color.fromRGBO(58, 66, 86, 1.0),
-                    padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 7.0),
-                    onPressed: () {
-                      CloudFunctions.instance
-                          .call(functionName: "CreateNewProject", parameters: {
-                        "nome": _nameTextController.text,
-                        "descrizione": _descrTextController.text,
-                        "proprietario": widget.user.uid,
-                        "user_story": [],
-                        "completato": false,
-                        "sviluppatori": developer ? [widget.user.uid] : [],
-                        "amministratori": admin ? [widget.user.uid] : [],
-                      });
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("Confirm", style: TextStyle(color: Colors.white)))
-              
-              ],
-            )
+            Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new FlatButton(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel",
+                            style: TextStyle(color: Colors.white))),
+                    new FlatButton(
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            CloudFunctions.instance.call(
+                                functionName: "CreateNewProject",
+                                parameters: {
+                                  "nome": _nameTextController.text,
+                                  "descrizione": _descrTextController.text,
+                                  "proprietario": widget.user.uid,
+                                  "user_story": [],
+                                  "completato": false,
+                                  "sviluppatori":
+                                      developer ? [widget.user.uid] : [],
+                                  "amministratori":
+                                      admin ? [widget.user.uid] : [],
+                                });
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text("Confirm",
+                            style: TextStyle(color: Colors.white)))
+                  ],
+                )),
           ]),
         )));
 
@@ -65,58 +76,79 @@ class _NewProjectPageState extends State<NewProjectPage> {
           title: Text("New Project"),
           elevation: 0.1,
         ),
-        body: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: ListView(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  new TextField(
-                    controller: _nameTextController,
-                    decoration: const InputDecoration(labelText: "Name: "),
-                  ),
-                  new TextField(
-                    controller: _descrTextController,
-                    decoration:
-                        const InputDecoration(labelText: "Description: "),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                  ),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Text("Admin"),
-                      Checkbox(
-                        value: admin,
-                        onChanged: (bool value) {
-                          setState(() {
-                            admin = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Text("Developer"),
-                      Checkbox(
-                        value: developer,
-                        onChanged: (bool value) {
-                          setState(() {
-                            developer = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: makeBottom
-      );
-      
+        bottomNavigationBar: makeBottom,
+        body: Form(
+            key: _formKey,
+            child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: ListView(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _nameTextController,
+                          decoration: const InputDecoration(
+                              labelText: "Insert new project's name: "),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _descrTextController,
+                          decoration: const InputDecoration(
+                              labelText: "Insert new project's description: "),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 50.0),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("Admin"),
+                              Checkbox(
+                                value: admin,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    admin = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 0.0, horizontal: 50.0),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("Developer"),
+                              Checkbox(
+                                value: developer,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    developer = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ))));
   }
 }
