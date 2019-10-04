@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'model/user_story.dart';
 import 'model/developer.dart';
@@ -24,7 +25,7 @@ class _DevUserStoryPageState extends State<DevUserStoryPage>{
 
   @override
   void initState(){
-    userstory = UserStory.getUserStoryFromDev(widget.dev, widget.pr);
+    //userstory = UserStory.getUserStoryFromDev(widget.dev, widget.pr);
     super.initState();
   }
   
@@ -56,7 +57,7 @@ class _DevUserStoryPageState extends State<DevUserStoryPage>{
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 25),
         ),
         subtitle: Text(
-          widget.pr.nome, style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+          widget.pr.name, style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
         ),
         trailing:
           Icon(Icons.keyboard_arrow_right, color: Colors.white,size: 30.0),
@@ -110,7 +111,7 @@ class _DevUserStoryPageState extends State<DevUserStoryPage>{
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-      title: Text(widget.title+''+widget.dev.nome),
+      title: Text(widget.title+''+widget.dev.name),
     );
 
     return Scaffold(
@@ -120,3 +121,4 @@ class _DevUserStoryPageState extends State<DevUserStoryPage>{
     );    
   }
 }
+*/

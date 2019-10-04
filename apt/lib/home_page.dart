@@ -30,53 +30,53 @@ class _HomePageState extends State<HomePage> {
  */
 
     ListTile makeListTile(Project project) => ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(
-              project.getIcon(),
-              color: project.getColor(),
-              size: 35,
-            ),
-          ),
-          title: Text(
-            project.nome,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
-          ),
-          subtitle: Text(
-            project.proprietario,
-            style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
-          ),
-          trailing:
-              Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-          onTap: () {
-            /* il metodo serve a renderizzare la pagina del progetto selezionato
+      contentPadding:
+      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Container(
+        padding: EdgeInsets.only(right: 12.0),
+        decoration: new BoxDecoration(
+            border: new Border(
+                right: new BorderSide(width: 1.0, color: Colors.white24))),
+        child: Icon(
+          Icons.accessibility,
+          color: Colors.blue,
+          size: 35,
+        ),
+      ),
+      title: Text(
+        project.name,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+      ),
+      subtitle: Text(
+        project.owner,
+        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+      ),
+      trailing:
+      Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+      onTap: () {
+        /* il metodo serve a renderizzare la pagina del progetto selezionato
            * quindi prendo un progetto come parametro nel costruttore
            */
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProjectPage(project: project)));
-          },
-        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProjectPage(project: project)));
+      },
+    );
 
-/* 
+/*
  * codice che crea la struttura della card
  * che conterrà un progetto
  */
     Card makeCard(Project project) => Card(
-          elevation: 8.0,
-          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-          child: Container(
-            decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
-            child: makeListTile(project),
-          ),
-        );
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Container(
+        decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
+        child: makeListTile(project),
+      ),
+    );
 
 /*
  * crea la barra superiore
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           context,
           MaterialPageRoute(
               builder: (context) => new SignInPage(auth: widget.auth)),
-          (route) => false);
+              (route) => false);
     }
 
     Future<void> logoutAlert() async {
@@ -185,10 +185,10 @@ class _HomePageState extends State<HomePage> {
 */
     StreamBuilder<QuerySnapshot> _retrieveUsers() {
       return new StreamBuilder<QuerySnapshot>(
-          // Interacts with Firestore (not CloudFunction)
+        // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
-              .collection('progetti')
-              .where("sviluppatori", arrayContains: widget.user.uid)
+              .collection('projects')
+              .where("developers", arrayContains: widget.user.uid)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
@@ -201,6 +201,7 @@ class _HomePageState extends State<HomePage> {
                 itemCount: content.length,
                 itemBuilder: (BuildContext context, int index) {
                   var dp = content[index];
+                  print(dp);
                   //Project pr = new Project(dp["nome"], dp["proprietario"], dp["descrizione"], dp["completato"], dp.documentID);
                   Project pr = new Project.fromJson(dp);
                   return Dismissible(
@@ -211,21 +212,21 @@ class _HomePageState extends State<HomePage> {
                     onDismissed: (DismissDirection direction) {
                       bool removed = false;
                       setState(() {
-                        if (widget.user.uid == pr.proprietario) {
+                        if (widget.user.uid == pr.owner) {
                           removed = true;
                           Firestore.instance
-                              .collection('progetti')
+                              .collection('projects')
                               .document(pr.id)
                               .delete();
                         }
                       });
                       removed
                           ? Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Project " + pr.nome + " removed")))
+                          content: Text("Project " + pr.name + " removed")))
                           : Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Project " +
-                                  pr.nome +
-                                  " cannot be removed")));
+                          content: Text("Project " +
+                              pr.name +
+                              " cannot be removed")));
                     },
                   );
                 });

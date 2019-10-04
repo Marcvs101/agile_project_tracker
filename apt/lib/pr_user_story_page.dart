@@ -1,3 +1,5 @@
+/*
+
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'model/user_story.dart';
@@ -51,7 +53,7 @@ class _PrUserStoryPageState extends State<PrUserStoryPage>{
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 25),
         ),
         subtitle: Text(
-          userstory.getDev().nome, style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+          userstory.getDev().name, style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
         ),
         trailing:
           Icon(Icons.keyboard_arrow_right, color: Colors.white,size: 30.0),
@@ -107,7 +109,7 @@ class _PrUserStoryPageState extends State<PrUserStoryPage>{
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-      title: Text(widget.title+" "+widget.pr.nome),
+      title: Text(widget.title+" "+widget.pr.name),
     );
 
     return Scaffold(
@@ -117,3 +119,5 @@ class _PrUserStoryPageState extends State<PrUserStoryPage>{
     );    
   }
 }
+
+*/

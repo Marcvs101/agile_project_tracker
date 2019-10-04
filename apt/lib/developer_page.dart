@@ -1,3 +1,5 @@
+/*
+
 import 'package:flutter/material.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
@@ -18,7 +20,7 @@ class _DeveloperPageState extends State<DeveloperPage>{
   List developers;
   @override 
   void initState(){
-    developers = Developer.getDevelopersByProject(widget.pr);
+    //developers = Developer.getDevelopersByProject(widget.pr);
     super.initState();
   }
 
@@ -46,7 +48,7 @@ class _DeveloperPageState extends State<DeveloperPage>{
             ),
         ),
         title: Text(
-          developer.nome,
+          developer.name,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 25),
         ),
         
@@ -110,3 +112,6 @@ class _DeveloperPageState extends State<DeveloperPage>{
     );
   }
 }
+
+
+*/

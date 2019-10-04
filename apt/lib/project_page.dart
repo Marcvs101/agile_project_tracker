@@ -21,7 +21,7 @@ class ProjectPage extends StatelessWidget{
         borderRadius: BorderRadius.circular(5.0)
       ),
       child: new Text(
-        "Owner:  "+project.proprietario,
+        "Owner:  "+project.owner,
         style: TextStyle(color: Colors.white), textAlign: TextAlign.left,
       ),
     );
@@ -35,7 +35,7 @@ class ProjectPage extends StatelessWidget{
       children: <Widget>[
         SizedBox(height: 50.0),
         Text(
-              project.nome,
+              project.name,
               style: TextStyle(color: Colors.white,fontSize: 35.0),
             ),
         SizedBox(height: 15.0),
@@ -47,12 +47,7 @@ class ProjectPage extends StatelessWidget{
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,         
           children: <Widget>[            
-            owner,           
-            Icon(
-              project.getIcon(),
-              color: project.getColor(),
-              size: 40.0,
-            ),
+            owner,
           ],
         ),
       ],
@@ -92,19 +87,7 @@ class ProjectPage extends StatelessWidget{
       padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 7.0),
       width: MediaQuery.of(context).size.width*0.3,
       child: RaisedButton(
-        onPressed: () =>{
-          /*
-           * Il costruttore della pagina prende in input il progetto selezionato
-           * (voglio tutte le user stories per quel progetto) 
-           */
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => 
-              PrUserStoryPage(pr: project)
-            )
-          )
-        },
+        onPressed: () =>null,
         color: Color.fromRGBO(58, 66, 86, 1.0),
          child: Text("User Stories", style: TextStyle(color: Colors.white)),
       ),
@@ -121,17 +104,7 @@ class ProjectPage extends StatelessWidget{
            * Il costruttore della pagina prende in input il progetto selezionato
            * (voglio tutti i developer per il progetto)
            */
-        onPressed: () =>{
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => 
-              DeveloperPage(
-                pr: project,
-              )
-            )
-          )
-        },
+        onPressed: null,
         color: Color.fromRGBO(58, 66, 86, 1.0),
         child:Text("Developers", style: TextStyle(color: Colors.white)),
       ),
@@ -148,7 +121,7 @@ class ProjectPage extends StatelessWidget{
         child: Center(
           child: new SingleChildScrollView(
             child: Text(
-              project.descrizione,
+              project.description,
               style: TextStyle(fontSize: 18.0),
             )
           )

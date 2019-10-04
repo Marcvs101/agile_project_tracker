@@ -52,14 +52,14 @@ class _NewProjectPageState extends State<NewProjectPage> {
                             CloudFunctions.instance.call(
                                 functionName: "CreateNewProject",
                                 parameters: {
-                                  "nome": _nameTextController.text,
-                                  "descrizione": _descrTextController.text,
-                                  "proprietario": widget.user.uid,
-                                  "user_story": [],
-                                  "completato": false,
-                                  "sviluppatori":
-                                      developer ? [widget.user.uid] : [],
-                                  "amministratori":[widget.user.uid],
+                                  "name": _nameTextController.text,
+                                  "description": _descrTextController.text,
+                                  "owner": widget.user.uid,
+                                  "userStories": [],
+                                  "developers": [widget.user.uid],
+                                  "admins":[widget.user.uid],
+                                  "events":[],
+                                  "sprints":[],
                                 });
                             Navigator.of(context).pop();
                           }

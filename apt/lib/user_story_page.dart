@@ -1,3 +1,4 @@
+/*
 import 'model/user_story.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class UserStoryPage extends StatelessWidget {
           border: new Border.all(color: Colors.white),
           borderRadius: BorderRadius.circular(5.0)),
       child: new Text(
-        "Owner:  " + userStory.getDev().nome,
+        "Owner:  " + userStory.getDev().name,
         style: TextStyle(color: Colors.white),
         textAlign: TextAlign.left,
       ),
@@ -101,3 +102,4 @@ class UserStoryPage extends StatelessWidget {
     ));
   }
 }
+*/
