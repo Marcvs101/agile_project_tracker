@@ -11,7 +11,6 @@ class ProjectPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-
 /*
  * TextBox contenete il proprietario
  */

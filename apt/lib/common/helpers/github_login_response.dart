@@ -10,4 +10,5 @@ class GitHubLoginResponse {
     tokenType: json["token_type"],
     scope: json["scope"],
   );
+
 }

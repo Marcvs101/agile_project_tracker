@@ -1,3 +1,16 @@
+import 'package:apt/model/project.dart';
+
+class Developer{
+  String id;
+  String name;
+  String email;
+  List<Project> projects; //link field
+
+
+
+}
+
+/*
 class Developer{
 
   String id;
@@ -24,3 +37,4 @@ class Developer{
   }
 
 }
+*/

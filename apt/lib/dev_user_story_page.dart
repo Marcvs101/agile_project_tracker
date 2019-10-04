@@ -52,7 +52,7 @@ class _DevUserStoryPageState extends State<DevUserStoryPage>{
             ),
         ),
         title: Text(
-          userstory.nome,
+          userstory.name,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 25),
         ),
         subtitle: Text(
