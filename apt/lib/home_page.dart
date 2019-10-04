@@ -1,4 +1,3 @@
-import 'package:apt/main.dart';
 import 'package:apt/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,15 +24,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    
-
 /* 
  * Viene chiamato dalla funzione makecard
  * genera il contenuto che va all'interno della card
  */
-
-
-
 
     ListTile makeListTile(Project project) => ListTile(
           contentPadding:
@@ -138,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
-
+/*
     FutureBuilder _loadProject() {
       return new FutureBuilder<List>(
           future: Project.getProjects(widget.user.uid),
@@ -181,37 +175,34 @@ class _HomePageState extends State<HomePage> {
           });
     }
 
-Future<Null> _reload() async{
-        await Future.delayed(Duration(seconds: 2));
-        setState(() {
-          _loadProject();
-        });
-        return null;
+    Future<Null> _reload() async {
+      await Future.delayed(Duration(seconds: 2));
+      setState(() {
+        _loadProject();
+      });
+      return null;
     }
-
+*/
     StreamBuilder<QuerySnapshot> _retrieveUsers() {
-
       return new StreamBuilder<QuerySnapshot>(
-        // Interacts with Firestore (not CloudFunction)
-          stream: Firestore.instance.collection('progetti').where("sviluppatori", arrayContains: widget.user.uid).snapshots(),
+          // Interacts with Firestore (not CloudFunction)
+          stream: Firestore.instance
+              .collection('progetti')
+              .where("sviluppatori", arrayContains: widget.user.uid)
+              .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
             }
-
-            // This ListView widget consists of a list of tiles
-            // each represents a user.
-
             var content = snapshot.data.documents;
-
             return new ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: content.length,
                 itemBuilder: (BuildContext context, int index) {
-                  print(content);
                   var dp = content[index];
-                  Project pr = new Project(dp["nome"], dp["proprietario"], dp["descrizione"], dp["completato"], dp.documentID);
+                  //Project pr = new Project(dp["nome"], dp["proprietario"], dp["descrizione"], dp["completato"], dp.documentID);
+                  Project pr = new Project.fromJson(dp);
                   return Dismissible(
                     child: makeCard(pr),
                     key: Key(UniqueKey().toString()),
@@ -230,28 +221,25 @@ Future<Null> _reload() async{
                       });
                       removed
                           ? Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " + pr.nome + " removed")))
+                              content: Text("Project " + pr.nome + " removed")))
                           : Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " +
-                              pr.nome +
-                              " cannot be removed")));
+                              content: Text("Project " +
+                                  pr.nome +
+                                  " cannot be removed")));
                     },
-                    //child: makeCard(pr),
                   );
                 });
-
-          }
-      );
+          });
     }
 
     return Scaffold(
       appBar: topAppBar,
       backgroundColor: Colors.grey,
       body: _retrieveUsers(),
-        //RefreshIndicator(
-        //child: _loadProject(),
-        //onRefresh: _reload,
-        //),
+      //RefreshIndicator(
+      //child: _loadProject(),
+      //onRefresh: _reload,
+      //),
 
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),

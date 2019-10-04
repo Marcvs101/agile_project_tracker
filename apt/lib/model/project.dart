@@ -1,6 +1,8 @@
 import 'package:apt/model/event.dart';
 import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
+//import 'package:firebase/firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'developer.dart';
 import 'package:http/http.dart' as http;
@@ -119,8 +121,8 @@ class Project {
   String proprietario;
   String descrizione;
   bool completato = false;
-  List sviluppatori;
-
+  List <String> sviluppatori;
+  
   IconData _icona;
   Color _c;
 
@@ -130,15 +132,16 @@ class Project {
     this.proprietario = p;
     this.descrizione = d;
     this.completato = c;
-    this.sviluppatori = Developer.getDevelopersByProject(this.id);
+    this.sviluppatori = [];
     if (completato)  
       this._icona =  Icons.check;
     else
       this._icona = Icons.clear;
   }
 
+  factory Project.fromJson(DocumentSnapshot d ) => Project(d['nome'], d['proprietario'],d['descrizione'], d['completato'], d.documentID);
 
-
+  
 
   IconData getIcon(){
     return _icona;
