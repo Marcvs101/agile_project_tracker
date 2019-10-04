@@ -47,7 +47,7 @@ class _PrUserStoryPageState extends State<PrUserStoryPage>{
             ),
         ),
         title: Text(
-          userstory.name,
+          userstory.nome,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 25),
         ),
         subtitle: Text(

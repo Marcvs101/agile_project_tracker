@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-
+/*
 class Project {
   String id;
   String name;
@@ -47,7 +47,7 @@ class Project {
     "sprints": sprints,
     "userStories": userStories,
   };
-
+*/
   /*
 
   //to move in view element
@@ -100,11 +100,11 @@ class Project {
 
     return projects;
   }
-  */
+
 
 }
+*/
 
-/*
 import 'package:flutter/material.dart';
 import 'developer.dart';
 import 'package:http/http.dart' as http;
@@ -124,6 +124,7 @@ class Project {
   IconData _icona;
   Color _c;
 
+
   Project(String n, String p, String d, bool c, this.id){
     this.nome = n;
     this.proprietario = p;
@@ -135,6 +136,9 @@ class Project {
     else
       this._icona = Icons.clear;
   }
+
+
+
 
   IconData getIcon(){
     return _icona;
@@ -172,4 +176,3 @@ class Project {
   }
 
 }
-*/

@@ -32,7 +32,7 @@ class UserStoryPage extends StatelessWidget {
       children: <Widget>[
         SizedBox(height: 50.0),
         Text(
-          userStory.name,
+          userStory.nome,
           style: TextStyle(color: Colors.white, fontSize: 35.0),
         ),
         SizedBox(height: 15.0),
@@ -90,7 +90,7 @@ class UserStoryPage extends StatelessWidget {
           child: Center(
               child: new SingleChildScrollView(
                   child: Text(
-            userStory.description,
+            userStory.desc,
             style: TextStyle(fontSize: 18.0),
           )))),
     );

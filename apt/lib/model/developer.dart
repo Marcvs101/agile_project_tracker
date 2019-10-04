@@ -1,3 +1,4 @@
+/*
 import 'package:apt/model/project.dart';
 
 class Developer{
@@ -10,7 +11,7 @@ class Developer{
 
 }
 
-/*
+*/
 class Developer{
 
   String id;
@@ -37,4 +38,3 @@ class Developer{
   }
 
 }
-*/
