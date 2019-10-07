@@ -24,10 +24,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-/* 
- * Viene chiamato dalla funzione makecard
- * genera il contenuto che va all'interno della card
- */
 
     ListTile makeListTile(Project project) => ListTile(
       contentPadding:
@@ -38,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             border: new Border(
                 right: new BorderSide(width: 1.0, color: Colors.white24))),
         child: Icon(
-          Icons.accessibility,
+          Icons.bookmark_border,
           color: Colors.blue,
           size: 35,
         ),
@@ -47,10 +43,6 @@ class _HomePageState extends State<HomePage> {
         project.name,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
-      ),
-      subtitle: Text(
-        project.owner,
-        style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
       ),
       trailing:
       Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
@@ -65,10 +57,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-/*
- * codice che crea la struttura della card
- * che conterrà un progetto
- */
     Card makeCard(Project project) => Card(
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -78,9 +66,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-/*
- * crea la barra superiore
- */
     void logout() {
       widget.auth.signOut();
       Navigator.pushAndRemoveUntil(
@@ -132,58 +117,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
-/*
-    FutureBuilder _loadProject() {
-      return new FutureBuilder<List>(
-          future: Project.getProjects(widget.user.uid),
-          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            if (!snapshot.hasData) return new Container();
-            var content = snapshot.data;
-            return new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: content.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Project pr = content[index] as Project;
-                  return Dismissible(
-                    child: makeCard(pr),
-                    key: Key(UniqueKey().toString()),
-                    background: Container(color: Colors.red),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (DismissDirection direction) {
-                      bool removed = false;
-                      setState(() {
-                        if (widget.user.uid == pr.proprietario) {
-                          removed = true;
-                          Firestore.instance
-                              .collection('progetti')
-                              .document(pr.id)
-                              .delete();
-                        }
-                      });
-                      removed
-                          ? Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Project " + pr.nome + " removed")))
-                          : Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Project " +
-                                  pr.nome +
-                                  " cannot be removed")));
-                    },
-                    //child: makeCard(pr),
-                  );
-                });
-          });
-    }
 
-    Future<Null> _reload() async {
-      await Future.delayed(Duration(seconds: 2));
-      setState(() {
-        _loadProject();
-      });
-      return null;
-    }
-*/
-    StreamBuilder<QuerySnapshot> _retrieveUsers() {
+    StreamBuilder<QuerySnapshot> _retrieveProjects() {
       return new StreamBuilder<QuerySnapshot>(
         // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
@@ -201,8 +136,6 @@ class _HomePageState extends State<HomePage> {
                 itemCount: content.length,
                 itemBuilder: (BuildContext context, int index) {
                   var dp = content[index];
-                  print(dp);
-                  //Project pr = new Project(dp["nome"], dp["proprietario"], dp["descrizione"], dp["completato"], dp.documentID);
                   Project pr = new Project.fromJson(dp);
                   return Dismissible(
                     child: makeCard(pr),
@@ -233,15 +166,11 @@ class _HomePageState extends State<HomePage> {
           });
     }
 
+
     return Scaffold(
       appBar: topAppBar,
       backgroundColor: Colors.grey,
-      body: _retrieveUsers(),
-      //RefreshIndicator(
-      //child: _loadProject(),
-      //onRefresh: _reload,
-      //),
-
+      body: _retrieveProjects(),
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
         onPressed: () => Navigator.push(

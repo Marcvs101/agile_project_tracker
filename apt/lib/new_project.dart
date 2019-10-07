@@ -16,8 +16,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
   TextEditingController _nameTextController = new TextEditingController();
   TextEditingController _descrTextController = new TextEditingController();
   
-  bool developer = false;
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -110,24 +108,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                             }
                             return null;
                           },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 0.0, horizontal: 50.0),
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("Developer"),
-                              Checkbox(
-                                value: developer,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    developer = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
                         ),
                       ],
                     )
