@@ -1,3 +1,4 @@
+import 'package:apt/model/developer.dart';
 import 'package:apt/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,13 +48,13 @@ class _HomePageState extends State<HomePage> {
       trailing:
       Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () {
-        /* il metodo serve a renderizzare la pagina del progetto selezionato
-           * quindi prendo un progetto come parametro nel costruttore
-           */
+        
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProjectPage(project: project)));
+                builder: (context) => ProjectPage(project: project, devUid: widget.user.uid )
+            )
+        );
       },
     );
 

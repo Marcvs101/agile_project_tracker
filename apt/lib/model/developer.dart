@@ -13,8 +13,7 @@ class Developer{
     email: json["email"],
   );
 
-  dynamic toJson() =>
-  {
+  dynamic toJson() =>  {
     "id": id,
     "name": name,
     "email": email,

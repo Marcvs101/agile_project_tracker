@@ -1,6 +1,6 @@
 import 'package:apt/model/event.dart';
 import 'package:apt/model/user_story.dart';
-
+import 'package:cloud_functions/cloud_functions.dart';
 import 'developer_page.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
@@ -10,7 +10,8 @@ import 'pr_user_story_page.dart';
 
 class ProjectPage extends StatefulWidget {
   final Project project;
-  ProjectPage({Key key, this.project}) : super(key: key);
+  final String devUid;
+  ProjectPage({Key key, this.project, this.devUid}) : super(key: key);
 
   @override
   _ProjectPageState createState() => new _ProjectPageState();
@@ -25,10 +26,12 @@ const List<String> tabNames = const <String>[
 ];
 
 class _ProjectPageState extends State<ProjectPage> {
+  
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+
     final getDescription = Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(20.0),
@@ -74,18 +77,6 @@ class _ProjectPageState extends State<ProjectPage> {
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
           ),
-          /*
-      trailing:
-      Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-      onTap: () {
-        /* il metodo serve a renderizzare la pagina del progetto selezionato
-         * quindi prendo un progetto come parametro nel costruttore
-         */
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProjectPage(project: project)));
-      },*/
         );
 
     Card makeCard(dynamic obj) => Card(
@@ -105,7 +96,6 @@ class _ProjectPageState extends State<ProjectPage> {
               return Container();
             }
             var content = snapshot.data.documents;
-            print(content.length);
             return new ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -276,16 +266,16 @@ class _ProjectPageState extends State<ProjectPage> {
       getDescription,
       getDescription,
       _retrieveDev(),
-      getDescription
+      getDescription,
     ];
 
 /*
 final List<Widget> _children = [
       getDescription,
       _retrieveEv(),
-      _retrieveUS(),
+      _retrieveProg(),
       _retrieveDev(),
-      _retrieveProg()
+      _retrieveUS(),
     ];
 */
 
@@ -295,38 +285,80 @@ final List<Widget> _children = [
       });
     }
 
+    void _leave(){
+      //CloudFunctions.instance.call(
+      //  functionName: "LeaveProject",
+      //  parameters: {
+      //    "project":widget.project.id,
+      //    "developer": widget.devUid,
+      //  }
+      //);
+      print("User "+widget.devUid+" leaves project "+widget.project.id );
+      Navigator.of(context).pop();
+    }
+
+    void _addDeveloper(){}
+
+    void _addSprint(){}
+
+    void _addEvent(){}
+
+    void _addUserStory(){}
+
     return new DefaultTabController(
       length: tabNames.length,
       child: new Scaffold(
         appBar: new AppBar(
-            title: new Text(widget.project.name,
-                style: TextStyle(color: Colors.white, fontSize: 30.0)),
-            backgroundColor: Color.fromRGBO(58, 66, 86, 0.9)),
+          title: new Text(
+            widget.project.name,
+            style: TextStyle(color: Colors.white, fontSize: 30.0)
+          ),
+          backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
+          actions: <Widget>[
+            //widget.project.admins.contains(widget.devUid)? 
+            new PopupMenuButton<int>(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 1,
+                  child: Text("Leave this project"),
+                ),
+                if(widget.project.admins.contains(widget.devUid))              
+                  PopupMenuItem(
+                    value: 2,
+                    child: Text("Add developer"),
+                  ),
+                if(widget.project.admins.contains(widget.devUid))
+                  PopupMenuItem(
+                    value: 3,
+                    child: Text("Add sprint"),
+                  ),
+                if(widget.project.admins.contains(widget.devUid))
+                  PopupMenuItem(
+                    value: 4,
+                    child: Text("Add event"),
+                  ),
+                if(widget.project.admins.contains(widget.devUid))
+                  PopupMenuItem(
+                    value: 5,
+                    child: Text("Add UserStory"),
+                  ),
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case 1: _leave();         break;
+                  case 2: _addDeveloper();  break;
+                  case 3: _addSprint();     break;
+                  case 4: _addEvent();      break;
+                  case 5: _addUserStory();  break;
+                  default:
+                }
+              },
+            )
+            
+          ],
+
+        ),
         body: _children[_currentIndex],
-        /*
-        new TabBarView(
-          children: new List<Widget>.generate(tabNames.length, (int index) {
-            //print(tabNames[index]);
-            switch (_currentIndex) {
-              case 0:
-                return getDescription;
-                break;
-              case 3:
-                return _retrieveDev();
-                break;
-              case 2: //return _retrieveUS();
-                break;
-              case 1: //return _retrieveEv();
-                break;
-              case 4: //return _retrieveProg();
-                break;
-
-              default:
-                return new Center();
-            }
-          }),
-        ),*/
-
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           iconSize: 18.0,
@@ -345,15 +377,14 @@ final List<Widget> _children = [
             new BottomNavigationBarItem(
                 icon: Icon(Icons.event), title: Text('Events')),
             new BottomNavigationBarItem(
-              icon: Icon(Icons.format_list_bulleted),
-              title: Text('UStories'),
-            ),
+                icon: Icon(Icons.equalizer), title: Text('Progress')),
             new BottomNavigationBarItem(
               icon: Icon(Icons.group),
               title: Text('Developers'),
             ),
-            new BottomNavigationBarItem(
-                icon: Icon(Icons.equalizer), title: Text('Progress')),
+            if(widget.project.admins.contains(widget.devUid))
+              new BottomNavigationBarItem(
+                icon: Icon(Icons.format_list_bulleted), title: Text('UStories')),
           ],
         ),
       ),

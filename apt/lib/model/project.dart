@@ -1,7 +1,6 @@
 import 'package:apt/model/event.dart';
 import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
-//import 'package:firebase/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'developer.dart';
