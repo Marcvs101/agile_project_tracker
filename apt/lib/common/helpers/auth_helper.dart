@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 class AuthHelper {
+
+  static String githubToken;
 
   static String retrieveToken(FirebaseUser user) {
     String idToken = "";
@@ -11,5 +14,7 @@ class AuthHelper {
     });
     return idToken;
   }
+
+
 
 }

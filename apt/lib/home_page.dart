@@ -1,3 +1,4 @@
+import 'package:apt/common/helpers/auth_helper.dart';
 import 'package:apt/model/developer.dart';
 import 'package:apt/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,8 @@ import 'model/project.dart';
 import 'project_page.dart';
 import 'new_project.dart';
 import 'dart:async';
+import 'package:github/server.dart';
+import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -69,6 +72,7 @@ class _HomePageState extends State<HomePage> {
 
     void logout() {
       widget.auth.signOut();
+      globals.storage.delete(key: "githubToken");
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

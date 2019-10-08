@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:apt/home_page.dart';
@@ -8,6 +10,7 @@ import 'dart:convert';
 import 'package:apt/common/helpers/github_login_request.dart';
 import 'package:apt/common/helpers/github_login_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 
 
@@ -144,6 +147,7 @@ class _SignInPageState extends State<SignInPage> {
       token: loginResponse.accessToken,
     );
 
+    globals.storage.write(key: "githubToken", value: loginResponse.accessToken);
     final FirebaseUser user = await widget.auth.signInWithCredential(credential);
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
