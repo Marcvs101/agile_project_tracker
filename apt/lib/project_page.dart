@@ -1,12 +1,15 @@
 import 'package:apt/model/event.dart';
 import 'package:apt/model/user_story.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'developer_page.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'pr_user_story_page.dart';
+import 'new_developer.dart';
+import 'new_event.dart';
+import 'new_sprint.dart';
+import 'new_user_story.dart';
+
 
 class ProjectPage extends StatefulWidget {
   final Project project;
@@ -297,13 +300,33 @@ final List<Widget> _children = [
       Navigator.of(context).pop();
     }
 
-    void _addDeveloper(){}
+    void _addDeveloper(){
+      Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewDeveloperPage(project: widget.project)));
+    }
 
-    void _addSprint(){}
+    void _addSprint(){
+      Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewSprintPage(project: widget.project)));
+    }
 
-    void _addEvent(){}
+    void _addEvent(){
+      Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewEventPage(project: widget.project)));
+    }
 
-    void _addUserStory(){}
+    void _addUserStory(){
+      Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewUserStoryPage(project: widget.project)));
+    }
 
     return new DefaultTabController(
       length: tabNames.length,
