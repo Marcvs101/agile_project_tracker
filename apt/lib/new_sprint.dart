@@ -58,7 +58,7 @@ class _NewSprintPageState extends State<NewSprintPage>{
                             //    "project": widget.project.id,
                             //    "name": _nameTextController.text,
                             //    "description":_descrTextController,
-                            //    "date": date,
+                            //    "schedule": date,
                             //  });
                             print("Added "+_nameTextController.text+" to project: "+widget.project.id+" with description "+_nameTextController.text+" expiration on"+ date.toString());
                             Navigator.of(context).pop();
@@ -74,7 +74,7 @@ class _NewSprintPageState extends State<NewSprintPage>{
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-          title: Text("Add new developer"),
+          title: Text("Add new sprint"),
           elevation: 0.1,
       ),
       body: Form(
@@ -112,11 +112,11 @@ class _NewSprintPageState extends State<NewSprintPage>{
                         ),
                         DateTimePickerFormField(
                           inputType: InputType.date,
-                          format: DateFormat("MM-dd-yyyy"),
-                          initialDate: DateTime(2019, 1, 1),
+                          format: DateFormat("dd-MM-yyyy"),
+                          initialDate: DateTime.now(),//DateTime(2019, 1, 1),
                           editable: false,
                           decoration: InputDecoration(
-                              labelText: 'Date',
+                              labelText: 'Schedule',
                               hasFloatingPlaceholder: false
                           ),
                           onChanged: (dt) {

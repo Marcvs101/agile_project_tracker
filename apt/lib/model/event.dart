@@ -1,18 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Event {
   String id;
   String name;
   String description;
   String type;
+  String date;
   String project; //link field
   String developer; //link field
 
-  Event({this.id, this.name, this.description, this.type, this.project, this.developer});
+  Event({this.id, this.name, this.description, this.type,this.date, this.project, this.developer});
 
-  factory Event.fromJson(Map<String, dynamic> json) => Event(
-    id: json["id"],
+  factory Event.fromJson(DocumentSnapshot json) => Event(
+    id: json.documentID,
     name: json["name"],
     description: json["description"],
     type: json["type"],
+    date: json["date"],
     project: json["project"],
     developer: json["developer"],
   );
@@ -22,6 +26,7 @@ class Event {
     "name": name,
     "description": description,
     "type": type,
+    "date": date,
     "project": project,
     "developer": developer,
   };

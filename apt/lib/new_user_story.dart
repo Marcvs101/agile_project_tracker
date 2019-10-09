@@ -75,7 +75,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-        title: Text("Add new developer"),
+        title: Text("Add new User Story"),
         elevation: 0.1,
       ),
       body: Form(

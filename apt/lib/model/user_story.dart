@@ -1,6 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'developer.dart';
-import 'project.dart';
 
 class UserStory{
   String id;
@@ -12,14 +11,15 @@ class UserStory{
 
   UserStory({this.id, this.completed, this.name, this.description, this.project, this.developer});
 
-  factory UserStory.fromJson(Map<String, dynamic> json) => UserStory(
-    id: json["id"],
+  factory UserStory.fromJson(DocumentSnapshot json) => UserStory(
+    id: json.documentID,
     completed: json["completed"],
     name: json["name"],
     description: json["description"],
     project: json["project"],
     developer: json["developer"],
   );
+
 
   dynamic toJson() => {
     "id": id,

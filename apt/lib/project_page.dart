@@ -1,6 +1,6 @@
 import 'package:apt/model/event.dart';
+import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ import 'new_developer.dart';
 import 'new_event.dart';
 import 'new_sprint.dart';
 import 'new_user_story.dart';
+
 
 
 class ProjectPage extends StatefulWidget {
@@ -42,7 +43,7 @@ class _ProjectPageState extends State<ProjectPage> {
             child: Text(
           widget.project.description,
           style: TextStyle(fontSize: 18.0),
-        )));
+    )));
 
     IconData getIcons(dynamic obj) {
       IconData ico;
@@ -53,43 +54,135 @@ class _ProjectPageState extends State<ProjectPage> {
           ico = Icons.supervised_user_circle;
         else
           ico = Icons.account_circle;
-      } else {
-        switch (obj) {
-          case Event:
-            break;
-          case UserStory:
-            break;
-          default: //Progress case
-        }
+      } 
+      else if (obj is UserStory){
+        if(obj.developer == "") ico = Icons.access_time;
+        else if(obj.completed) ico = Icons.check;
+        else ico = Icons.close;
+      }
+      else if (obj is Sprint){
+        if(obj.status) ico = Icons.check;
+        else ico = Icons.close;
       }
       return ico;
     }
+  
+    ListTile makeListTileUS(dynamic obj) => ListTile(
+      contentPadding:
+          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Container(
+        padding: EdgeInsets.only(right: 12.0),
+        decoration: new BoxDecoration(
+            border: new Border(
+                right: new BorderSide(width: 1.0, color: Colors.white24))),
+        child: Icon(getIcons(obj),color: Colors.white,),
+      ),
+      title: Text(
+        obj.name,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+      ),
+      trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+       // onTap: () {
+       // Navigator.push( context, MaterialPageRoute(
+       //   builder: (context) => UserStoryPage(project: project, devUid: widget.user.uid )));
+       // },
+    );
 
-    ListTile makeListTile(dynamic obj) => ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
-            child: Icon(getIcons(obj),color: Colors.white,),
-          ),
-          title: Text(
-            obj.name,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
-          ),
-        );
-
-    Card makeCard(dynamic obj) => Card(
+    Card makeCardUS(dynamic obj) => Card(
           elevation: 8.0,
           margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
           child: Container(
             decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
-            child: makeListTile(obj),
+            child: makeListTileUS(obj),
           ),
-        );
+    );
+
+    ListTile makeListTileEv(dynamic obj) => ListTile(
+      contentPadding:
+          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      title: Text(
+        obj.name,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+      ),
+      subtitle: Text(
+        obj.date,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)  
+      ),
+      trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+       // onTap: () {
+       // Navigator.push( context, MaterialPageRoute(
+       //   builder: (context) => EventPage(project: project, devUid: widget.user.uid )));
+       // },
+    );
+
+    Card makeCardEv(dynamic obj) => Card(
+          elevation: 8.0,
+          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+          child: Container(
+            decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
+            child: makeListTileEv(obj),
+          ),
+    );
+
+    ListTile makeListTileDev(dynamic obj) => ListTile(
+      contentPadding:
+          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Container(
+        padding: EdgeInsets.only(right: 12.0),
+        decoration: new BoxDecoration(
+            border: new Border(
+                right: new BorderSide(width: 1.0, color: Colors.white24))),
+        child: Icon(getIcons(obj),color: Colors.white,),
+      ),
+      title: Text(
+        obj.name,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+      ),
+    );
+
+    Card makeCardDev(dynamic obj) => Card(
+      elevation: 8.0,
+      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+      child: Container(
+        decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
+        child: makeListTileDev(obj),
+      ),
+    );
+
+    ListTile makeListTileSpr(dynamic obj) => ListTile(
+      contentPadding:
+          EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Container(
+        padding: EdgeInsets.only(right: 12.0),
+        decoration: new BoxDecoration(
+            border: new Border(
+                right: new BorderSide(width: 1.0, color: Colors.white24))),
+        child: Icon(getIcons(obj),color: Colors.white,),
+      ),
+      title: Text(
+        obj.name,
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+      ),
+      trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+       // onTap: () {
+       // Navigator.push( context, MaterialPageRoute(
+       //   builder: (context) => EventPage(project: project, devUid: widget.user.uid )));
+       // },
+    );
+
+    Card makeCardSpr(dynamic obj) => Card(
+          elevation: 8.0,
+          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+          child: Container(
+            decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 0.9)),
+            child: makeListTileSpr(obj),
+          ),
+    );
 
     StreamBuilder<QuerySnapshot> _retrieveDev() {
       return new StreamBuilder<QuerySnapshot>(
@@ -107,21 +200,43 @@ class _ProjectPageState extends State<ProjectPage> {
                   var dp = content[index];
                   if (widget.project.developers.contains(dp.documentID)) {
                     Developer dev = new Developer.fromJson(dp);
-                    return makeCard(dev);
+                    if(widget.project.admins.contains(widget.devUid) && !widget.project.admins.contains(dev.id))
+                      return Dismissible(
+                        child: makeCardDev(dev),
+                        key: Key(UniqueKey().toString()),
+                        background: Container(color: Colors.red),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (DismissDirection direction) {
+                          bool removed = false;
+                          setState(() {
+                              removed = true;
+                              /*
+                              CloudFunctions.instance.call(
+                                functionName: 'removeDev',
+                                parameters: {
+                                  'project': widget.project.id,
+                                  'dev': dev.id
+                                }
+                              );*/
+                              print("Administrator "+widget.devUid+" removes "+dev.id+" from project "+widget.project.id);                          
+                          });
+                        if(removed)
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text("Developers " + dev.name + " was removed")));
+                        });
+                    return makeCardDev(dev);
                   }
                   else return Container();
                 });
           });
     }
 
-/*
     StreamBuilder<QuerySnapshot> _retrieveUS() {
 
     return new StreamBuilder<QuerySnapshot>(
       // Interacts with Firestore (not CloudFunction)
         stream: Firestore.instance
-            .collection('projects')
-            .where("developers", arrayContains: widget.user.uid)
+            .collection('userStory')
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
@@ -134,92 +249,21 @@ class _ProjectPageState extends State<ProjectPage> {
               itemCount: content.length,
               itemBuilder: (BuildContext context, int index) {
                 var dp = content[index];
-                Project pr = new Project.fromJson(dp);
-                return Dismissible(
-                  child: makeCard(pr),
-                  key: Key(UniqueKey().toString()),
-                  background: Container(color: Colors.red),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (DismissDirection direction) {
-                    bool removed = false;
-                    setState(() {
-                      if (widget.user.uid == pr.owner) {
-                        removed = true;
-                        Firestore.instance
-                            .collection('projects')
-                            .document(pr.id)
-                            .delete();
-                      }
-                    });
-                    removed
-                        ? Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Project " + pr.name + " removed")))
-                        : Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Project " +
-                            pr.name +
-                            " cannot be removed")));
-                  },
-                );
+                if(widget.project.userStories.contains(dp.documentID)){
+                  UserStory us = new UserStory.fromJson(dp);
+                  return makeCardUS(us);
+                }
+                else return Container();
               });
         });
   }
 
     StreamBuilder<QuerySnapshot> _retrieveEv() {
 
-    return new StreamBuilder<QuerySnapshot>(
-      // Interacts with Firestore (not CloudFunction)
-        stream: Firestore.instance
-            .collection('projects')
-            .where("developers", arrayContains: widget.user.uid)
-            .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData || snapshot.data == null) {
-            return Container();
-          }
-          var content = snapshot.data.documents;
-          return new ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: content.length,
-              itemBuilder: (BuildContext context, int index) {
-                var dp = content[index];
-                Project pr = new Project.fromJson(dp);
-                return Dismissible(
-                  child: makeCard(pr),
-                  key: Key(UniqueKey().toString()),
-                  background: Container(color: Colors.red),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (DismissDirection direction) {
-                    bool removed = false;
-                    setState(() {
-                      if (widget.user.uid == pr.owner) {
-                        removed = true;
-                        Firestore.instance
-                            .collection('projects')
-                            .document(pr.id)
-                            .delete();
-                      }
-                    });
-                    removed
-                        ? Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Project " + pr.name + " removed")))
-                        : Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text("Project " +
-                            pr.name +
-                            " cannot be removed")));
-                  },
-                );
-              });
-        });
-  }
-
-    StreamBuilder<QuerySnapshot> _retrieveProg() {
-      
       return new StreamBuilder<QuerySnapshot>(
         // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
-              .collection('projects')
-              .where("developers", arrayContains: widget.user.uid)
+              .collection('events')
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
@@ -232,55 +276,51 @@ class _ProjectPageState extends State<ProjectPage> {
                 itemCount: content.length,
                 itemBuilder: (BuildContext context, int index) {
                   var dp = content[index];
-                  Project pr = new Project.fromJson(dp);
-                  return Dismissible(
-                    child: makeCard(pr),
-                    key: Key(UniqueKey().toString()),
-                    background: Container(color: Colors.red),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (DismissDirection direction) {
-                      bool removed = false;
-                      setState(() {
-                        if (widget.user.uid == pr.owner) {
-                          removed = true;
-                          Firestore.instance
-                              .collection('projects')
-                              .document(pr.id)
-                              .delete();
-                        }
-                      });
-                      removed
-                          ? Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " + pr.name + " removed")))
-                          : Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " +
-                              pr.name +
-                              " cannot be removed")));
-                    },
-                  );
+                  if(widget.project.events.contains(dp.documentID)){
+                    Event ev = new Event.fromJson(dp);
+                    return makeCardEv(ev);
+                  }
+                  else return Container();
+                  
                 });
           });
     }
 
-*/
+    StreamBuilder<QuerySnapshot> _retrieveProg() {
+      
+      return new StreamBuilder<QuerySnapshot>(
+        // Interacts with Firestore (not CloudFunction)
+          stream: Firestore.instance
+              .collection('sprints')
+              .snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Container();
+            }
+            var content = snapshot.data.documents;
+            return new ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: content.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var dp = content[index];
+                  if(widget.project.sprints.contains(dp.documentID)){
+                    Sprint spr = new Sprint.fromJson(dp);
+                    return makeCardSpr(spr);
+                  }
+                  else return Container();
+                });
+          });
+    }
 
     final List<Widget> _children = [
-      getDescription,
-      getDescription,
-      getDescription,
-      _retrieveDev(),
-      getDescription,
-    ];
-
-/*
-final List<Widget> _children = [
       getDescription,
       _retrieveEv(),
       _retrieveProg(),
       _retrieveDev(),
       _retrieveUS(),
     ];
-*/
+
 
     void onTabTapped(int index) {
       setState(() {
