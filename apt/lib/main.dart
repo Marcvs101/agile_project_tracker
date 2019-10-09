@@ -4,6 +4,7 @@ import 'package:apt/sign_in_page.dart';
 import 'package:apt/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:github/server.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 void main(){
@@ -24,10 +25,10 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     getUser().then((user) {
       if (user != null) {
-        // send the user to the home page
-        // homePage();
+        // sono sicuro che esiste un token, perchè un utente non nullo implica un token non nullo
         globals.storage.read(key: "githubToken").then((token) {
           AuthHelper.githubToken = token;
+          globals.github = createGitHubClient(auth: new Authentication.withToken(AuthHelper.githubToken));
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
         });
       }
