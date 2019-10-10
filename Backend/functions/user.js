@@ -24,7 +24,7 @@ exports.RegisterNewUser = functions.auth.user().onCreate((user) => {
     });
 
     //EMAIL
-    sendEmail(email,"BN","BENVENUTO");
+    if (email){sendEmail(email,"BN","BENVENUTO");}
 
     console.log("L'utente " + String(uid) + " aka " + String(displayName) + " si è unito al mondo");
 });
