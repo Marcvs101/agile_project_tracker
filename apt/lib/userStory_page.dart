@@ -3,6 +3,7 @@ import 'package:apt/model/project.dart';
 import 'package:flutter/material.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 import 'package:github/server.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'common/helpers/auth_helper.dart';
 
 class UserStoryPage extends StatefulWidget {
@@ -25,19 +26,23 @@ class _UserStoryPageState extends State<UserStoryPage> {
       decoration: new BoxDecoration(
           border: new Border.all(color: Color.fromRGBO(58, 66, 86, 0.9)),
           borderRadius: BorderRadius.circular(5.0)),
-      child: new Text(
-        "Status: " + widget.userStory.completed.toString(),
+      child: widget.userStory.completed == "" ? new Text(
+        "Status: not completed",
         style:
             TextStyle(color: Color.fromRGBO(58, 66, 86, 0.9), fontSize: 16.0),
         textAlign: TextAlign.left,
-      ),
+      ):new Text(
+        "Status: "+widget.userStory.completed.substring(0,7),
+        style:
+            TextStyle(color: Color.fromRGBO(58, 66, 86, 0.9), fontSize: 16.0),
+        textAlign: TextAlign.left,
+      )
     );
 
     void _complete() {
       globals.github.users.getCurrentUser().then((user) {
         globals.github.repositories
-            .listCommits(
-                new RepositorySlug(user.login, widget.project.name))
+            .listCommits(new RepositorySlug(user.login, widget.project.name))
             .toList()
             .then((commits) {
           return showDialog(
@@ -48,8 +53,23 @@ class _UserStoryPageState extends State<UserStoryPage> {
                 children: <Widget>[
                   for (var commit in commits)
                     SimpleDialogOption(
-                      child: Text(commit.commit.sha.substring(0,7) + " - " + commit.commit.message),
-                      onPressed: null,
+                      child: Text(commit.commit.sha.substring(0, 7) +
+                          " - " +
+                          commit.commit.message),
+                      onPressed: () {
+                        /*
+                        CloudFunctions.instance.call(
+                          functionName: "completeUs",
+                          parameters: {
+                            "completed":commit.commit.sha,
+                            "userStory": widget.userStory.id
+                          }
+                        );*/
+                        print("userstory " +
+                            widget.userStory.id +
+                            " completed by commit: " +
+                            commit.commit.sha);
+                      },
                     )
                 ],
               );
@@ -59,9 +79,28 @@ class _UserStoryPageState extends State<UserStoryPage> {
       });
     }
 
-    void _revoke() {}
+    void _revoke() {
+      /*
+        CloudFunctions.instance.call(
+          functionName: "revokeUs",
+          parameters: {
+            "userStory": widget.userStory.id,
+            "sprint": widget.userStory.sprint
+          }
+        );
+      */
+    }
 
-    void _delete() {}
+    void _delete() {
+      /*
+        CloudFunctions.instance.call(
+          functionName: "deleteUs",
+          parameters: {
+            "userStory": widget.userStory.id,
+          }
+        );
+      */
+    }
 
     return Scaffold(
         appBar: new AppBar(

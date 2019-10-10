@@ -1,9 +1,10 @@
+import 'package:apt/model/user_story.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'model/project.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
 
 class NewSprintPage extends StatefulWidget {
   NewSprintPage({Key key, @required this.project}) : super(key: key);
@@ -12,26 +13,26 @@ class NewSprintPage extends StatefulWidget {
 
   @override
   _NewSprintPageState createState() => _NewSprintPageState();
-
 }
 
-class _NewSprintPageState extends State<NewSprintPage>{
-
+class _NewSprintPageState extends State<NewSprintPage> {
   TextEditingController _nameTextController = new TextEditingController();
-  TextEditingController _descrTextController = new TextEditingController(); 
+  TextEditingController _descrTextController = new TextEditingController();
   DateTime date;
-
+  List _ustories = [];
+  bool firstime = true;
+  Map<String, bool> values = {};
+  Map<String, String> retrieve = {};
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     final makeBottom = Container(
         width: MediaQuery.of(context).size.width,
         height: 65.0,
         child: BottomAppBar(
             child: Center(
-              child: Column(children: <Widget>[
+          child: Column(children: <Widget>[
             Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
@@ -52,6 +53,11 @@ class _NewSprintPageState extends State<NewSprintPage>{
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
+                            values.forEach(
+                              (k,v){
+                                if(v) _ustories.add(k);
+                              }
+                            );
                             //CloudFunctions.instance.call(
                             //  functionName: "AddSprint",
                             //  parameters: {
@@ -59,8 +65,10 @@ class _NewSprintPageState extends State<NewSprintPage>{
                             //    "name": _nameTextController.text,
                             //    "description":_descrTextController,
                             //    "schedule": date,
+                            //    "userstories": _ustories,
                             //  });
-                            print("Added "+_nameTextController.text+" to project: "+widget.project.id+" with description "+_nameTextController.text+" expiration on"+ date.toString());
+                            
+                            print("userstories: " + _ustories.toString());
                             Navigator.of(context).pop();
                           }
                         },
@@ -71,66 +79,108 @@ class _NewSprintPageState extends State<NewSprintPage>{
           ]),
         )));
 
+    final _retrieveUs = Container(
+        padding: EdgeInsets.all(20),
+        child: new StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance
+                .collection('userStory')
+                .where('project', isEqualTo: widget.project.id)
+                .where('sprint', isEqualTo: "")
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData || snapshot.data == null) {
+                return Container();
+              }
+              var content = snapshot.data.documents;
+
+              if (firstime) {
+                content.forEach((f) {
+                  values[f.documentID] = false;
+                  retrieve[f.documentID] = f.data['name'];
+                });
+                firstime = false;
+              }
+              return new ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: values.keys.map((String key) {
+                  return new CheckboxListTile(
+                    title: new Text(retrieve[key]),
+                    value: values[key],
+                    onChanged: (bool value) {
+                      setState(() {
+                        values[key] = value;
+                        print(values);
+                      });
+                    },
+                  );
+                }).toList(),
+              );
+            }));
+
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-          title: Text("Add new sprint"),
-          elevation: 0.1,
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1),
+        title: Text("Add new sprint"),
+        elevation: 0.1,
       ),
       body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: ListView(
-            children: <Widget>[
-              Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TextFormField(
-                          controller: _nameTextController,
-                          decoration: const InputDecoration(
-                              labelText: "Insert new sprint's name: "),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: _descrTextController,
-                          decoration: const InputDecoration(
-                              labelText: "Insert new sprint's description: "),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),
-                        DateTimePickerFormField(
-                          inputType: InputType.date,
-                          format: DateFormat("dd-MM-yyyy"),
-                          initialDate: DateTime.now(),//DateTime(2019, 1, 1),
-                          editable: false,
-                          decoration: InputDecoration(
-                              labelText: 'Schedule',
-                              hasFloatingPlaceholder: false
-                          ),
-                          onChanged: (dt) {
-                            setState(() => date = dt);
-                          },
-                        ),
-                      ],
-                    )
-            ],
-          )
-        )
-      ),
+          key: _formKey,
+          child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: ListView(children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _nameTextController,
+                      decoration: const InputDecoration(
+                          labelText: "Insert new sprint's name: "),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _descrTextController,
+                      decoration: const InputDecoration(
+                          labelText: "Insert new sprint's description: "),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                    Wrap(runSpacing: 20, children: [
+                      DateTimePickerFormField(
+                        inputType: InputType.date,
+                        format: DateFormat("dd-MM-yyyy"),
+                        initialDate: DateTime.now(), //DateTime(2019, 1, 1),
+                        editable: false,
+                        decoration: InputDecoration(
+                            labelText: 'Schedule',
+                            hasFloatingPlaceholder: false),
+                        onChanged: (dt) {
+                          setState(() => date = dt);
+                        },
+                      ),
+                      Text(
+                        "Select user stories:",
+                        style: TextStyle(
+                            color: Color.fromRGBO(58, 66, 86, 0.9),
+                            fontSize: 16.0),
+                      )
+                    ]),
+                    _retrieveUs,
+                  ],
+                )
+              ]))),
       bottomNavigationBar: makeBottom,
     );
   }
-
 }

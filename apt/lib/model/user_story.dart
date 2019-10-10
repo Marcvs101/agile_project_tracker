@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserStory{
   String id;
-  bool completed = false;
+  String completed; //contiene commit o stringa vuota
   int score;
   String name;
   String description;

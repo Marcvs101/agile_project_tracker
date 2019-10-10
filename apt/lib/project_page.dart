@@ -58,8 +58,8 @@ class _ProjectPageState extends State<ProjectPage> {
           ico = Icons.account_circle;
       } 
       else if (obj is UserStory){
-        if(obj.completed) ico = Icons.check;
-        else ico = Icons.close;
+        if(obj.completed == "") ico = Icons.close;
+        else ico = Icons.check;
       }
       else if (obj is Sprint){
         if(obj.status) ico = Icons.check;
