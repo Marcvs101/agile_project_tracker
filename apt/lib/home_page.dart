@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
     final topAppBar = AppBar(
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-      title: Text(widget.user.displayName),
+      title: Text("Your Projects"),
       actions: <Widget>[
         new IconButton(
           icon: new Icon(Icons.exit_to_app),

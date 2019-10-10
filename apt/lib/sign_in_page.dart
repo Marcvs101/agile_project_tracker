@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:apt/home_page.dart';
@@ -77,7 +79,6 @@ class _SignInPageState extends State<SignInPage> {
             SizedBox(height: 10),
             introduction,
             SizedBox(height: 200.0),
-
             loginButton,
           ],
         ),
@@ -187,8 +188,17 @@ class _SignInPageState extends State<SignInPage> {
 
     final AuthCredential credential = GithubAuthProvider.getCredential(token: loginResponse.accessToken,);
     final FirebaseUser user = await widget.auth.signInWithCredential(credential);
+    globals.github.users.getCurrentUser().then((githubuser) {
+      CloudFunctions.instance.call(
+          functionName: "updateUser",
+            parameters: {
+              "name": githubuser.login,
+            }).then((completed) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
+      });
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
+    });
+
   }
 
 }
