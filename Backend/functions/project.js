@@ -18,7 +18,9 @@ db.collection('utenti').get()
 */
 
 //Crea progetto
+/*
 exports.CreateNewProject = functions.https.onRequest((req, res) => {
+  	
 	const JSONreq = JSON.parse(req.url.replace('/',''));
 	const uid = JSONreq['uid'];
 	let token = req.get("token");
@@ -55,23 +57,55 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 	console.log("L'utente " + String(uid) + " ha creato il progetto " + String(projectId));
 	return res.status(201).send('Progetto creato');
 });
+*/
+
+exports.CreateNewProject = functions.https.onCall(async (data, context) => {
+	const uid = context.auth.uid;
+	//const token = data["token"];
+
+	//Manca un check sull'esistenza
+
+	//Occhio ai parametri passati
+	const progetti = admin.firestore().collection('projects');
+	try {
+		const ref = await progetti.add({
+			name: data["name"],
+			description: data["description"],
+			owner: data["owner"],
+			userStories: data["userStories"],
+			developers: data["developers"],
+			admins: data["admins"],
+			events: data["events"],
+			sprints: data["sprints"]
+		});
+		console.log("L'utente ", uid, " ha creato il progetto ", ref.id);
+		return { "projectId": ref.id };
+	}
+	catch (err) {
+		console.log('Errore database');
+		throw new functions.https.HttpsError("Errore database");
+	}
+});
 
 //Rimuovi progetto
-exports.DeleteProject = functions.https.onRequest((req, res) => {
-	return res.status(501).send('Non implementato');
+exports.DeleteProject = functions.https.onCall((data, context) => {
+	const uid = context.auth.uid;
+
+	throw new functions.https.HttpsError('Non implementato');
 });
 
 //Prendi tutti i progetti per un singolo utente
-exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
-	let uid = req.url.replace('/','');
-	let token = req.get("token");
-    //let utente = admin.database().ref("Utenti").child(uid).once("value");
+exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
+	const uid = context.auth.uid;
+	//const token = data["token"];
+	//let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
 
 	let projectsRef = db.collection("progetti");
 	let projectsQuery = projectsRef.where('sviluppatori', 'array-contains', String(uid));
-	projectsQuery.get().then((projectQueryResult) => {
+	try {
+		const projectQueryResult = await projectsQuery.get();
 		if (!projectQueryResult.empty) {
 			projectQueryResult.forEach((element) => {
 				if (element.exists) {
@@ -86,45 +120,43 @@ exports.GetProjectsForUser = functions.https.onRequest((req, res) => {
 				}
 			});
 		}
-
-		//Add json to answer
-		return res.status(200).send(JSON.stringify(result));
-
-	}).catch((err) => {
+		console.log("uid: ", String(uid), " ha richiesto di visionare tutti i suoi progetti");
+		return JSON.stringify(result);
+	}
+	catch (err) {
 		console.log("Errore Database");
-		return res.status(500).send("Errore database");
-	});
+		throw new functions.https.HttpsError("Errore database");
+	}
 
-	console.log("uid: ",String(uid)," ha richiesto di visionare tutti i suoi progetti");
 });
 
 //Prendi un singolo progetto
-exports.GetProject = functions.https.onRequest((req, res) => {
-	let uid = req.url.replace('/','');
-	let token = req.get("token");
-    //let utente = admin.database().ref("Utenti").child(uid).once("value");
+exports.GetProject = functions.https.onCall(async (data, context) => {
+	const uid = context.auth.uid;
+	//const token = data["token"];
+	//let utente = admin.database().ref("Utenti").child(uid).once("value");
 
 	let result = {};
 
 	let projectRef = db.collection("progetti").doc(String(uid));
-    let getProject = projectRef.get().then(doc => {
-
-        if (!doc.exists) {
-            console.log('Progetto inesistente');
-            return res.status(404).send(JSON.stringify(result));
-        } else {
+	try {
+		const doc = await projectRef.get();
+		if (!doc.exists) {
+			console.log('Progetto inesistente');
+			throw new functions.https.HttpsError("Progetto inesistente");
+		}
+		else {
 			console.log('Progetto trovato', doc.data());
 			//Qui saranno necessari controlli di sicurezza
 			result["repository"] = doc.get("repository");
 			result["nome"] = doc.get("nome");
 			result["descrizione"] = doc.get("descrizione");
-            return res.status(200).send(JSON.stringify(result));
-        }
-    
-    }).catch(err => {
-        console.log("Errore Database");
-        return res.status(500).send("Errore database");
-    });
-
-	console.log("Sono state richieste informazioni sul progetto: ",String(pid)," dall'utente uid: not impl");
+			console.log("Sono state richieste informazioni sul progetto: ", String(pid), " dall'utente uid: not impl");
+			return JSON.stringify(result);
+		}
+	}
+	catch (err) {
+		console.log("Errore Database");
+		throw new functions.https.HttpsError("Errore database");
+	}
 });
