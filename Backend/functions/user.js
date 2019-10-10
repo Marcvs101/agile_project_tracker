@@ -2,6 +2,9 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 
+//Import
+import { sendEmail } from './email';
+
 let db = admin.firestore();
 
 //Creazione utente
@@ -20,6 +23,9 @@ exports.RegisterNewUser = functions.auth.user().onCreate((user) => {
         'email': email
     });
 
+    //EMAIL
+    sendEmail(email,"BN","BENVENUTO");
+
     console.log("L'utente " + String(uid) + " aka " + String(displayName) + " si è unito al mondo");
 });
 
@@ -31,6 +37,11 @@ exports.UnregisterUser = functions.auth.user().onDelete((user) => {
 
     //Remove entry from DB
     let docRef = db.collection('developers').doc(uid).delete();
+
+    //Tocca sbaraccà tutto il db
+
+    //EMAIL
+    sendEmail(email,"CI","CIAO");
 
     console.log("L'utente " + String(uid) + " aka " + String(displayName) + " ha abbandonato il mondo");
 });
