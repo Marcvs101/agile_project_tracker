@@ -59,9 +59,17 @@ exports.CreateNewProject = functions.https.onRequest((req, res) => {
 });
 */
 
+//Crea Progetto
 exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	const uid = context.auth.uid;
-	//const token = data["token"];
+
+	// Checking that the user is authenticated.
+	if (!context.auth) {
+		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+	}
+
+	const nome = data["name"];
+	const descrizione = data["description"];
 
 	//Manca un check sull'esistenza
 
@@ -69,21 +77,23 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	const progetti = admin.firestore().collection('projects');
 	try {
 		const ref = await progetti.add({
-			name: data["name"],
-			description: data["description"],
-			owner: data["owner"],
-			userStories: data["userStories"],
-			developers: data["developers"],
-			admins: data["admins"],
-			events: data["events"],
-			sprints: data["sprints"]
+			"nome": nome,
+			"descrizione": descrizione,
+			"proprietario": uid,
+			"sviluppatori": [uid],
+			"amministratori": [uid],
+			"userStories": [],
+			"eventi": [],
+			"sprint": [],
+			"completato": false
 		});
+
 		console.log("L'utente ", uid, " ha creato il progetto ", ref.id);
 		return { "projectId": ref.id };
 	}
 	catch (err) {
 		console.log('Errore database');
-		throw new functions.https.HttpsError("Errore database");
+		throw new functions.https.HttpsError(500,"Errore database");
 	}
 });
 
@@ -91,14 +101,22 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 exports.DeleteProject = functions.https.onCall((data, context) => {
 	const uid = context.auth.uid;
 
-	throw new functions.https.HttpsError('Non implementato');
+	// Checking that the user is authenticated.
+	if (!context.auth) {
+		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+	}
+
+	throw new functions.https.HttpsError(404,'Non implementato');
 });
 
 //Prendi tutti i progetti per un singolo utente
 exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 	const uid = context.auth.uid;
-	//const token = data["token"];
-	//let utente = admin.database().ref("Utenti").child(uid).once("value");
+
+	// Checking that the user is authenticated.
+	if (!context.auth) {
+		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+	}
 
 	let result = {};
 
@@ -120,12 +138,13 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 				}
 			});
 		}
+
 		console.log("uid: ", String(uid), " ha richiesto di visionare tutti i suoi progetti");
 		return JSON.stringify(result);
 	}
 	catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError("Errore database");
+		throw new functions.https.HttpsError(500,"Errore database");
 	}
 
 });
@@ -133,17 +152,21 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 //Prendi un singolo progetto
 exports.GetProject = functions.https.onCall(async (data, context) => {
 	const uid = context.auth.uid;
-	//const token = data["token"];
-	//let utente = admin.database().ref("Utenti").child(uid).once("value");
+	const projectId = data["ProjectID"];
+
+	// Checking that the user is authenticated.
+	if (!context.auth) {
+		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+	}
 
 	let result = {};
 
-	let projectRef = db.collection("progetti").doc(String(uid));
+	let projectRef = db.collection("progetti").doc(projectId);
 	try {
 		const doc = await projectRef.get();
 		if (!doc.exists) {
 			console.log('Progetto inesistente');
-			throw new functions.https.HttpsError("Progetto inesistente");
+			throw new functions.https.HttpsError(404,"Progetto inesistente");
 		}
 		else {
 			console.log('Progetto trovato', doc.data());
@@ -151,12 +174,13 @@ exports.GetProject = functions.https.onCall(async (data, context) => {
 			result["repository"] = doc.get("repository");
 			result["nome"] = doc.get("nome");
 			result["descrizione"] = doc.get("descrizione");
-			console.log("Sono state richieste informazioni sul progetto: ", String(pid), " dall'utente uid: not impl");
+
+			console.log("Sono state richieste informazioni sul progetto: ", projectId, " dall'utente uid: ", uid);
 			return JSON.stringify(result);
 		}
 	}
 	catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError("Errore database");
+		throw new functions.https.HttpsError(500,"Errore database");
 	}
 });

@@ -6,6 +6,9 @@ let db = admin.firestore();
 
 //
 exports.RegisterNewUser = functions.auth.user().onCreate((user) => {
+    const provider = user.providerData;
+    console.log(provider);
+
     const email = user.email; // The email of the user.
     const displayName = user.displayName; // The display name of the user.
     const uid = user.uid;
@@ -17,7 +20,7 @@ exports.RegisterNewUser = functions.auth.user().onCreate((user) => {
         'email': email
     });
 
-    console.log("User " + String(uid) + " aka " + String(displayName) + " joined the world");
+    console.log("L'utente " + String(uid) + " aka " + String(displayName) + " si è unito al mondo");
 });
 
 //
@@ -29,33 +32,37 @@ exports.UnregisterUser = functions.auth.user().onDelete((user) => {
     //Remove entry from DB
     let docRef = db.collection('utenti').doc(uid).delete();
 
-    console.log("User " + String(uid) + " aka " + String(displayName) + " left the world");
+    console.log("L'utente " + String(uid) + " aka " + String(displayName) + " ha abbandonato il mondo");
 });
 
-exports.GetUser = functions.https.onRequest((req, res) => {
-    let uid = req.url.replace('/','');
-    let token = req.get("token");
-    //let utente = admin.database().ref("Utenti").child(uid).once("value");
+exports.GetUser = functions.https.onCall(async (data, context) => {
+    const uid = context.auth.uid;
+    const targetId = data["user"]
 
-	let result = {};
+    // Checking that the user is authenticated.
+    if (!context.auth) {
+        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+    }
 
-	let userRef = db.collection("utenti").doc(String(uid));
-    let getUser = userRef.get().then(doc => {
+    let result = {};
+
+    let userRef = db.collection("utenti").doc(targetId);
+    return userRef.get().then(doc => {
 
         if (!doc.exists) {
             console.log('Utente inesistente');
-            return res.status(404).send(JSON.stringify(result));
+            throw new functions.https.HttpsError(404, "Utente inesistente");
         } else {
             console.log('Utente trovato', doc.data());
-            result["nome"] = doc.get("nome");
+            result["name"] = doc.get("nome");
             result["email"] = doc.get("email");//Qui saranno necessari controlli di sicurezza
-            return res.status(200).send(JSON.stringify(result));
+
+            console.log("Sono state richieste informazioni su uid: ", String(targetId));
+            return JSON.stringify(result);
         }
-    
+
     }).catch(err => {
         console.log("Errore Database");
-        return res.status(500).send("Errore database");
+        throw new functions.https.HttpsError(500, "Errore database");
     });
-
-	console.log("Sono state richieste informazioni su uid: ",String(uid));
 });
