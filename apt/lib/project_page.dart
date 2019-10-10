@@ -1,3 +1,4 @@
+import 'package:apt/event_page.dart';
 import 'package:apt/model/event.dart';
 import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
@@ -112,10 +113,10 @@ class _ProjectPageState extends State<ProjectPage> {
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)  
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-       // onTap: () {
-       // Navigator.push( context, MaterialPageRoute(
-       //   builder: (context) => EventPage(project: project, devUid: widget.user.uid )));
-       // },
+        onTap: () {
+          Navigator.push( context, MaterialPageRoute(
+           builder: (context) => EventPage(event: obj, devUid: widget.devUid, project: widget.project )));
+        },
     );
 
     Card makeCardEv(dynamic obj) => Card(
