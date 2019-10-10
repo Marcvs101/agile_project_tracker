@@ -15,6 +15,4 @@ class AuthHelper {
     return idToken;
   }
 
-
-
 }

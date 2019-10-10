@@ -1,6 +1,4 @@
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
@@ -53,6 +51,8 @@ class _NewEventPageState extends State<NewEventPage>{
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
+                            date = DateTime.now();
+                            var d = date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString();
                             //CloudFunctions.instance.call(
                             //  functionName: "AddEvent",
                             //  parameters: {
@@ -60,9 +60,9 @@ class _NewEventPageState extends State<NewEventPage>{
                             //    "name": _nameTextController.text,
                             //    "description": _descrTextController.text,
                             //    "type": _typeTextController.text,
-                            //    "date": date
+                            //    "date": d
                             //  });
-                            print("Added event"+_nameTextController.text+" to project: "+widget.project.id+" of type: "+_typeTextController.text+" description: "+_descrTextController.text+" event is on "+date.toString());
+                            print("Added event"+_nameTextController.text+" to project: "+widget.project.id+" of type: "+_typeTextController.text+" description: "+_descrTextController.text+" event is on "+d);
                             Navigator.of(context).pop();
                           }
                         },
@@ -121,19 +121,6 @@ class _NewEventPageState extends State<NewEventPage>{
                               return 'Please enter some text';
                             }
                             return null;
-                          },
-                        ),
-                        DateTimePickerFormField(
-                          inputType: InputType.date,
-                          format: DateFormat("dd-MM-yyyy"),
-                          initialDate: DateTime.now(),//DateTime(2019, 1, 1),
-                          editable: false,
-                          decoration: InputDecoration(
-                              labelText: 'Date',
-                              hasFloatingPlaceholder: false
-                          ),
-                          onChanged: (dt) {
-                            setState(() => date = dt);
                           },
                         ),
                       ],
