@@ -28,6 +28,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    widget.user.getIdToken().then((token) {
+      globals.storage.write(key: "firebaseToken", value: token);
+    });
     ListTile makeListTile(Project project) => ListTile(
       contentPadding:
       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -71,6 +74,7 @@ class _HomePageState extends State<HomePage> {
 
     void logout() {
       widget.auth.signOut();
+      globals.github = null;
       globals.storage.delete(key: "githubToken");
       Navigator.pushAndRemoveUntil(
           context,
@@ -169,7 +173,6 @@ class _HomePageState extends State<HomePage> {
                 });
           });
     }
-
 
     return Scaffold(
       appBar: topAppBar,

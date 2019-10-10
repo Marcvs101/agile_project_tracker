@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:apt/common/apt_secure_storage.dart' as globals;
+import 'package:github/server.dart';
+
+import 'common/helpers/auth_helper.dart';
 
 
 class NewDeveloperPage extends StatefulWidget {
@@ -41,6 +45,33 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                           Navigator.of(context).pop();
                         },
                         child: const Text("Cancel",
+                            style: TextStyle(color: Colors.white))),
+                    new FlatButton(
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        onPressed: () {
+                          globals.github.users.getCurrentUser().then((user) {
+                            globals.github.repositories.listContributors(new RepositorySlug(user.login, widget.project.name)).toList().then((contributors) {
+                              return showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return new SimpleDialog(
+                                    title: new Text("Select a user"),
+                                    children: <Widget>[
+                                      for(var contributor in contributors) SimpleDialogOption(
+                                        child: Text(contributor.login),
+                                        onPressed: null,
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            });
+                          });
+
+                        },
+                        child: const Text("Import from Github",
                             style: TextStyle(color: Colors.white))),
                     new FlatButton(
                         color: Color.fromRGBO(58, 66, 86, 1.0),

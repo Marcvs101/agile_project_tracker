@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:apt/home_page.dart';
+import 'package:github/server.dart';
 import 'dart:async';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -143,13 +144,13 @@ class _SignInPageState extends State<SignInPage> {
     GitHubLoginResponse.fromJson(json.decode(response.body));
     //Il processo di login vero e proprio inizia qui, dopo che ho catturato il token parsando il json
 
-    final AuthCredential credential = GithubAuthProvider.getCredential(
-      token: loginResponse.accessToken,
-    );
-
     globals.storage.write(key: "githubToken", value: loginResponse.accessToken);
+    globals.github = createGitHubClient(auth: new Authentication.withToken(loginResponse.accessToken));
+
+    final AuthCredential credential = GithubAuthProvider.getCredential(token: loginResponse.accessToken,);
     final FirebaseUser user = await widget.auth.signInWithCredential(credential);
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
   }
+
 }
