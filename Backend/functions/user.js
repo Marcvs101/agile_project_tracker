@@ -14,9 +14,9 @@ exports.RegisterNewUser = functions.auth.user().onCreate((user) => {
     const uid = user.uid;
 
     //Add data
-    let docRef = db.collection('utenti').doc(uid);
+    let docRef = db.collection('developers').doc(uid);
     let seUser = docRef.set({
-        'nome': displayName,
+        'name': displayName,
         'email': email
     });
 
@@ -30,7 +30,7 @@ exports.UnregisterUser = functions.auth.user().onDelete((user) => {
     const uid = user.uid;
 
     //Remove entry from DB
-    let docRef = db.collection('utenti').doc(uid).delete();
+    let docRef = db.collection('developers').doc(uid).delete();
 
     console.log("L'utente " + String(uid) + " aka " + String(displayName) + " ha abbandonato il mondo");
 });
@@ -46,7 +46,7 @@ exports.GetUser = functions.https.onCall(async (data, context) => {
 
     let result = {};
 
-    let userRef = db.collection("utenti").doc(targetId);
+    let userRef = db.collection("developers").doc(targetId);
     return userRef.get().then(doc => {
 
         if (!doc.exists) {
@@ -54,7 +54,7 @@ exports.GetUser = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError(404, "Utente inesistente");
         } else {
             console.log('Utente trovato', doc.data());
-            result["name"] = doc.get("nome");
+            result["name"] = doc.get("name");
             result["email"] = doc.get("email");//Qui saranno necessari controlli di sicurezza
 
             console.log("Sono state richieste informazioni su uid: ", String(targetId));

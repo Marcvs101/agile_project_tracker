@@ -14,7 +14,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
     }
 
-    let projectRef = db.collection("progetti").doc(projectId);
+    let projectRef = db.collection("projects").doc(projectId);
     try {
         const doc = await projectRef.get();
         if (!doc.exists) {
@@ -25,10 +25,10 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
-            if (doc.get("proprietario") == uid) {
+            if (doc.get("owner") == uid) {
                 //Se sei il proprietario, crepi il progetto
 
-                let deleteDoc = await db.collection('progetti').doc(projectId).delete();
+                let deleteDoc = await db.collection('projects').doc(projectId).delete();
 
                 console.log("L'utente: ", uid, " ha abbandonato il progetto: ", projectId, " che è stato chiuso");
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId) + " che è stato chiuso";
@@ -37,7 +37,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
                 //Se non sei il proprietario devo sovrascrivere i campi interessati
 
                 let devlist = [];
-                doc.get("sviluppatori").forEach(element => {
+                doc.get("developers").forEach(element => {
                     if (element == uid) {
                         //skip
                     } else {
@@ -46,7 +46,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
                 });
 
                 let adminlist = [];
-                doc.get("amministratori").forEach(element => {
+                doc.get("admins").forEach(element => {
                     if (element == uid) {
                         //skip
                     } else {
@@ -55,10 +55,10 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
                 });
 
                 let docData = doc.data();
-                docData["sviluppatori"] = devlist;
-                docData["amministratori"] = adminlist;
+                docData["developers"] = devlist;
+                docData["admins"] = adminlist;
 
-                let setDoc = await db.collection('progetti').doc(projectId).set(docData);
+                let setDoc = await db.collection('projects').doc(projectId).set(docData);
 
                 console.log("L'utente: ", uid, " ha abbandonato il progetto: ", projectId);
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId);
@@ -82,7 +82,7 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
     }
 
-    let projectRef = db.collection("progetti").doc(projectId);
+    let projectRef = db.collection("projects").doc(projectId);
     try {
         const doc = await projectRef.get();
         if (!doc.exists) {
@@ -93,10 +93,10 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
-            if ((doc.get("amministratori").includes(uid) || doc.get("proprietario") == uid) && doc.get("sviluppatori").includes(targetId) && !doc.get("amministratori").includes(targetId)) {
+            if ((doc.get("admins").includes(uid) || doc.get("owner") == uid) && doc.get("developers").includes(targetId) && !doc.get("admins").includes(targetId)) {
 
                 let devlist = [];
-                doc.get("sviluppatori").forEach(element => {
+                doc.get("developers").forEach(element => {
                     if (element == targetId) {
                         //skip
                     } else {
@@ -105,16 +105,16 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
                 });
 
                 let docData = doc.data();
-                docData["sviluppatori"] = devlist;
+                docData["developers"] = devlist;
 
-                let setDoc = await db.collection('progetti').doc(projectId).set(docData);
+                let setDoc = await db.collection('projects').doc(projectId).set(docData);
 
                 console.log("L'utente: ", targetId, " è stato brutalmente cacciato dal progetto: ", projectId, " dall'utente: ", uid);
                 return "L'utente: " + String(targetId) + " è stato brutalmente cacciato dal progetto: " + String(projectId) + " dall'utente: " + String(uid);
-            } else if (!doc.get("sviluppatori").includes(targetId)) {
+            } else if (!doc.get("developers").includes(targetId)) {
                 console.log("L'utente: ", targetId, " non fa parte del progetto: ", projectId);
                 return new functions.https.HttpsError(404, "L'utente: " + String(targetId) + " non fa parte del progetto: " + String(projectId));
-            } else if (doc.get("amministratori").includes(targetId)) {
+            } else if (doc.get("admins").includes(targetId)) {
                 console.log("L'utente: ", targetId, " è amministratore del progetto: ", projectId);
                 return new functions.https.HttpsError(403, "L'utente: " + String(targetId) + " è amministratore del progetto: " + String(projectId));
             } else {
@@ -134,7 +134,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
     const uid = context.auth.uid;
     const projectId = data["ProjectID"];
     const targetMail = data["devMail"];
-    const admin = data["isAdmin"];
+    const isAdmin = data["isAdmin"];
 
     // Checking that the user is authenticated.
     if (!context.auth) {
@@ -143,10 +143,9 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
 
     //Pesca l'utente
     let utente = null;
-    let utenteRef = db.collection("utenti");
-    let utenteQuery = projectsRef.where('email', '==', String(targetMail));
+    let utenteRef = db.collection("developers");
 	try {
-    let utenteQuery = projectsRef.where('email', '==', String(targetMail));
+    let utenteQuery = utenteRef.where('email', '==', String(targetMail));
     const utenteQueryResult = await utenteQuery.get();
 		if (!utenteQueryResult.empty) {
 			utenteQueryResult.forEach((element) => {
@@ -163,11 +162,11 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
 
     if (utente == null){
         console.log("L'utente: " + targetMail + " non è registrato");
-        throw new functions.https.HttpsError(404, "L'utente: " + String(targetMail) + " non è registrato"));
+        throw new functions.https.HttpsError(404, "L'utente: " + String(targetMail) + " non è registrato");
     }
 
     //Pesca il progetto
-    let projectRef = db.collection("progetti").doc(projectId);
+    let projectRef = db.collection("projects").doc(projectId);
     try {
         const doc = await projectRef.get();
         if (!doc.exists) {
@@ -178,27 +177,25 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
-            if ((doc.get("amministratori").includes(uid) || doc.get("proprietario") == uid) && !doc.get("sviluppatori").includes(targetId)) {
+            if ((doc.get("admins").includes(uid) || doc.get("owner") == uid) && !doc.get("developers").includes(targetId)) {
 
-                let devlist = [];
-                doc.get("sviluppatori").forEach(element => {
-                    if (element == targetId) {
-                        //skip
-                    } else {
-                        devlist.push(element);
-                    }
-                });
+                let devlist = doc.get("developers");
+                devlist.push(utente);
+
+                let adminlist = doc.get("admins");
+                if (isAdmin) {adminlist.push(utente);}
 
                 let docData = doc.data();
-                docData["sviluppatori"] = devlist;
+                docData["developers"] = devlist;
+                docData["admins"] = adminlist
 
-                let setDoc = await db.collection('progetti').doc(projectId).set(docData);
+                let setDoc = await db.collection('projects').doc(projectId).set(docData);
 
-                console.log("L'utente: ", targetId, " è stato brutalmente cacciato dal progetto: ", projectId, " dall'utente: ", uid);
-                return "L'utente: " + String(targetId) + " è stato brutalmente cacciato dal progetto: " + String(projectId) + " dall'utente: " + String(uid);
+                console.log("L'utente: ", targetId, " è stato aggiunto al progetto: ", projectId, " dall'utente: ", uid);
+                return "L'utente: " + String(targetId) + " è stato aggiunto al progetto: " + String(projectId) + " dall'utente: " + String(uid);
             } else if (!doc.get("sviluppatori").includes(targetId)) {
-                console.log("L'utente: ", targetId, " non fa parte del progetto: ", projectId);
-                return new functions.https.HttpsError(404, "L'utente: " + String(targetId) + " non fa parte del progetto: " + String(projectId));
+                console.log("L'utente: ", targetId, " fa già parte del progetto: ", projectId);
+                return new functions.https.HttpsError(422, "L'utente: " + String(targetId) + " fa già parte del progetto: " + String(projectId));
             } else {
                 console.log("L'utente: ", uid, " non dispone dei permessi necessari per cacciare: ", targetId, " dal progetto: ", projectId);
                 return "L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetId) + " dal progetto: " + String(projectId);

@@ -65,11 +65,12 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
 	}
 
 	const nome = data["name"];
 	const descrizione = data["description"];
+	if (descrizione == null) { descrizione = ""; }
 
 	//Manca un check sull'esistenza
 
@@ -77,15 +78,15 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	const progetti = admin.firestore().collection('projects');
 	try {
 		const ref = await progetti.add({
-			"nome": nome,
-			"descrizione": descrizione,
-			"proprietario": uid,
-			"sviluppatori": [uid],
-			"amministratori": [uid],
+			"name": nome,
+			"description": descrizione,
+			"owner": uid,
+			"developers": [uid],
+			"admins": [uid],
 			"userStories": [],
-			"eventi": [],
-			"sprint": [],
-			"completato": false
+			"events": [],
+			"sprints": [],
+			"completed": false
 		});
 
 		console.log("L'utente ", uid, " ha creato il progetto ", ref.id);
@@ -93,7 +94,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	}
 	catch (err) {
 		console.log('Errore database');
-		throw new functions.https.HttpsError(500,"Errore database");
+		throw new functions.https.HttpsError(500, "Errore database");
 	}
 });
 
@@ -103,10 +104,10 @@ exports.DeleteProject = functions.https.onCall((data, context) => {
 
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
 	}
 
-	throw new functions.https.HttpsError(404,'Non implementato');
+	throw new functions.https.HttpsError(404, 'Non implementato');
 });
 
 //Prendi tutti i progetti per un singolo utente
@@ -115,13 +116,13 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
 	}
 
 	let result = {};
 
-	let projectsRef = db.collection("progetti");
-	let projectsQuery = projectsRef.where('sviluppatori', 'array-contains', String(uid));
+	let projectsRef = db.collection("projects");
+	let projectsQuery = projectsRef.where('developers', 'array-contains', String(uid));
 	try {
 		const projectQueryResult = await projectsQuery.get();
 		if (!projectQueryResult.empty) {
@@ -129,12 +130,15 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 				if (element.exists) {
 					console.log("Result exists - good");
 					result[element.id] = {};
-					result[element.id]['nome'] = element.get('nome');
-					result[element.id]['descrizione'] = element.get('descrizione');
-					result[element.id]['proprietario'] = element.get('proprietario');
-					result[element.id]['sviluppatori'] = element.get('sviluppatori');
-					result[element.id]['amministratori'] = element.get('amministratori');
-					result[element.id]['completato'] = element.get('completato');
+					result[element.id]['name'] = element.get('name');
+					result[element.id]['description'] = element.get('description');
+					result[element.id]['owner'] = element.get('owner');
+					result[element.id]['developers'] = element.get('developers');
+					result[element.id]['admins'] = element.get('admins');
+					result[element.id]['userStories'] = element.get('userStories');
+					result[element.id]['events'] = element.get('events');
+					result[element.id]['sprints'] = element.get('sprints');
+					result[element.id]['completed'] = element.get('completed');
 				}
 			});
 		}
@@ -144,7 +148,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 	}
 	catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError(500,"Errore database");
+		throw new functions.https.HttpsError(500, "Errore database");
 	}
 
 });
@@ -156,31 +160,42 @@ exports.GetProject = functions.https.onCall(async (data, context) => {
 
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511,"Necessaria autenticazione");
+		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
 	}
 
 	let result = {};
 
-	let projectRef = db.collection("progetti").doc(projectId);
+	let projectRef = db.collection("projects").doc(projectId);
 	try {
 		const doc = await projectRef.get();
 		if (!doc.exists) {
 			console.log('Progetto inesistente');
-			throw new functions.https.HttpsError(404,"Progetto inesistente");
+			throw new functions.https.HttpsError(404, "Progetto inesistente");
 		}
 		else {
 			console.log('Progetto trovato', doc.data());
-			//Qui saranno necessari controlli di sicurezza
-			result["repository"] = doc.get("repository");
-			result["nome"] = doc.get("nome");
-			result["descrizione"] = doc.get("descrizione");
 
-			console.log("Sono state richieste informazioni sul progetto: ", projectId, " dall'utente uid: ", uid);
-			return JSON.stringify(result);
+			if (element.get('developers').includes(uid)) {
+				result['name'] = element.get('name');
+				result['description'] = element.get('description');
+				result['owner'] = element.get('owner');
+				result['developers'] = element.get('developers');
+				result['admins'] = element.get('admins');
+				result['userStories'] = element.get('userStories');
+				result['events'] = element.get('events');
+				result['sprints'] = element.get('sprints');
+				result['completed'] = element.get('completed');
+
+				console.log("Sono state richieste informazioni sul progetto: ", projectId, " dall'utente uid: ", uid);
+				return JSON.stringify(result);
+			} else {
+				console.log("L'utente: ", uid, " non appartiene al progetto ", projectId);
+				throw new functions.https.HttpsError(403, "L'utente: " + String(uid) + " non appartiene al progetto " + String(projectId));
+			}
 		}
 	}
 	catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError(500,"Errore database");
+		throw new functions.https.HttpsError(500, "Errore database");
 	}
 });
