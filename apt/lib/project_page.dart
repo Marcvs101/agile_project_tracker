@@ -2,6 +2,7 @@ import 'package:apt/event_page.dart';
 import 'package:apt/model/event.dart';
 import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
+import 'package:apt/userStory_page.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,7 @@ class _ProjectPageState extends State<ProjectPage> {
           ico = Icons.account_circle;
       } 
       else if (obj is UserStory){
-        if(obj.developer == "") ico = Icons.access_time;
-        else if(obj.completed) ico = Icons.check;
+        if(obj.completed) ico = Icons.check;
         else ico = Icons.close;
       }
       else if (obj is Sprint){
@@ -84,10 +84,10 @@ class _ProjectPageState extends State<ProjectPage> {
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-       // onTap: () {
-       // Navigator.push( context, MaterialPageRoute(
-       //   builder: (context) => UserStoryPage(project: project, devUid: widget.user.uid )));
-       // },
+        onTap: () {
+        Navigator.push( context, MaterialPageRoute(
+          builder: (context) => UserStoryPage(userStory: obj, project: widget.project, devUid: widget.devUid)));
+        },
     );
 
     Card makeCardUS(dynamic obj) => Card(

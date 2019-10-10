@@ -14,7 +14,7 @@ class NewUserStoryPage extends StatefulWidget {
 class _NewUserStoryPageState extends State<NewUserStoryPage> {
   TextEditingController _nameTextController = new TextEditingController();
   TextEditingController _descrTextController = new TextEditingController();
-  int _value = 1;
+  int _score = 1;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -52,7 +52,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                             //    "project": widget.project.id,
                             //    "name": _nameTextController.text,
                             //    "description":_descrTextController,
-                            //    "value": _value,
+                            //    "score": _score,
                             //  });
                             print("Added " +
                                 _nameTextController.text +
@@ -61,7 +61,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                 " with description " +
                                 _descrTextController.text +
                                 " value of:" +
-                                _value.toString());
+                                _score.toString());
                             Navigator.of(context).pop();
                           }
                         },
@@ -126,15 +126,15 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                       max: 5,
                                       onChanged: (newRating) {
                                         setState(
-                                            () => _value = newRating.toInt());
+                                            () => _score = newRating.toInt());
                                       },
-                                      value: _value.toDouble(),
+                                      value: _score.toDouble(),
                                     ),
                                   ),
                                   Container(
                                     width: 50.0,
                                     alignment: Alignment.center,
-                                    child: Text('${_value.toInt()}',
+                                    child: Text('${_score.toInt()}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .display1),

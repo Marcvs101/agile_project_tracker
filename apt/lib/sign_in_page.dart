@@ -29,23 +29,63 @@ class _SignInPageState extends State<SignInPage> {
   static const String GITHUB_CLIENT_SECRET = "96bb2935260ab3ae9ea7507ae0eb071167721477";
   @override
   Widget build(BuildContext context) {
+    final logo = Hero(
+      tag: 'hero',
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: 128.0,
+        child: Image.asset('assets/images/scrum_black.png'),
+      ),
+    );
+
+    final title = Center(
+        child: Text(
+          'Agile Project Tracker',
+          style: TextStyle(fontSize: 28.0, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+    );
+
+    final introduction = Center(
+      child: Text(
+        'Everything a SCRUM team needs',
+        style: TextStyle(fontSize: 16.0, color: Colors.black),
+      ),
+    );
+
+    final loginButton = Padding(
+      padding: EdgeInsets.symmetric(vertical: 24.0),
+      child: RaisedButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        onPressed: onClickGitHubLoginButton,
+        padding: EdgeInsets.all(24),
+        color: Color.fromRGBO(58, 66, 86, 1),
+        child: Text('Sign in with Github', style: TextStyle(color: Colors.white), textScaleFactor: 1.5,),
+      ),
+    );
 
     return Scaffold(
-        backgroundColor: Colors.grey,
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-        title: Text('Agile Project Tracker'),
-      ),
+      backgroundColor: Colors.white,
       body: Center(
-        child: RaisedButton(
-          color: Color.fromRGBO(58, 66, 86, 1),
-          onPressed: onClickGitHubLoginButton,
-          textColor: Colors.white,
-          child: Text("Sign in with Github"),
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24.0, right: 24.0),
+          children: <Widget>[
+            logo,
+            title,
+            SizedBox(height: 10),
+            introduction,
+            SizedBox(height: 200.0),
+
+            loginButton,
+          ],
         ),
-      )
+      ),
     );
   }
+
+
 
   void onClickGitHubLoginButton() async {
 
@@ -71,9 +111,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   StreamSubscription _subs;
-  // ...
-  @override
 
+  @override
   void initState() {
     _initDeepLinkListener();
     super.initState();
@@ -84,7 +123,6 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   @override
-
   void dispose() {
     _disposeDeepLinkListener();
 
