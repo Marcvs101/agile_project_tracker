@@ -6,13 +6,13 @@ let db = admin.firestore();
 
 //Abbandona il progetto
 exports.LeaveProject = functions.https.onCall(async (data, context) => {
-    const uid = context.auth.uid;
-    const projectId = data["ProjectID"];
-
     // Checking that the user is authenticated.
     if (!context.auth) {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
     }
+
+    const uid = context.auth.uid;
+    const projectId = data["ProjectID"];
 
     let projectRef = db.collection("projects").doc(projectId);
     try {
@@ -20,8 +20,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
         if (!doc.exists) {
             console.log('Progetto inesistente');
             throw new functions.https.HttpsError(404, "Progetto inesistente");
-        }
-        else {
+        } else {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
@@ -36,23 +35,11 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
             } else {
                 //Se non sei il proprietario devo sovrascrivere i campi interessati
 
-                let devlist = [];
-                doc.get("developers").forEach(element => {
-                    if (element == uid) {
-                        //skip
-                    } else {
-                        devlist.push(element);
-                    }
-                });
+                let devlist = doc.get("developers");
+                devlist = devlist.filter(item => item !== uid);
 
-                let adminlist = [];
-                doc.get("admins").forEach(element => {
-                    if (element == uid) {
-                        //skip
-                    } else {
-                        adminlist.push(element);
-                    }
-                });
+                let adminlist = doc.get("admins");
+                adminlist = adminlist.filter(item => item !== uid);
 
                 let docData = doc.data();
                 docData["developers"] = devlist;
@@ -64,8 +51,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId);
             }
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log("Errore Database");
         throw new functions.https.HttpsError(500, "Errore database");
     }
@@ -73,14 +59,14 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
 
 //Caccia qualcuno dal progetto
 exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
-    const uid = context.auth.uid;
-    const projectId = data["ProjectID"];
-    const targetId = data["devID"];
-
     // Checking that the user is authenticated.
     if (!context.auth) {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
     }
+
+    const uid = context.auth.uid;
+    const projectId = data["ProjectID"];
+    const targetId = data["devID"];
 
     let projectRef = db.collection("projects").doc(projectId);
     try {
@@ -88,21 +74,14 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
         if (!doc.exists) {
             console.log('Progetto inesistente');
             throw new functions.https.HttpsError(404, "Progetto inesistente");
-        }
-        else {
+        } else {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
             if ((doc.get("admins").includes(uid) || doc.get("owner") == uid) && doc.get("developers").includes(targetId) && !doc.get("admins").includes(targetId)) {
 
-                let devlist = [];
-                doc.get("developers").forEach(element => {
-                    if (element == targetId) {
-                        //skip
-                    } else {
-                        devlist.push(element);
-                    }
-                });
+                let devlist = doc.get("developers");
+                devlist = devlist.filter(item => item !== targetId);
 
                 let docData = doc.data();
                 docData["developers"] = devlist;
@@ -119,11 +98,10 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
                 return new functions.https.HttpsError(403, "L'utente: " + String(targetId) + " è amministratore del progetto: " + String(projectId));
             } else {
                 console.log("L'utente: ", uid, " non dispone dei permessi necessari per cacciare: ", targetId, " dal progetto: ", projectId);
-                return new functions.https.HttpsError(403,"L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetId) + " dal progetto: " + String(projectId));
+                return new functions.https.HttpsError(403, "L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetId) + " dal progetto: " + String(projectId));
             }
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log("Errore Database");
         throw new functions.https.HttpsError(500, "Errore database");
     }
@@ -131,36 +109,35 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
 
 //Aggiungi qualcuno al progetto
 exports.AddDeveloper = functions.https.onCall(async (data, context) => {
-    const uid = context.auth.uid;
-    const projectId = data["ProjectID"];
-    const targetMail = data["devMail"];
-    const isAdmin = data["isAdmin"];
-
     // Checking that the user is authenticated.
     if (!context.auth) {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
     }
 
+    const uid = context.auth.uid;
+    const projectId = data["ProjectID"];
+    const targetMail = data["devMail"];
+    const isAdmin = data["isAdmin"];
+
     //Pesca l'utente
     let utente = null;
     let utenteRef = db.collection("developers");
-	try {
-    let utenteQuery = utenteRef.where('email', '==', String(targetMail));
-    const utenteQueryResult = await utenteQuery.get();
-		if (!utenteQueryResult.empty) {
-			utenteQueryResult.forEach((element) => {
-				if (element.exists) {
+    try {
+        let utenteQuery = utenteRef.where('email', '==', String(targetMail));
+        const utenteQueryResult = await utenteQuery.get();
+        if (!utenteQueryResult.empty) {
+            utenteQueryResult.forEach((element) => {
+                if (element.exists) {
                     utente = element.data();
                 }
             });
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log("Errore Database");
         throw new functions.https.HttpsError(500, "Errore database");
     }
 
-    if (utente == null){
+    if (utente == null) {
         console.log("L'utente: " + targetMail + " non è registrato");
         throw new functions.https.HttpsError(404, "L'utente: " + String(targetMail) + " non è registrato");
     }
@@ -172,8 +149,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
         if (!doc.exists) {
             console.log('Progetto inesistente');
             throw new functions.https.HttpsError(404, "Progetto inesistente");
-        }
-        else {
+        } else {
             console.log('Progetto trovato', doc.data());
             //Qui saranno necessari controlli di sicurezza
 
@@ -183,7 +159,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
                 devlist.push(utente);
 
                 let adminlist = doc.get("admins");
-                if (isAdmin) {adminlist.push(utente);}
+                if (isAdmin) { adminlist.push(utente); }
 
                 let docData = doc.data();
                 docData["developers"] = devlist;
@@ -201,8 +177,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
                 return "L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetId) + " dal progetto: " + String(projectId);
             }
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log("Errore Database");
         throw new functions.https.HttpsError(500, "Errore database");
     }
