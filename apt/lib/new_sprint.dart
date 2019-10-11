@@ -93,30 +93,35 @@ class _NewSprintPageState extends State<NewSprintPage> {
               }
               var content = snapshot.data.documents;
 
-              if (firstime) {
+              if(firstime){
                 content.forEach((f) {
                   values[f.documentID] = false;
                   retrieve[f.documentID] = f.data['name'];
                 });
                 firstime = false;
               }
-              return new ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: values.keys.map((String key) {
-                  return new CheckboxListTile(
-                    title: new Text(retrieve[key]),
-                    value: values[key],
-                    onChanged: (bool value) {
-                      setState(() {
-                        values[key] = value;
-                        print(values);
-                      });
-                    },
-                  );
-                }).toList(),
-              );
-            }));
+
+              return Container(
+                height: 250,
+                child: SingleChildScrollView(
+                  child: ListView(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: values.keys.map((String key) {
+                        return new CheckboxListTile(
+                          title: new Text(retrieve[key]),
+                          value: values[key],
+                          onChanged: (bool value) {
+                            setState(() {
+                              values[key] = value;
+                            }); 
+                          },
+                        );
+                    }).toList())
+                ),
+              ) ;
+            })
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -128,7 +133,8 @@ class _NewSprintPageState extends State<NewSprintPage> {
           key: _formKey,
           child: Padding(
               padding: EdgeInsets.all(20.0),
-              child: ListView(children: <Widget>[
+              child: ListView(
+                children: <Widget>[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
