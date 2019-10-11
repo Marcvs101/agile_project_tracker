@@ -188,6 +188,7 @@ class _SignInPageState extends State<SignInPage> {
     globals.github = createGitHubClient(auth: new Authentication.withToken(loginResponse.accessToken));
 
     final AuthCredential credential = GithubAuthProvider.getCredential(token: loginResponse.accessToken,);
+
     widget.auth.signInWithCredential(credential).then((final FirebaseUser user) {
       globals.github.users.getCurrentUser().then((githubuser) {
         CloudFunctions.instance.call(

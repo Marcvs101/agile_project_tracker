@@ -1,3 +1,4 @@
+import 'package:apt/project_page.dart';
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -61,7 +62,17 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                     children: <Widget>[
                                       for(var contributor in contributors) SimpleDialogOption(
                                         child: Text(contributor.login),
-                                        onPressed: null,
+                                        onPressed: () {
+                                          CloudFunctions.instance.call(
+                                              functionName: "AddDeveloper",
+                                              parameters: {
+                                                "project": widget.project.id,
+                                                "developer": contributor.login,
+                                                "admins": true,
+                                              });
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                        }
                                       )
                                     ],
                                   );
@@ -69,7 +80,6 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                               );
                             });
                           });
-
                         },
                         child: const Text("Import from Github",
                             style: TextStyle(color: Colors.white))),
@@ -79,14 +89,13 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            //CloudFunctions.instance.call(
-                            //  functionName: "AddDeveloper",
-                            //  parameters: {
-                            //    "project": widget.project.id,
-                            //    "developer": _emailTextController.text,
-                            //    "admins":admin,
-                            //  });
-                            print("Added "+_emailTextController.text+" to project: "+widget.project.id+" with priviledge? "+admin.toString());
+                            CloudFunctions.instance.call(
+                              functionName: "AddDeveloper",
+                              parameters: {
+                                "project": widget.project.id,
+                                "developer": _emailTextController.text,
+                                "admins":admin,
+                              });
                             Navigator.of(context).pop();
                           }
                         },

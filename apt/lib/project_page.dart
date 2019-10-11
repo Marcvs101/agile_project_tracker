@@ -4,6 +4,7 @@ import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
 import 'package:apt/sprint_page.dart';
 import 'package:apt/userStory_page.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _ProjectPageState extends State<ProjectPage> {
         padding: EdgeInsets.all(20.0),
         child: new SingleChildScrollView(
             child: Text(
-          widget.project.description,
+          widget.project.description != null ? widget.project.description : "(No description for this project)",
           style: TextStyle(fontSize: 18.0),
     )));
 
@@ -212,14 +213,13 @@ class _ProjectPageState extends State<ProjectPage> {
                           bool removed = false;
                           setState(() {
                               removed = true;
-                              /*
                               CloudFunctions.instance.call(
-                                functionName: 'removeDev',
+                                functionName: 'RemoveDeveloper',
                                 parameters: {
                                   'project': widget.project.id,
-                                  'dev': dev.id
+                                  'developer': dev.id
                                 }
-                              );*/
+                              );
                               print("Administrator "+widget.devUid+" removes "+dev.id+" from project "+widget.project.id);                          
                           });
                         if(removed)
@@ -331,13 +331,12 @@ class _ProjectPageState extends State<ProjectPage> {
     }
 
     void _leave(){
-      //CloudFunctions.instance.call(
-      //  functionName: "LeaveProject",
-      //  parameters: {
-      //    "project":widget.project.id,
-      //    "developer": widget.devUid,
-      //  }
-      //);
+      CloudFunctions.instance.call(
+        functionName: "LeaveProject",
+        parameters: {
+          "project":widget.project.id,
+        }
+      );
       print("User "+widget.devUid+" leaves project "+widget.project.id );
       Navigator.of(context).pop();
     }

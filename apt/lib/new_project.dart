@@ -51,7 +51,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 7.0),
                             onPressed: () {
-                              print("sono entrato nella onpressed--------------------------------------------------------");
                               globals.github.repositories.listRepositories().toList().then((repos) {
                                 print(repos);
                                   return showDialog(
