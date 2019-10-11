@@ -57,16 +57,16 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 if(v) _ustories.add(k);
                               }
                             );
-                            //CloudFunctions.instance.call(
-                            //  functionName: "AddSprint",
-                            //  parameters: {
-                            //    "project": widget.project.id,
-                            //    "name": _nameTextController.text,
-                            //    "description":_descrTextController,
-                            //    "schedule": date,
-                            //    "userstories": _ustories,
-                            //  });
-                            
+                            CloudFunctions.instance.call(
+                              functionName: "AddSprint",
+                              parameters: {
+                                "project": widget.project.id,
+                                "name": _nameTextController.text,
+                                "description":_descrTextController.text,
+                                "schedule": date,
+                                "userstories": _ustories,
+                              });
+
                             print("userstories: " + _ustories.toString());
                             Navigator.of(context).pop();
                           }

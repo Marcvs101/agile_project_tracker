@@ -84,40 +84,6 @@ class _HomePageState extends State<HomePage> {
               (route) => false);
     }
 
-    void _retrieveGithubProjects() {
-      globals.github.repositories.listRepositories().toList().then((repos) {
-        print(repos);
-        return showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return new SimpleDialog(
-              title: new Text("Select a repository"),
-              children: <Widget>[
-                for(var repo in repos) SimpleDialogOption(
-                  child: Text(repo.name),
-                  onPressed: () {
-                    CloudFunctions.instance.call(
-                        functionName: "CreateNewProject",
-                        parameters: {
-                          "name": repo.name,
-                          "description": repo.description,
-                          "owner": widget.user.uid,
-                          "userStories": [],
-                          "developers": [widget.user.uid],
-                          "admins":[widget.user.uid],
-                          "events":[],
-                          "sprints":[],
-                        });
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          },
-        );
-      });
-    }
-
     Future<void> logoutAlert() async {
       return showDialog<void>(
         context: context,
@@ -215,7 +181,10 @@ class _HomePageState extends State<HomePage> {
       body: _retrieveProjects(),
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
-        onPressed: _retrieveGithubProjects,
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewProjectPage(user: widget.user))),
         tooltip: 'Increment',
         label: Text("new project!"),
         icon: new Icon(Icons.add),

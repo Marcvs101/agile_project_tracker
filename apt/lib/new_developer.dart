@@ -9,9 +9,10 @@ import 'common/helpers/auth_helper.dart';
 
 
 class NewDeveloperPage extends StatefulWidget {
-  NewDeveloperPage({Key key, @required this.project}) : super(key: key);
+  NewDeveloperPage({Key key, @required this.project, this.devUid}) : super(key: key);
 
   final Project project;
+  final String devUid;
 
   @override
   _NewDeveloperPageState createState() => _NewDeveloperPageState();
@@ -47,7 +48,7 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                         },
                         child: const Text("Cancel",
                             style: TextStyle(color: Colors.white))),
-                    new FlatButton(
+                    widget.project.github ? new FlatButton(
                         color: Color.fromRGBO(58, 66, 86, 1.0),
                         padding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 7.0),
@@ -70,8 +71,7 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                                 "developer": contributor.login,
                                                 "admins": true,
                                               });
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
+                                          Navigator.pop(context);
                                         }
                                       )
                                     ],
@@ -82,7 +82,7 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                           });
                         },
                         child: const Text("Import from Github",
-                            style: TextStyle(color: Colors.white))),
+                            style: TextStyle(color: Colors.white))) : new Container(),
                     new FlatButton(
                         color: Color.fromRGBO(58, 66, 86, 1.0),
                         padding: EdgeInsets.symmetric(
@@ -95,8 +95,14 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                 "project": widget.project.id,
                                 "developer": _emailTextController.text,
                                 "admins":admin,
-                              });
-                            Navigator.of(context).pop();
+                              }).then((completed) {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProjectPage(project: widget.project, devUid: widget.devUid,),
+                                  )
+                              );
+                            });
                           }
                         },
                         child: const Text("Confirm",

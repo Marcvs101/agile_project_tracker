@@ -45,23 +45,17 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                         padding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
+                          print("checking form...");
                           if (_formKey.currentState.validate()) {
-                            //CloudFunctions.instance.call(
-                            //  functionName: "AddUserStory",
-                            //  parameters: {
-                            //    "project": widget.project.id,
-                            //    "name": _nameTextController.text,
-                            //    "description":_descrTextController,
-                            //    "score": _score,
-                            //  });
-                            print("Added " +
-                                _nameTextController.text +
-                                " to project: " +
-                                widget.project.id +
-                                " with description " +
-                                _descrTextController.text +
-                                " value of:" +
-                                _score.toString());
+                            print("adding user story...");
+                            CloudFunctions.instance.call(
+                              functionName: "AddUserStory",
+                              parameters: {
+                                "project": widget.project.id,
+                                "name": _nameTextController.text,
+                                "description":_descrTextController.text,
+                                "score": _score,
+                              });
                             Navigator.of(context).pop();
                           }
                         },
