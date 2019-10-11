@@ -2,6 +2,7 @@ import 'package:apt/event_page.dart';
 import 'package:apt/model/event.dart';
 import 'package:apt/model/sprint.dart';
 import 'package:apt/model/user_story.dart';
+import 'package:apt/sprint_page.dart';
 import 'package:apt/userStory_page.dart';
 import 'model/developer.dart';
 import 'model/project.dart';
@@ -170,10 +171,10 @@ class _ProjectPageState extends State<ProjectPage> {
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
-       // onTap: () {
-       // Navigator.push( context, MaterialPageRoute(
-       //   builder: (context) => EventPage(project: project, devUid: widget.user.uid )));
-       // },
+        onTap: () {
+        Navigator.push( context, MaterialPageRoute(
+          builder: (context) => SprintPage(project: widget.project, devUid: widget.devUid, sprint: obj, )));
+        },
     );
 
     Card makeCardSpr(dynamic obj) => Card(
@@ -234,29 +235,29 @@ class _ProjectPageState extends State<ProjectPage> {
 
     StreamBuilder<QuerySnapshot> _retrieveUS() {
 
-    return new StreamBuilder<QuerySnapshot>(
-      // Interacts with Firestore (not CloudFunction)
-        stream: Firestore.instance
-            .collection('userStory')
-            .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData || snapshot.data == null) {
-            return Container();
-          }
-          var content = snapshot.data.documents;
-          return new ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: content.length,
-              itemBuilder: (BuildContext context, int index) {
-                var dp = content[index];
-                if(widget.project.userStories.contains(dp.documentID)){
-                  UserStory us = new UserStory.fromJson(dp);
-                  return makeCardUS(us);
-                }
-                else return Container();
-              });
-        });
+      return new StreamBuilder<QuerySnapshot>(
+        // Interacts with Firestore (not CloudFunction)
+          stream: Firestore.instance
+              .collection('userStory')
+              .snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData || snapshot.data == null) {
+              return Container();
+            }
+            var content = snapshot.data.documents;
+            return new ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: content.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var dp = content[index];
+                  if(widget.project.userStories.contains(dp.documentID)){
+                    UserStory us = new UserStory.fromJson(dp);
+                    return makeCardUS(us);
+                  }
+                  else return Container();
+                });
+          });
   }
 
     StreamBuilder<QuerySnapshot> _retrieveEv() {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 import 'package:github/server.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'common/helpers/auth_helper.dart';
+
 
 class UserStoryPage extends StatefulWidget {
   final UserStory userStory;
