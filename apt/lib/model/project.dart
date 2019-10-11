@@ -6,6 +6,7 @@ class Project {
   String name;
   String description;
   String owner; //link field
+  bool github;
   List admins; //link field
   List developers; //link field
   List events; //link field
@@ -13,7 +14,7 @@ class Project {
   List userStories; //link field
 
   Project(
-      {this.id, this.name, this.description, this.owner, this.admins, this.developers, this.events, this.sprints, this.userStories});
+      {this.id, this.name, this.description, this.owner, this.github, this.admins, this.developers, this.events, this.sprints, this.userStories});
 
   factory Project.fromJson(DocumentSnapshot json) =>
       Project(
@@ -21,6 +22,7 @@ class Project {
         name: json["name"],
         description: json["description"],
         owner: json["owner"],
+        github: json["github"],
         admins: json["admins"],
         developers: json["developers"],
         events: json["events"],
@@ -34,6 +36,7 @@ class Project {
         "name": name,
         "description": description,
         "owner": owner,
+        "github": github,
         "admins": admins,
         "developers": developers,
         "events": events,

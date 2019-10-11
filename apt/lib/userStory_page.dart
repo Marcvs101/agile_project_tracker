@@ -32,7 +32,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
             TextStyle(color: Color.fromRGBO(58, 66, 86, 0.9), fontSize: 16.0),
         textAlign: TextAlign.left,
       ):new Text(
-        "Status: "+widget.userStory.completed.substring(0,7),
+        widget.project.github ? "Status: completed - " + widget.userStory.completed.substring(0,7) : "Status: completed",
         style:
             TextStyle(color: Color.fromRGBO(58, 66, 86, 0.9), fontSize: 16.0),
         textAlign: TextAlign.left,
@@ -40,7 +40,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
     );
 
     void _complete() {
-      globals.github.users.getCurrentUser().then((user) {
+      widget.project.github ? globals.github.users.getCurrentUser().then((user) {
         globals.github.repositories
             .listCommits(new RepositorySlug(user.login, widget.project.name))
             .toList()
@@ -57,18 +57,14 @@ class _UserStoryPageState extends State<UserStoryPage> {
                           " - " +
                           commit.commit.message),
                       onPressed: () {
-                        /*
                         CloudFunctions.instance.call(
                           functionName: "completeUs",
                           parameters: {
                             "completed":commit.commit.sha,
                             "userStory": widget.userStory.id
                           }
-                        );*/
-                        print("userstory " +
-                            widget.userStory.id +
-                            " completed by commit: " +
-                            commit.commit.sha);
+                        );
+                        Navigator.of(context).pop();
                       },
                     )
                 ],
@@ -76,30 +72,36 @@ class _UserStoryPageState extends State<UserStoryPage> {
             },
           );
         });
-      });
+      }) : CloudFunctions.instance.call(
+          functionName: "completeUs",
+          parameters: {
+            "completed": "Completed",
+            "userStory": widget.userStory.id
+          }
+      );
     }
 
     void _revoke() {
-      /*
+
         CloudFunctions.instance.call(
-          functionName: "revokeUs",
+          functionName: "RevokeUs",
           parameters: {
             "userStory": widget.userStory.id,
             "sprint": widget.userStory.sprint
           }
         );
-      */
+
     }
 
     void _delete() {
-      /*
+
         CloudFunctions.instance.call(
-          functionName: "deleteUs",
+          functionName: "DeleteUs",
           parameters: {
             "userStory": widget.userStory.id,
           }
         );
-      */
+
     }
 
     return Scaffold(

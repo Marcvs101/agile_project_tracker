@@ -34,18 +34,17 @@ const List<String> tabNames = const <String>[
 ];
 
 class _ProjectPageState extends State<ProjectPage> {
-  
+
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     final getDescription = Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(20.0),
         child: new SingleChildScrollView(
             child: Text(
-          widget.project.description != null ? widget.project.description : "(No description for this project)",
+          widget.project.description != null ? widget.project.description : "(No description found for this project)",
           style: TextStyle(fontSize: 18.0),
     )));
 
