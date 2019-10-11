@@ -49,7 +49,7 @@ class _EventPageState extends State<EventPage> {
                     CloudFunctions.instance.call(
                       functionName: "RemoveEvent",
                       parameters: {
-                        "eventID":widget.event.id,
+                        "event":widget.event.id,
                       }
                     );
 

@@ -90,7 +90,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 "project": widget.project.id,
                                 "name": _nameTextController.text,
                                 "description":_descrTextController.text,
-                                "schedule": date.day.toString()+"-"+date.month.toString()+date.year.toString(),
+                                "schedule": date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString(),
                                 "userstories": _ustories,
                               }).then((completed) {
                               Navigator.of(context).pop();

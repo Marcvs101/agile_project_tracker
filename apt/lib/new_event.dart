@@ -62,7 +62,6 @@ class _NewEventPageState extends State<NewEventPage>{
                                 "type": _typeTextController.text,
                                 "date": d
                               });
-                            print("Added event"+_nameTextController.text+" to project: "+widget.project.id+" of type: "+_typeTextController.text+" description: "+_descrTextController.text+" event is on "+d);
                             Navigator.of(context).pop();
                           }
                         },

@@ -96,7 +96,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
     void _delete() {
 
         CloudFunctions.instance.call(
-          functionName: "DeleteUs",
+          functionName: "RemoveUserStory",
           parameters: {
             "userStory": widget.userStory.id,
           }
