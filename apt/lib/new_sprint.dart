@@ -1,3 +1,4 @@
+import 'package:apt/new_user_story.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'model/project.dart';
@@ -23,6 +24,31 @@ class _NewSprintPageState extends State<NewSprintPage> {
   Map<String, bool> values = {};
   Map<String, String> retrieve = {};
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> noUserStorySelectedAlert() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('No User Story selected'),
+          content: SingleChildScrollView(
+            child: new Text('You must select at least one User Story in order to create a Sprint!'),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Add a User Story now'),
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NewUserStoryPage(project: widget.project)));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +83,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 if(v) _ustories.add(k);
                               }
                             );
+                            values.isNotEmpty ?
                             CloudFunctions.instance.call(
                               functionName: "AddSprint",
                               parameters: {
@@ -65,9 +92,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 "description":_descrTextController.text,
                                 "schedule": date.day.toString()+"-"+date.month.toString()+date.year.toString(),
                                 "userstories": _ustories,
-                              });
+                              }).then((completed) {
+                              Navigator.of(context).pop();
+                            }
+                            ) : noUserStorySelectedAlert();
 
-                            Navigator.of(context).pop();
                           }
                         },
                         child: const Text("Confirm",
