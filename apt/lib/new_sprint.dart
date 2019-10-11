@@ -63,11 +63,10 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 "project": widget.project.id,
                                 "name": _nameTextController.text,
                                 "description":_descrTextController.text,
-                                "schedule": date,
+                                "schedule": date.day.toString()+"-"+date.month.toString()+date.year.toString(),
                                 "userstories": _ustories,
                               });
 
-                            print("userstories: " + _ustories.toString());
                             Navigator.of(context).pop();
                           }
                         },
@@ -82,7 +81,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
         padding: EdgeInsets.all(20),
         child: new StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance
-                .collection('userStory')
+                .collection('userStories')
                 .where('project', isEqualTo: widget.project.id)
                 .where('sprint', isEqualTo: "")
                 .snapshots(),

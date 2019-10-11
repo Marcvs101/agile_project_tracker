@@ -58,7 +58,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
                           commit.commit.message),
                       onPressed: () {
                         CloudFunctions.instance.call(
-                          functionName: "completeUs",
+                          functionName: "CompleteUs",
                           parameters: {
                             "completed":commit.commit.sha,
                             "userStory": widget.userStory.id
@@ -73,7 +73,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
           );
         });
       }) : CloudFunctions.instance.call(
-          functionName: "completeUs",
+          functionName: "CompleteUs",
           parameters: {
             "completed": "Completed",
             "userStory": widget.userStory.id

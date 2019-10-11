@@ -237,7 +237,7 @@ class _ProjectPageState extends State<ProjectPage> {
       return new StreamBuilder<QuerySnapshot>(
         // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
-              .collection('userStory')
+              .collection('userStories')
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {

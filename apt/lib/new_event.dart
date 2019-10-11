@@ -53,15 +53,15 @@ class _NewEventPageState extends State<NewEventPage>{
                           if (_formKey.currentState.validate()) {
                             date = DateTime.now();
                             var d = date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString();
-                            //CloudFunctions.instance.call(
-                            //  functionName: "AddEvent",
-                            //  parameters: {
-                            //    "project": widget.project.id,
-                            //    "name": _nameTextController.text,
-                            //    "description": _descrTextController.text,
-                            //    "type": _typeTextController.text,
-                            //    "date": d
-                            //  });
+                            CloudFunctions.instance.call(
+                              functionName: "AddEvent",
+                              parameters: {
+                                "project": widget.project.id,
+                                "name": _nameTextController.text,
+                                "description": _descrTextController.text,
+                                "type": _typeTextController.text,
+                                "date": d
+                              });
                             print("Added event"+_nameTextController.text+" to project: "+widget.project.id+" of type: "+_typeTextController.text+" description: "+_descrTextController.text+" event is on "+d);
                             Navigator.of(context).pop();
                           }

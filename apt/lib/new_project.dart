@@ -1,11 +1,7 @@
-import 'package:apt/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
-import 'package:github/server.dart';
-
-import 'common/helpers/auth_helper.dart';
 
 class NewProjectPage extends StatefulWidget {
   NewProjectPage({Key key, @required this.user}) : super(key: key);

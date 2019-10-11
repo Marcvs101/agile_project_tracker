@@ -4,6 +4,7 @@ import 'package:apt/model/project.dart';
 import 'package:apt/userStory_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class SprintPage extends StatefulWidget {
   
@@ -77,7 +78,7 @@ class _SprintPageState extends State<SprintPage> {
     StreamBuilder<QuerySnapshot> _retrieveUS() {
       return new StreamBuilder<QuerySnapshot>(
           // Interacts with Firestore (not CloudFunction)
-          stream: Firestore.instance.collection('userStory').snapshots(),
+          stream: Firestore.instance.collection('userStories').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
@@ -115,12 +116,12 @@ class _SprintPageState extends State<SprintPage> {
                             )
                           ],
                       onSelected: (value) {
-                        //CloudFunctions.instance.call(
-                        //  functionName: "removeEvent",
-                        //  parameters: {
-                        //    "eventID":widget.event.id,
-                        //  }
-                        //);
+                        CloudFunctions.instance.call(
+                          functionName: "RemoveSprint",
+                          parameters: {
+                            "sprint":widget.sprint.id,
+                          }
+                        );
                         Navigator.of(context).pop();
                       })
                   : null

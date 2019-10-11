@@ -1,5 +1,3 @@
-import 'package:apt/common/helpers/auth_helper.dart';
-import 'package:apt/model/developer.dart';
 import 'package:apt/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -9,7 +7,6 @@ import 'model/project.dart';
 import 'project_page.dart';
 import 'new_project.dart';
 import 'dart:async';
-import 'package:github/server.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 class HomePage extends StatefulWidget {
@@ -156,10 +153,12 @@ class _HomePageState extends State<HomePage> {
                       setState(() {
                         if (widget.user.uid == pr.owner) {
                           removed = true;
-                          Firestore.instance
-                              .collection('projects')
-                              .document(pr.id)
-                              .delete();
+                          CloudFunctions.instance.call(
+                            functionName: 'DeleteProject',
+                            parameters: {
+                              'project': pr.id
+                            }
+                          );
                         }
                       });
                       removed

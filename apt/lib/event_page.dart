@@ -1,6 +1,7 @@
 import 'package:apt/model/event.dart';
 import 'package:apt/model/project.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class EventPage extends StatefulWidget {
   final Event event;
@@ -45,23 +46,13 @@ class _EventPageState extends State<EventPage> {
                         )
                       ],
                   onSelected: (value) {
-                    //CloudFunctions.instance.call(
-                    //  functionName: "removeEvent",
-                    //  parameters: {
-                    //    "eventID":widget.event.id,
-                    //  }
-                    //);
+                    CloudFunctions.instance.call(
+                      functionName: "RemoveEvent",
+                      parameters: {
+                        "eventID":widget.event.id,
+                      }
+                    );
 
-                    if (widget.project.admins.contains(widget.devUid)) {
-                      print("User " +
-                          widget.devUid +
-                          " removes event " +
-                          widget.event.id);
-                    } else
-                      print("User " +
-                          widget.devUid +
-                          " cannot removes event " +
-                          widget.event.id);
                     Navigator.of(context).pop();
                   })
             ]),

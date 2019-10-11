@@ -5,7 +5,6 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 import 'package:github/server.dart';
 
-import 'common/helpers/auth_helper.dart';
 
 
 class NewDeveloperPage extends StatefulWidget {
