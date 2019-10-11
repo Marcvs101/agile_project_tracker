@@ -1,6 +1,7 @@
 //Librerie
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const CrepatoreLib = require('./crepatore');
 
 let db = admin.firestore();
 
@@ -23,12 +24,11 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
         } else {
             let docData = doc.data();
             console.log('Progetto trovato', docData);
-            //Qui saranno necessari controlli di sicurezza
 
             if (docData["owner"] == uid) {
                 //Se sei il proprietario, crepi il progetto
 
-                let deleteDoc = await db.collection('projects').doc(projectId).delete();
+                let deleteDoc = await CrepatoreLib.deleteProject(projectId);
 
                 console.log("L'utente: ", uid, " ha abbandonato il progetto: ", projectId, " che è stato chiuso");
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId) + " che è stato chiuso";

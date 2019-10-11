@@ -1,9 +1,7 @@
 //Librerie
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-
-//Import
-EmailLib = require('./email');
+const EmailLib = require('./email');
 
 let db = admin.firestore();
 
