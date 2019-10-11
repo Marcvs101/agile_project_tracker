@@ -17,6 +17,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	const nome = data["name"];
 	let descrizione = data["description"];
 	if (descrizione == null) { descrizione = ""; }
+	const isGithub = data["github"];
 
 	//Manca un check sull'esistenza
 
@@ -32,6 +33,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 			"userStories": [],
 			"events": [],
 			"sprints": [],
+			"github": isGithub,
 			"completed": false
 		});
 
@@ -53,9 +55,9 @@ exports.DeleteProject = functions.https.onCall((data, context) => {
 	const uid = context.auth.uid;
 	const projectId = data["project"];
 
-	let risultato = CrepatoreLib.deleteProject(projectId,uid);
+	let risultato = CrepatoreLib.deleteProject(projectId, uid);
 
-	console.log("L'utente: ",uid," ha eliminato il progetto: ",projectId);
+	console.log("L'utente: ", uid, " ha eliminato il progetto: ", projectId);
 	return risultato;
 });
 
@@ -89,6 +91,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 					result[element.id]['userStories'] = datiElemento['userStories'];
 					result[element.id]['events'] = datiElemento['events'];
 					result[element.id]['sprints'] = datiElemento['sprints'];
+					result[element.id]['github'] = datiElemento['github'];
 					result[element.id]['completed'] = datiElemento['completed'];
 				}
 			});
@@ -135,6 +138,7 @@ exports.GetProject = functions.https.onCall(async (data, context) => {
 				result['userStories'] = datiElemento['userStories'];
 				result['events'] = datiElemento['events'];
 				result['sprints'] = datiElemento['sprints'];
+				result['github'] = datiElemento['github'];
 				result['completed'] = datiElemento['completed'];
 
 				console.log("Sono state richieste informazioni sul progetto: ", projectId, " dall'utente uid: ", uid);

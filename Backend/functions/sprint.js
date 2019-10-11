@@ -17,6 +17,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
     let descrizione = data["description"];
     if (descrizione == null) { descrizione = ""; }
     const schedule = data["schedule"];
+    const userStories = data["userstories"];
 
     //Cerca il progetto
     const projectRef = db.collection('projects').doc(projectId);
@@ -35,14 +36,17 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
                 "status": false,
                 "project": projectId,
                 "schedule": schedule,
-                "userStories": []
+                "userStories": userStories
             });
 
-            let sprintlist = doc.get("sprints")
+            let docData = doc.data();
+
+            let sprintlist = docData["sprints"];
             sprintlist.push(sprint.id);
 
-            let docData = doc.data();
             docData["sprints"] = sprintlist;
+
+            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato lo sprint: ", sprint.id, " nel progetto: ", projectId);
             return { "sprintId": sprint.id };
@@ -89,11 +93,14 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
                 console.log('Progetto inesistente');
                 throw new functions.https.HttpsError(404, "Progetto inesistente");
             } else {
-                let sprintlist = doc.get("sprints")
+                let docData = doc.data();
+
+                let sprintlist = docData["sprints"];
                 sprintlist = sprintlist.filter(item => item !== sprintId);
 
-                let docData = doc.data();
                 docData["sprints"] = sprintlist;
+
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato lo sprint: ", sprintId, " nel progetto: ", projectId);
                 return { "sprint": sprintId };

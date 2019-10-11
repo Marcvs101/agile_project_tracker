@@ -40,14 +40,17 @@ exports.AddUserStory = functions.https.onCall(async (data, context) => {
                 "completed": completed
             });
 
-            let userstorylist = doc.get("userStories")
+            let docData = doc.data();
+
+            let userstorylist = docData["userStories"];
             userstorylist.push(userStory.id);
 
-            let docData = doc.data();
             docData["userStories"] = userstorylist;
 
+            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+
             console.log("L'utente: ", uid, " ha creato la user story: ", userstorylist.id, " nel progetto: ", projectId);
-            return { "userStory": userStory.id };
+            return { "userstory": userStory.id };
         }
     } catch (err) {
         console.log('Errore database');
@@ -91,11 +94,14 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
                 console.log('Progetto inesistente');
                 throw new functions.https.HttpsError(404, "Progetto inesistente");
             } else {
-                let userstorylist = doc.get("userStories")
+                let docData = doc.data();
+
+                let userstorylist = docData["userStories"];
                 userstorylist = userstorylist.filter(item => item !== userStoryId);
 
-                let docData = doc.data();
                 docData["userStories"] = userstorylist;
+
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato la user story: ", userStoryId, " nel progetto: ", projectId);
                 return { "userStory": userStoryId };

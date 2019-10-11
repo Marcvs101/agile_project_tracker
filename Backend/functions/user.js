@@ -16,7 +16,7 @@ exports.RegisterNewUser = functions.auth.user().onCreate(async (user) => {
     let setUser = await docRef.set({
         'displayName': displayName,
         'email': email
-    },{merge: true});
+    }, { merge: true });
 
     //EMAIL
     //if (email){EmailLib.sendEmail(email,"BN","BENVENUTO");}
@@ -44,7 +44,7 @@ exports.UnregisterUser = functions.auth.user().onDelete(async (user) => {
 });
 
 //Get utente
-exports.GetUser = functions.https.onCall( async (data, context) => {
+exports.GetUser = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
         throw new functions.https.HttpsError(511, "Necessaria autenticazione");
@@ -91,7 +91,7 @@ exports.UpdateUser = functions.https.onCall(async (data, context) => {
     let docRef = db.collection('developers').doc(uid);
     let setUser = await docRef.set({
         'name': username,
-    },{merge: true});
+    }, { merge: true });
 
     console.log("L'utente " + String(uid) + " aka " + String(username) + " ha modificato il suo username");
     return null;

@@ -38,11 +38,14 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
                 "date": date
             });
 
-            let eventlist = doc.get("events")
+            let docData = doc.data();
+
+            let eventlist = docData["events"];
             eventlist.push(evento.id);
 
-            let docData = doc.data();
             docData["userStories"] = eventlist;
+
+            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato l'evento: ", userstorylist.id, " nel progetto: ", projectId);
             return { "event": evento.id };
@@ -72,7 +75,9 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
             console.log('Evento inesistente');
             throw new functions.https.HttpsError(404, "Evento inesistente");
         } else {
-            projectId = doc.get("project");
+            let docData = doc.data();
+
+            projectId = docData["project"];
 
             let deleteEvent = await db.collection('userStories').doc(eventId).delete();
         }
@@ -89,11 +94,14 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
                 console.log('Progetto inesistente');
                 throw new functions.https.HttpsError(404, "Progetto inesistente");
             } else {
-                let eventlist = doc.get("userStories")
+                let docData = doc.data();
+
+                let eventlist = docData["userStories"];
                 eventlist = eventlist.filter(item => item !== eventId);
 
-                let docData = doc.data();
                 docData["events"] = eventlist;
+
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato l'evento': ", eventId, " nel progetto: ", projectId);
                 return { "event": userStoryId };

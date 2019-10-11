@@ -45,7 +45,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
                 docData["developers"] = devlist;
                 docData["admins"] = adminlist;
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData,{merge:true});
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha abbandonato il progetto: ", projectId);
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId);
@@ -86,7 +86,7 @@ exports.RemoveDeveloper = functions.https.onCall(async (data, context) => {
 
                 docData["developers"] = devlist;
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData,{merge:true});
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", targetId, " è stato brutalmente cacciato dal progetto: ", projectId, " dall'utente: ", uid);
                 return "L'utente: " + String(targetId) + " è stato brutalmente cacciato dal progetto: " + String(projectId) + " dall'utente: " + String(uid);
@@ -170,12 +170,12 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
                 devlist.push(utente);
 
                 let adminlist = docData["admins"];
-                if (isAdmin) {adminlist.push(utente);}
+                if (isAdmin) { adminlist.push(utente); }
 
                 docData["developers"] = devlist;
                 docData["admins"] = adminlist
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData,{merge:true});
+                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", targetDev, " è stato aggiunto al progetto: ", projectId, " dall'utente: ", uid);
                 return "L'utente: " + String(targetDev) + " è stato aggiunto al progetto: " + String(projectId) + " dall'utente: " + String(uid);
