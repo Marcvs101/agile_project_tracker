@@ -1,5 +1,5 @@
 //Email
-export async function sendEmail(email, soggetto, testo) {
+exports.sendEmail = async function(email, soggetto, testo) {
     const mailOptions = {
         from: "APT <noreply@firebase.com>",
         to: email,

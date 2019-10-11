@@ -115,31 +115,42 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
     }
 
     const uid = context.auth.uid;
-    const projectId = data["ProjectID"];
-    const targetMail = data["devMail"];
-    const isAdmin = data["isAdmin"];
+    const projectId = data["project"];
+    const targetDev = data["deveveloper"];
+    const isAdmin = data["admin"];
 
     //Pesca l'utente
     let utente = null;
     let utenteRef = db.collection("developers");
     try {
-        let utenteQuery = utenteRef.where('email', '==', String(targetMail));
-        const utenteQueryResult = await utenteQuery.get();
-        if (!utenteQueryResult.empty) {
-            utenteQueryResult.forEach((element) => {
+        let emailQuery = utenteRef.where('email', '==', String(targetDev));
+        const emailQueryResult = await emailQuery.get();
+        if (!emailQueryResult.empty) {
+            emailQueryResult.forEach((element) => {
                 if (element.exists) {
                     utente = element.data();
                 }
             });
         }
+
+        let usernameQuery = utenteRef.where('name', '==', String(targetDev));
+        const usernameQueryResult = await usernameQuery.get();
+        if (!usernameQueryResult.empty) {
+            usernameQueryResult.forEach((element) => {
+                if (element.exists) {
+                    utente = element.data();
+                }
+            });
+        }
+
     } catch (err) {
         console.log("Errore Database");
         throw new functions.https.HttpsError(500, "Errore database");
     }
 
     if (utente == null) {
-        console.log("L'utente: " + targetMail + " non è registrato");
-        throw new functions.https.HttpsError(404, "L'utente: " + String(targetMail) + " non è registrato");
+        console.log("L'utente: " + targetDev + " non è registrato");
+        throw new functions.https.HttpsError(404, "L'utente: " + String(targetDev) + " non è registrato");
     }
 
     //Pesca il progetto
