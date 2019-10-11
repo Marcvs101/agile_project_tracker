@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:apt/project_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
@@ -69,8 +72,12 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                                 "project": widget.project.id,
                                                 "developer": contributor.login,
                                                 "admins": true,
-                                              });
-                                          Navigator.pop(context);
+                                              }).then((completed) {
+                                            print("written on db");
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                          });
+
                                         }
                                       )
                                     ],
@@ -94,13 +101,8 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                 "project": widget.project.id,
                                 "developer": _emailTextController.text,
                                 "admins":admin,
-                              }).then((completed) {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProjectPage(project: widget.project, devUid: widget.devUid,),
-                                  )
-                              );
+                              }).catchError((code) {
+                                print(code);
                             });
                           }
                         },

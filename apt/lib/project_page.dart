@@ -13,7 +13,7 @@ import 'new_developer.dart';
 import 'new_event.dart';
 import 'new_sprint.dart';
 import 'new_user_story.dart';
-
+import 'dart:async';
 
 
 class ProjectPage extends StatefulWidget {
@@ -289,7 +289,7 @@ class _ProjectPageState extends State<ProjectPage> {
 
     StreamBuilder<QuerySnapshot> _retrieveProg() {
       
-      return new StreamBuilder<QuerySnapshot>(
+      return new StreamBuilder<QuerySnapshot> (
         // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
               .collection('sprints')
@@ -344,7 +344,7 @@ class _ProjectPageState extends State<ProjectPage> {
       Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => NewDeveloperPage(project: widget.project)));
+                builder: (context) => NewDeveloperPage(project: widget.project, devUid: widget.devUid,)));
     }
 
     void _addSprint(){
