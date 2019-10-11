@@ -16,7 +16,7 @@ exports.crepaUser = async function (uid) {
         if (!ownerQueryResult.empty) {
             ownerQueryResult.forEach(async (element) => {
                 if (element.exists) {
-                    exports.deleteProject(element.id,uid);
+                    exports.deleteProject(element.id, uid);
                 }
             });
         }
@@ -29,7 +29,7 @@ exports.crepaUser = async function (uid) {
                     let datiElemento = element.data();
                     let adminlist = docData["admins"];
                     if (adminlist.length == 1) {
-                        exports.deleteProject(element.id,uid);
+                        exports.deleteProject(element.id, uid);
                     }
                     else {
                         adminlist = adminlist.filter(item => item !== uid);
@@ -59,7 +59,7 @@ exports.crepaUser = async function (uid) {
 
     } catch (err) {
         console.log("Errore Database");
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 }
 
@@ -69,7 +69,7 @@ exports.crepaProject = async function (projectId, uid) {
         let doc = await projectRef.get();
         if (!doc.exists) {
             console.log('Progetto inesistente');
-            throw new functions.https.HttpsError(404, "Progetto inesistente");
+            throw new functions.https.HttpsError("not-found", "Progetto inesistente");
         } else {
             let docData = doc.data();
             console.log('Progetto trovato', docData);
@@ -95,7 +95,7 @@ exports.crepaProject = async function (projectId, uid) {
 
                 } catch (err) {
                     console.log("Errore Database");
-                    throw new functions.https.HttpsError(500, "Errore database");
+                    throw new functions.https.HttpsError("internal", "Errore database");
                 }
 
                 //Brucia gli sprint
@@ -113,7 +113,7 @@ exports.crepaProject = async function (projectId, uid) {
 
                 } catch (err) {
                     console.log("Errore Database");
-                    throw new functions.https.HttpsError(500, "Errore database");
+                    throw new functions.https.HttpsError("internal", "Errore database");
                 }
 
                 //Brucia le userStory
@@ -131,7 +131,7 @@ exports.crepaProject = async function (projectId, uid) {
 
                 } catch (err) {
                     console.log("Errore Database");
-                    throw new functions.https.HttpsError(500, "Errore database");
+                    throw new functions.https.HttpsError("internal", "Errore database");
                 }
 
             } else {
@@ -143,7 +143,7 @@ exports.crepaProject = async function (projectId, uid) {
 
     } catch (err) {
         console.log("Errore Database");
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 
     return true;

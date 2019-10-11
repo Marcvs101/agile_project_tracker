@@ -8,7 +8,7 @@ let db = admin.firestore();
 exports.AddSprint = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;
@@ -25,7 +25,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
         const doc = await projectRef.get();
         if (!doc.exists) {
             console.log('Progetto inesistente');
-            throw new functions.https.HttpsError(404, "Progetto inesistente");
+            throw new functions.https.HttpsError("not-found", "Progetto inesistente");
         } else {
 
             //Manca un check sull'esistenza
@@ -53,7 +53,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
         }
     } catch (err) {
         console.log('Errore database');
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
 
@@ -61,7 +61,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
 exports.RemoveSprint = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;
@@ -74,7 +74,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
         const doc = await sprintRef.get();
         if (!doc.exists) {
             console.log('Sprint inesistente');
-            throw new functions.https.HttpsError(404, "Sprint inesistente");
+            throw new functions.https.HttpsError("not-found", "Sprint inesistente");
         } else {
             projectId = doc.get("project");
 
@@ -82,7 +82,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
         }
     } catch (err) {
         console.log('Errore database');
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 
     if (projectId) {
@@ -91,7 +91,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
             const doc = await projectRef.get();
             if (!doc.exists) {
                 console.log('Progetto inesistente');
-                throw new functions.https.HttpsError(404, "Progetto inesistente");
+                throw new functions.https.HttpsError("not-found", "Progetto inesistente");
             } else {
                 let docData = doc.data();
 
@@ -107,7 +107,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
             }
         } catch (err) {
             console.log('Errore database');
-            throw new functions.https.HttpsError(500, "Errore database");
+            throw new functions.https.HttpsError("internal", "Errore database");
         }
     } else {
         console.log("L'utente: ", uid, " ha eliminato lo sprint: ", sprintId, " non associato ad alcun progetto");

@@ -8,7 +8,7 @@ let db = admin.firestore();
 exports.AddEvent = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;
@@ -25,7 +25,7 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
         const doc = await projectRef.get();
         if (!doc.exists) {
             console.log('Progetto inesistente');
-            throw new functions.https.HttpsError(404, "Progetto inesistente");
+            throw new functions.https.HttpsError("not-found", "Progetto inesistente");
         } else {
 
             //Manca un check sull'esistenza
@@ -52,7 +52,7 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
         }
     } catch (err) {
         console.log('Errore database');
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
 
@@ -60,7 +60,7 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
 exports.RemoveEvent = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;
@@ -73,7 +73,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
         const doc = await eventRef.get();
         if (!doc.exists) {
             console.log('Evento inesistente');
-            throw new functions.https.HttpsError(404, "Evento inesistente");
+            throw new functions.https.HttpsError("not-found", "Evento inesistente");
         } else {
             let docData = doc.data();
 
@@ -83,7 +83,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
         }
     } catch (err) {
         console.log('Errore database');
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 
     if (projectId) {
@@ -92,7 +92,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
             const doc = await projectRef.get();
             if (!doc.exists) {
                 console.log('Progetto inesistente');
-                throw new functions.https.HttpsError(404, "Progetto inesistente");
+                throw new functions.https.HttpsError("not-found", "Progetto inesistente");
             } else {
                 let docData = doc.data();
 
@@ -108,7 +108,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
             }
         } catch (err) {
             console.log('Errore database');
-            throw new functions.https.HttpsError(500, "Errore database");
+            throw new functions.https.HttpsError("internal", "Errore database");
         }
     } else {
         console.log("L'utente: ", uid, " ha eliminato l'evento': ", eventId, " non associato ad alcun progetto");

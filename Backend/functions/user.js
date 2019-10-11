@@ -45,7 +45,7 @@ exports.UnregisterUser = functions.auth.user().onDelete(async (user) => {
 exports.GetUser = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;
@@ -58,7 +58,7 @@ exports.GetUser = functions.https.onCall(async (data, context) => {
         const doc = await userRef.get();
         if (!doc.exists) {
             console.log('Utente inesistente');
-            throw new functions.https.HttpsError(404, "Utente inesistente");
+            throw new functions.https.HttpsError("not-found", "Utente inesistente");
         }
         else {
             console.log('Utente trovato', doc.data());
@@ -70,7 +70,7 @@ exports.GetUser = functions.https.onCall(async (data, context) => {
     }
     catch (err) {
         console.log("Errore Database");
-        throw new functions.https.HttpsError(500, "Errore database");
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
 
@@ -79,7 +79,7 @@ exports.UpdateUser = functions.https.onCall(async (data, context) => {
     // Checking that the user is authenticated.
     if (!context.auth) {
 
-        throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
     }
 
     const uid = context.auth.uid;

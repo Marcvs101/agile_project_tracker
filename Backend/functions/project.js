@@ -9,7 +9,7 @@ let db = admin.firestore();
 exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+		throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
 	}
 
 	const uid = context.auth.uid;
@@ -41,7 +41,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 		return { "project": ref.id };
 	} catch (err) {
 		console.log('Errore database');
-		throw new functions.https.HttpsError(500, "Errore database");
+		throw new functions.https.HttpsError("internal", "Errore database");
 	}
 });
 
@@ -49,7 +49,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 exports.DeleteProject = functions.https.onCall(async (data, context) => {
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+		throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
 	}
 
 	const uid = context.auth.uid;
@@ -65,7 +65,7 @@ exports.DeleteProject = functions.https.onCall(async (data, context) => {
 exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+		throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
 	}
 
 	const uid = context.auth.uid;
@@ -101,7 +101,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 		return JSON.stringify(result);
 	} catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError(500, "Errore database");
+		throw new functions.https.HttpsError("internal", "Errore database");
 	}
 
 });
@@ -110,7 +110,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 exports.GetProject = functions.https.onCall(async (data, context) => {
 	// Checking that the user is authenticated.
 	if (!context.auth) {
-		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
+		throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
 	}
 
 	const uid = context.auth.uid;
@@ -123,7 +123,7 @@ exports.GetProject = functions.https.onCall(async (data, context) => {
 		const doc = await projectRef.get();
 		if (!doc.exists) {
 			console.log('Progetto inesistente');
-			throw new functions.https.HttpsError(404, "Progetto inesistente");
+			throw new functions.https.HttpsError("not-found", "Progetto inesistente");
 		} else {
 			console.log('Progetto trovato', doc.data());
 
@@ -145,11 +145,11 @@ exports.GetProject = functions.https.onCall(async (data, context) => {
 				return JSON.stringify(result);
 			} else {
 				console.log("L'utente: ", uid, " non appartiene al progetto ", projectId);
-				throw new functions.https.HttpsError(403, "L'utente: " + String(uid) + " non appartiene al progetto " + String(projectId));
+				throw new functions.https.HttpsError("permission-denied", "L'utente: " + String(uid) + " non appartiene al progetto " + String(projectId));
 			}
 		}
 	} catch (err) {
 		console.log("Errore Database");
-		throw new functions.https.HttpsError(500, "Errore database");
+		throw new functions.https.HttpsError("internal", "Errore database");
 	}
 });
