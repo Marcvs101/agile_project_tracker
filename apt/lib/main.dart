@@ -9,6 +9,7 @@ import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 void main(){
   runApp(new MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: new MyApp(),
   ));
 }

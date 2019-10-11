@@ -71,6 +71,7 @@ class _SignInPageState extends State<SignInPage> {
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
@@ -187,16 +188,16 @@ class _SignInPageState extends State<SignInPage> {
     globals.github = createGitHubClient(auth: new Authentication.withToken(loginResponse.accessToken));
 
     final AuthCredential credential = GithubAuthProvider.getCredential(token: loginResponse.accessToken,);
-    final FirebaseUser user = await widget.auth.signInWithCredential(credential);
-    globals.github.users.getCurrentUser().then((githubuser) {
-      CloudFunctions.instance.call(
-          functionName: "updateUser",
+    widget.auth.signInWithCredential(credential).then((final FirebaseUser user) {
+      globals.github.users.getCurrentUser().then((githubuser) {
+        CloudFunctions.instance.call(
+            functionName: "UpdateUser",
             parameters: {
               "name": githubuser.login,
             }).then((completed) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
+        });
       });
-
     });
 
   }
