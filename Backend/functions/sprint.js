@@ -46,7 +46,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
 
             docData["sprints"] = sprintlist;
 
-            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+            let setDoc = projectRef.set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato lo sprint: ", sprint.id, " nel progetto: ", projectId);
             return { "sprintId": sprint.id };
@@ -78,7 +78,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
         } else {
             projectId = doc.get("project");
 
-            let deleteSprint = await db.collection('sprints').doc(sprintId).delete();
+            let deleteSprint = sprintRef.delete();
         }
     } catch (err) {
         console.log('Errore database');
@@ -100,7 +100,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
 
                 docData["sprints"] = sprintlist;
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+                let setDoc = await projectRef.set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato lo sprint: ", sprintId, " nel progetto: ", projectId);
                 return { "sprint": sprintId };

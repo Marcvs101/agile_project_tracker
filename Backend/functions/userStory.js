@@ -45,7 +45,7 @@ exports.AddUserStory = functions.https.onCall(async (data, context) => {
 
             docData["userStories"] = userstorylist;
 
-            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+            let setDoc = projectRef.set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato la user story: ", userStory.id, " nel progetto: ", projectId);
             return { "userstory": userStory.id };
@@ -68,7 +68,7 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
     let projectId = null;
 
     //Cerca la user story
-    const userStoryRef = db.collection("sprints").doc(userStoryId);
+    const userStoryRef = db.collection("userStories").doc(userStoryId);
     try {
         const doc = await userStoryRef.get();
         if (!doc.exists) {
@@ -77,7 +77,7 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
         } else {
             projectId = doc.get("project");
 
-            let deleteUserStory = await db.collection('userStories').doc(userStoryId).delete();
+            let deleteUserStory = await userStoryRef.delete();
         }
     } catch (err) {
         console.log('Errore database');
@@ -99,7 +99,7 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
 
                 docData["userStories"] = userstorylist;
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+                let setDoc = await projectRef.set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato la user story: ", userStoryId, " nel progetto: ", projectId);
                 return { "userStory": userStoryId };

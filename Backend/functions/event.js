@@ -43,9 +43,9 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
             let eventlist = docData["events"];
             eventlist.push(evento.id);
 
-            docData["userStories"] = eventlist;
+            docData["events"] = eventlist;
 
-            let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+            let setDoc = await projectRef.set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato l'evento: ", evento.id, " nel progetto: ", projectId);
             return { "event": evento.id };
@@ -68,7 +68,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
     let projectId = null;
 
     //Cerca la user story
-    const eventRef = db.collection("events").doc(userStoryId);
+    const eventRef = db.collection("events").doc(eventId);
     try {
         const doc = await eventRef.get();
         if (!doc.exists) {
@@ -79,7 +79,7 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
 
             projectId = docData["project"];
 
-            let deleteEvent = await db.collection('userStories').doc(eventId).delete();
+            let deleteEvent = await eventRef.delete();
         }
     } catch (err) {
         console.log('Errore database');
@@ -96,12 +96,12 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
             } else {
                 let docData = doc.data();
 
-                let eventlist = docData["userStories"];
+                let eventlist = docData["events"];
                 eventlist = eventlist.filter(item => item !== eventId);
 
                 docData["events"] = eventlist;
 
-                let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
+                let setDoc = await projectRef.set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato l'evento': ", eventId, " nel progetto: ", projectId);
                 return { "event": eventId };

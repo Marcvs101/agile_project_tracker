@@ -6,7 +6,7 @@ let db = admin.firestore();
 
 exports.crepaUser = async function (uid) {
     //Remove entry from DB
-    let docRef = await db.collection('developers').doc(uid).delete();
+    let userDel = await db.collection('developers').doc(uid).delete();
 
     //Tocca sbaraccà tutto il db
     let projectRef = db.collection("projects");
@@ -16,7 +16,7 @@ exports.crepaUser = async function (uid) {
         if (!ownerQueryResult.empty) {
             ownerQueryResult.forEach(async (element) => {
                 if (element.exists) {
-                    CrepatoreLib.deleteProject(element.id);
+                    exports.deleteProject(element.id,uid);
                 }
             });
         }
@@ -29,12 +29,12 @@ exports.crepaUser = async function (uid) {
                     let datiElemento = element.data();
                     let adminlist = docData["admins"];
                     if (adminlist.length == 1) {
-                        CrepatoreLib.deleteProject(element.id);
+                        exports.deleteProject(element.id,uid);
                     }
                     else {
                         adminlist = adminlist.filter(item => item !== uid);
                         docData["admins"] = adminlist;
-                        let setDoc = await db.collection('projects').doc(element.id).set(docData, { merge: true });
+                        let setDoc = await projectRef.doc(element.id).set(docData, { merge: true });
                     }
                 }
             });
@@ -52,7 +52,7 @@ exports.crepaUser = async function (uid) {
 
                     docData["developers"] = devlist;
 
-                    let setDoc = await db.collection('projects').doc(element.id).set(docData, { merge: true });
+                    let setDoc = await projectRef.doc(element.id).set(docData, { merge: true });
                 }
             });
         }
@@ -63,7 +63,7 @@ exports.crepaUser = async function (uid) {
     }
 }
 
-exports.crepaProject = async function (projectID, uid) {
+exports.crepaProject = async function (projectId, uid) {
     let projectRef = db.collection("projects").doc(projectId);
     try {
         let doc = await projectRef.get();
@@ -78,20 +78,17 @@ exports.crepaProject = async function (projectID, uid) {
             if (docData["owner"] == uid) {
 
                 //Brucia il progetto
-                let DeleteProj = await db.collection('projects').doc(projectId).delete();
+                let DeleteProj = await projectRef.delete();
 
                 //Brucia gli eventi
                 let eventRef = db.collection("events");
                 try {
-                    let eventQuery = eventRef.where('project', '==', String(projectID));
+                    let eventQuery = eventRef.where('project', '==', String(projectId));
                     const eventQueryResult = await eventQuery.get();
                     if (!eventQueryResult.empty) {
-                        eventQueryResult.forEach((element) => {
+                        eventQueryResult.forEach(async (element) => {
                             if (element.exists) {
-
-                                element.delete();
-                                //let DeleteEvent = db.collection('events').doc(element.id).delete();
-
+                                let DeleteEvent = await eventRef.doc(element.id).delete();
                             }
                         });
                     }
@@ -104,15 +101,12 @@ exports.crepaProject = async function (projectID, uid) {
                 //Brucia gli sprint
                 let sprintRef = db.collection("sprints");
                 try {
-                    let sprintQuery = sprintRef.where('project', '==', String(projectID));
+                    let sprintQuery = sprintRef.where('project', '==', String(projectId));
                     const sprintQueryResult = await sprintQuery.get();
                     if (!sprintQueryResult.empty) {
-                        sprintQueryResult.forEach((element) => {
+                        sprintQueryResult.forEach(async (element) => {
                             if (element.exists) {
-
-                                element.delete();
-                                //let DeleteEvent = db.collection('sprints').doc(element.id).delete();
-
+                                let DeleteSprint = await sprintRef.doc(element.id).delete();
                             }
                         });
                     }
@@ -125,15 +119,12 @@ exports.crepaProject = async function (projectID, uid) {
                 //Brucia le userStory
                 let userStoryRef = db.collection("userStories");
                 try {
-                    let userStoryQuery = userStoryRef.where('project', '==', String(projectID));
+                    let userStoryQuery = userStoryRef.where('project', '==', String(projectId));
                     const userStoryQueryResult = await userStoryQuery.get();
                     if (!userStoryQueryResult.empty) {
-                        userStoryQueryResult.forEach((element) => {
+                        userStoryQueryResult.forEach(async (element) => {
                             if (element.exists) {
-
-                                element.delete();
-                                //let DeleteEvent = db.collection('userStories').doc(element.id).delete();
-
+                                let DeleteUserStory = userStoryRef.doc(element.id).delete();
                             }
                         });
                     }
@@ -158,6 +149,6 @@ exports.crepaProject = async function (projectID, uid) {
     return true;
 };
 
-exports.crepaSprint = async function (projectID) {
+exports.crepaSprint = async function (projectId) {
 
 };

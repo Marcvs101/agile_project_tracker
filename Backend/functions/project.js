@@ -46,7 +46,7 @@ exports.CreateNewProject = functions.https.onCall(async (data, context) => {
 });
 
 //Rimuovi progetto
-exports.DeleteProject = functions.https.onCall((data, context) => {
+exports.DeleteProject = functions.https.onCall(async (data, context) => {
 	// Checking that the user is authenticated.
 	if (!context.auth) {
 		throw new functions.https.HttpsError(511, "Necessaria autenticazione");
@@ -55,7 +55,7 @@ exports.DeleteProject = functions.https.onCall((data, context) => {
 	const uid = context.auth.uid;
 	const projectId = data["project"];
 
-	let risultato = CrepatoreLib.crepaProject(projectId, uid);
+	let risultato = await CrepatoreLib.crepaProject(projectId, uid);
 
 	console.log("L'utente: ", uid, " ha eliminato il progetto: ", projectId);
 	return risultato;
