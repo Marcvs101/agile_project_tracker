@@ -4,7 +4,66 @@ const functions = require('firebase-functions');
 
 let db = admin.firestore();
 
-exports.deleteProject = async function (projectID, uid) {
+exports.crepaUser = async function (uid) {
+    //Remove entry from DB
+    let docRef = await db.collection('developers').doc(uid).delete();
+
+    //Tocca sbaraccà tutto il db
+    let projectRef = db.collection("projects");
+    try {
+        let ownerQuery = projectRef.where('owner', '==', String(uid));
+        const ownerQueryResult = await ownerQuery.get();
+        if (!ownerQueryResult.empty) {
+            ownerQueryResult.forEach(async (element) => {
+                if (element.exists) {
+                    CrepatoreLib.deleteProject(element.id);
+                }
+            });
+        }
+
+        let adminQuery = projectRef.where('admins', 'array-contains', String(uid));
+        const adminQueryResult = await adminQuery.get();
+        if (!adminQueryResult.empty) {
+            adminQueryResult.forEach(async (element) => {
+                if (element.exists) {
+                    let datiElemento = element.data();
+                    let adminlist = docData["admins"];
+                    if (adminlist.length == 1) {
+                        CrepatoreLib.deleteProject(element.id);
+                    }
+                    else {
+                        adminlist = adminlist.filter(item => item !== uid);
+                        docData["admins"] = adminlist;
+                        let setDoc = await db.collection('projects').doc(element.id).set(docData, { merge: true });
+                    }
+                }
+            });
+        }
+
+        let developerQuery = projectRef.where('developers', 'array-contains', String(uid));
+        const developerQueryResult = await developerQuery.get();
+        if (!developerQueryResult.empty) {
+            developerQueryResult.forEach(async (element) => {
+                if (element.exists) {
+                    let datiElemento = element.data();
+
+                    let devlist = docData["developers"];
+                    devlist = devlist.filter(item => item !== uid);
+
+                    docData["developers"] = devlist;
+
+                    let setDoc = await db.collection('projects').doc(element.id).set(docData, { merge: true });
+                }
+            });
+        }
+
+    } catch (err) {
+        console.log("Errore Database");
+        throw new functions.https.HttpsError(500, "Errore database");
+    }
+}
+
+exports.crepaProject = async function (projectID, uid) {
     let projectRef = db.collection("projects").doc(projectId);
     try {
         let doc = await projectRef.get();
@@ -99,6 +158,6 @@ exports.deleteProject = async function (projectID, uid) {
     return true;
 };
 
-exports.deleteSprint = async function (projectID) {
+exports.crepaSprint = async function (projectID) {
 
 };

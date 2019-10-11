@@ -47,7 +47,7 @@ exports.AddEvent = functions.https.onCall(async (data, context) => {
 
             let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
-            console.log("L'utente: ", uid, " ha creato l'evento: ", userstorylist.id, " nel progetto: ", projectId);
+            console.log("L'utente: ", uid, " ha creato l'evento: ", evento.id, " nel progetto: ", projectId);
             return { "event": evento.id };
         }
     } catch (err) {
@@ -104,14 +104,14 @@ exports.RemoveEvent = functions.https.onCall(async (data, context) => {
                 let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
                 console.log("L'utente: ", uid, " ha eliminato l'evento': ", eventId, " nel progetto: ", projectId);
-                return { "event": userStoryId };
+                return { "event": eventId };
             }
         } catch (err) {
             console.log('Errore database');
             throw new functions.https.HttpsError(500, "Errore database");
         }
     } else {
-        console.log("L'utente: ", uid, " ha eliminato l'evento': ", sprintId, " non associato ad alcun progetto");
-        return { "event": userStoryId };
+        console.log("L'utente: ", uid, " ha eliminato l'evento': ", eventId, " non associato ad alcun progetto");
+        return { "event": eventId };
     }
 });

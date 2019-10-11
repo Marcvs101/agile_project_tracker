@@ -28,7 +28,7 @@ exports.LeaveProject = functions.https.onCall(async (data, context) => {
             if (docData["owner"] == uid) {
                 //Se sei il proprietario, crepi il progetto
 
-                let deleteDoc = await CrepatoreLib.deleteProject(projectId);
+                let deleteDoc = await CrepatoreLib.crepaProject(projectId);
 
                 console.log("L'utente: ", uid, " ha abbandonato il progetto: ", projectId, " che è stato chiuso");
                 return "L'utente: " + String(uid) + " ha abbandonato il progetto: " + String(projectId) + " che è stato chiuso";

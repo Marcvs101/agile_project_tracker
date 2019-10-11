@@ -13,12 +13,10 @@ exports.AddUserStory = functions.https.onCall(async (data, context) => {
 
     const uid = context.auth.uid;
     const projectId = data["project"];
-    const sprintId = data["sprint"];//not set
     const nome = data["name"];
     let descrizione = data["description"];
     if (descrizione == null) { descrizione = ""; }
     const score = data["score"];
-    const completed = data["completed"]
 
     //Cerca il progetto
     const projectRef = db.collection('projects').doc(projectId);
@@ -35,9 +33,9 @@ exports.AddUserStory = functions.https.onCall(async (data, context) => {
                 "name": nome,
                 "description": descrizione,
                 "project": projectId,
-                "sprint": sprintId,
+                "sprint": "",
                 "score": score,
-                "completed": completed
+                "completed": ""
             });
 
             let docData = doc.data();
@@ -49,7 +47,7 @@ exports.AddUserStory = functions.https.onCall(async (data, context) => {
 
             let setDoc = await db.collection('projects').doc(projectId).set(docData, { merge: true });
 
-            console.log("L'utente: ", uid, " ha creato la user story: ", userstorylist.id, " nel progetto: ", projectId);
+            console.log("L'utente: ", uid, " ha creato la user story: ", userStory.id, " nel progetto: ", projectId);
             return { "userstory": userStory.id };
         }
     } catch (err) {
@@ -111,7 +109,7 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError(500, "Errore database");
         }
     } else {
-        console.log("L'utente: ", uid, " ha eliminato la user story: ", sprintId, " non associato ad alcun progetto");
+        console.log("L'utente: ", uid, " ha eliminato la user story: ", userStoryId, " non associato ad alcun progetto");
         return { "userStory": userStoryId };
     }
 });

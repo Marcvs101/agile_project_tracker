@@ -2,6 +2,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const EmailLib = require('./email');
+const CrepatoreLib = require('./crepatore');
 
 let db = admin.firestore();
 
@@ -31,10 +32,7 @@ exports.UnregisterUser = functions.auth.user().onDelete(async (user) => {
     const displayName = user.displayName; // The display name of the user.
     const uid = user.uid;
 
-    //Remove entry from DB
-    let docRef = await db.collection('developers').doc(uid).delete();
-
-    //Tocca sbaraccà tutto il db
+    CrepatoreLib.crepaUser(uid);
 
     //EMAIL
     //if (email){EmailLib.sendEmail(email,"CI","CIAO")};

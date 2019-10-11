@@ -55,7 +55,7 @@ exports.DeleteProject = functions.https.onCall((data, context) => {
 	const uid = context.auth.uid;
 	const projectId = data["project"];
 
-	let risultato = CrepatoreLib.deleteProject(projectId, uid);
+	let risultato = CrepatoreLib.crepaProject(projectId, uid);
 
 	console.log("L'utente: ", uid, " ha eliminato il progetto: ", projectId);
 	return risultato;
