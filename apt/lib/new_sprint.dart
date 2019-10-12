@@ -83,7 +83,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 if(v) _ustories.add(k);
                               }
                             );
-                            values.isNotEmpty ?
+                            _ustories.isNotEmpty ?
                             CloudFunctions.instance.call(
                               functionName: "AddSprint",
                               parameters: {

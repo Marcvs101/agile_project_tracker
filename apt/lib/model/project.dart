@@ -1,6 +1,7 @@
 import 'package:apt/project_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 
 
 class Project {
@@ -55,12 +56,8 @@ class Project {
   static void refreshProject(context, id, page) {
     Firestore.instance.collection('projects').document(id).get().then((ds) {
       Project project = new Project.fromJson(ds);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProjectPage(project: project, devUid: project.owner, page: page,)
-          )
-      );
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+          builder: (context) => new ProjectPage(project: project, devUid: project.owner, page: page,)), (route) => route.isFirst);
     });
   }
 

@@ -47,9 +47,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                         padding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
-                          print("checking form...");
                           if (_formKey.currentState.validate()) {
-                            print("adding user story...");
                             CloudFunctions.instance.call(
                               functionName: "AddUserStory",
                               parameters: {
