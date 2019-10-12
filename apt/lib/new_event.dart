@@ -16,8 +16,8 @@ class NewEventPage extends StatefulWidget {
 class _NewEventPageState extends State<NewEventPage>{
 
   TextEditingController _nameTextController = new TextEditingController(); 
-  TextEditingController _typeTextController = new TextEditingController(); 
-  TextEditingController _descrTextController = new TextEditingController(); 
+  TextEditingController _descrTextController = new TextEditingController();
+  String type=""; 
   DateTime date;
   
   final _formKey = GlobalKey<FormState>();
@@ -59,7 +59,7 @@ class _NewEventPageState extends State<NewEventPage>{
                                 "project": widget.project.id,
                                 "name": _nameTextController.text,
                                 "description": _descrTextController.text,
-                                "type": _typeTextController.text,
+                                "type": type,
                                 "date": d
                               }).whenComplete(() {
                               Project.refreshProject(context, widget.project.id, Project.events_page);
@@ -72,6 +72,9 @@ class _NewEventPageState extends State<NewEventPage>{
                 )),
           ]),
         )));
+
+
+String _selected = "Select the event's type:";
 
     return Scaffold(
       appBar: AppBar(
@@ -98,18 +101,7 @@ class _NewEventPageState extends State<NewEventPage>{
                             }
                             return null;
                           },
-                        ),
-                        TextFormField(
-                          controller: _typeTextController,
-                          decoration: const InputDecoration(
-                              labelText: "Insert new event's type: "),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),
+                        ),                        
                         TextFormField(
                           controller: _descrTextController,
                           decoration: const InputDecoration(
@@ -122,6 +114,28 @@ class _NewEventPageState extends State<NewEventPage>{
                             }
                             return null;
                           },
+                        ),
+                        new DropdownButton<String>(
+                          items: <String>[
+                                          'Planning meeting', 
+                                          'Daily Scrum',
+                                          'Backlog Grooming',
+                                          'Scrum of Scrums',
+                                          'Sprint Review',
+                                          'Sprint Retrospective'].map((String value) {
+                            return new DropdownMenuItem<String>(
+                              value: value,
+                              child: new Text(value, style: TextStyle(fontSize: 14) ,),
+                            );
+                          }).toList(),
+                          
+                          onChanged: (val) {
+                            type = val;
+                            setState(() {
+                             
+                            });
+                          },
+                          hint: type==""?Text(_selected):Text(type),
                         ),
                       ],
                     )
