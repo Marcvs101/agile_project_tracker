@@ -61,8 +61,9 @@ class _NewEventPageState extends State<NewEventPage>{
                                 "description": _descrTextController.text,
                                 "type": _typeTextController.text,
                                 "date": d
-                              });
-                            Navigator.of(context).pop();
+                              }).whenComplete(() {
+                              Project.refreshProject(context, widget.project.id);
+                            });
                           }
                         },
                         child: const Text("Confirm",

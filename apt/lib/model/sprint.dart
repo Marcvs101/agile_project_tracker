@@ -1,4 +1,7 @@
+import 'package:apt/model/project.dart';
+import 'package:apt/new_sprint.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 class Sprint {
   String id;
   String name;
@@ -29,5 +32,17 @@ class Sprint {
     "schedule": schedule,
     "userStories": userStories,
   };
+
+  static void refreshSprintForm(context, id) {
+    Firestore.instance.collection('projects').document(id).get().then((ds) {
+      Project project = new Project.fromJson(ds);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NewSprintPage(project: project,)
+          )
+      );
+    });
+  }
 
 }

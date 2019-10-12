@@ -1,4 +1,6 @@
+import 'package:apt/project_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 
 class Project {
@@ -43,4 +45,17 @@ class Project {
         "sprints": sprints,
         "userStories": userStories,
       };
+
+  static void refreshProject(context, id) {
+    Firestore.instance.collection('projects').document(id).get().then((ds) {
+      Project project = new Project.fromJson(ds);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProjectPage(project: project, devUid: project.owner)
+          )
+      );
+    });
+  }
+
 }

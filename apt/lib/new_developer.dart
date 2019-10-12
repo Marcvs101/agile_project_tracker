@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:apt/project_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'model/project.dart';
@@ -72,10 +73,8 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                                 "project": widget.project.id,
                                                 "developer": contributor.login,
                                                 "admins": true,
-                                              }).then((completed) {
-                                            print("written on db");
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
+                                              }).whenComplete(() {
+                                            Project.refreshProject(context, widget.project.id);
                                           });
 
                                         }
@@ -101,8 +100,8 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                 "project": widget.project.id,
                                 "developer": _emailTextController.text,
                                 "admins":admin,
-                              }).catchError((code) {
-                                print(code);
+                              }).whenComplete(() {
+                                Project.refreshProject(context, widget.project.id);
                             });
                           }
                         },

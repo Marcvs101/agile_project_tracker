@@ -35,7 +35,7 @@ const List<String> tabNames = const <String>[
 
 class _ProjectPageState extends State<ProjectPage> {
 
-  int _currentIndex = 0;
+  int _currentIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -365,7 +365,7 @@ class _ProjectPageState extends State<ProjectPage> {
       Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => NewUserStoryPage(project: widget.project)));
+                builder: (context) => NewUserStoryPage(project: widget.project, sprint: false,)));
     }
 
     return new DefaultTabController(

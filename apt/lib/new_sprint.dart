@@ -41,7 +41,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NewUserStoryPage(project: widget.project)));
+                        builder: (context) => NewUserStoryPage(project: widget.project, sprint: true,)));
               },
             ),
           ],
@@ -92,10 +92,9 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 "description":_descrTextController.text,
                                 "schedule": date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString(),
                                 "userstories": _ustories,
-                              }).then((completed) {
-                              Navigator.of(context).pop();
-                            }
-                            ) : noUserStorySelectedAlert();
+                              }).whenComplete(() {
+                              Project.refreshProject(context, widget.project.id);
+                            }) : noUserStorySelectedAlert();
 
                           }
                         },

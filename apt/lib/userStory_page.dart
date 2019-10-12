@@ -63,8 +63,9 @@ class _UserStoryPageState extends State<UserStoryPage> {
                             "completed":commit.commit.sha,
                             "userStory": widget.userStory.id
                           }
-                        );
-                        Navigator.of(context).pop();
+                        ).whenComplete(() {
+                          Project.refreshProject(context, widget.project.id);
+                        });
                       },
                     )
                 ],
@@ -78,7 +79,9 @@ class _UserStoryPageState extends State<UserStoryPage> {
             "completed": "Completed",
             "userStory": widget.userStory.id
           }
-      );
+      ).whenComplete(() {
+        Project.refreshProject(context, widget.project.id);
+      });
     }
 
     void _revoke() {
@@ -89,7 +92,9 @@ class _UserStoryPageState extends State<UserStoryPage> {
             "userStory": widget.userStory.id,
             "sprint": widget.userStory.sprint
           }
-        );
+        ).whenComplete(() {
+          Project.refreshProject(context, widget.project.id);
+        });
 
     }
 
@@ -100,7 +105,9 @@ class _UserStoryPageState extends State<UserStoryPage> {
           parameters: {
             "userStory": widget.userStory.id,
           }
-        );
+        ).whenComplete(() {
+          Project.refreshProject(context, widget.project.id);
+        });
 
     }
 

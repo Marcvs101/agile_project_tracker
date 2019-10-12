@@ -1,11 +1,13 @@
+import 'package:apt/model/sprint.dart';
 import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class NewUserStoryPage extends StatefulWidget {
-  NewUserStoryPage({Key key, @required this.project}) : super(key: key);
+  NewUserStoryPage({Key key, @required this.project, @required this.sprint}) : super(key: key);
 
   final Project project;
+  final bool sprint;
 
   @override
   _NewUserStoryPageState createState() => _NewUserStoryPageState();
@@ -55,8 +57,9 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                 "name": _nameTextController.text,
                                 "description":_descrTextController.text,
                                 "score": _score,
-                              });
-                            Navigator.of(context).pop();
+                              }).whenComplete(() {
+                                widget.sprint ? Sprint.refreshSprintForm(context, widget.project.id) : Project.refreshProject(context, widget.project.id);
+                            });
                           }
                         },
                         child: const Text("Confirm",
