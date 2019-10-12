@@ -64,7 +64,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
                             "userStory": widget.userStory.id
                           }
                         ).whenComplete(() {
-                          Project.refreshProject(context, widget.project.id);
+                          Project.refreshProject(context, widget.project.id, Project.userstories_page);
                         });
                       },
                     )
@@ -80,7 +80,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
             "userStory": widget.userStory.id
           }
       ).whenComplete(() {
-        Project.refreshProject(context, widget.project.id);
+        Project.refreshProject(context, widget.project.id, Project.userstories_page);
       });
     }
 
@@ -93,7 +93,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
             "sprint": widget.userStory.sprint
           }
         ).whenComplete(() {
-          Project.refreshProject(context, widget.project.id);
+          Project.refreshProject(context, widget.project.id, Project.userstories_page);
         });
 
     }
@@ -106,7 +106,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
             "userStory": widget.userStory.id,
           }
         ).whenComplete(() {
-          Project.refreshProject(context, widget.project.id);
+          Project.refreshProject(context, widget.project.id, Project.userstories_page);
         });
 
     }

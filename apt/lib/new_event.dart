@@ -62,7 +62,7 @@ class _NewEventPageState extends State<NewEventPage>{
                                 "type": _typeTextController.text,
                                 "date": d
                               }).whenComplete(() {
-                              Project.refreshProject(context, widget.project.id);
+                              Project.refreshProject(context, widget.project.id, Project.events_page);
                             });
                           }
                         },

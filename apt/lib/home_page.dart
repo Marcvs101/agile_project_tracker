@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ProjectPage(project: project, devUid: widget.user.uid )
+                builder: (context) => ProjectPage(project: project, devUid: widget.user.uid, page: Project.description_page,)
             )
         );
       },

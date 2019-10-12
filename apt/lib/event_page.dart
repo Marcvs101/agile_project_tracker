@@ -51,9 +51,9 @@ class _EventPageState extends State<EventPage> {
                       parameters: {
                         "event":widget.event.id,
                       }
-                    );
-
-                    Navigator.of(context).pop();
+                    ).whenComplete(() {
+                    Project.refreshProject(context, widget.project.id, Project.events_page);
+                    });
                   })
             ]),
         body: Column(children: <Widget>[

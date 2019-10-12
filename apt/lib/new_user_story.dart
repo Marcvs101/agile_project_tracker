@@ -58,7 +58,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                 "description":_descrTextController.text,
                                 "score": _score,
                               }).whenComplete(() {
-                                widget.sprint ? Sprint.refreshSprintForm(context, widget.project.id) : Project.refreshProject(context, widget.project.id);
+                                widget.sprint ? Sprint.refreshSprintForm(context, widget.project.id) : Project.refreshProject(context, widget.project.id, Project.userstories_page);
                             });
                           }
                         },

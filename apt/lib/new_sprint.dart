@@ -93,7 +93,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                 "schedule": date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString(),
                                 "userstories": _ustories,
                               }).whenComplete(() {
-                              Project.refreshProject(context, widget.project.id);
+                              Project.refreshProject(context, widget.project.id, Project.progress_page);
                             }) : noUserStorySelectedAlert();
 
                           }

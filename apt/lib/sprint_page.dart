@@ -90,7 +90,7 @@ class _SprintPageState extends State<SprintPage> {
                 itemCount: content.length,
                 itemBuilder: (BuildContext context, int index) {
                   var dp = content[index];
-                  if (widget.project.userStories.contains(dp.documentID)) {
+                  if (widget.sprint.userStories.contains(dp.documentID)) {
                     UserStory us = new UserStory.fromJson(dp);
                     return makeCardUS(us);
                   } else
@@ -121,8 +121,9 @@ class _SprintPageState extends State<SprintPage> {
                           parameters: {
                             "sprint":widget.sprint.id,
                           }
-                        );
-                        Navigator.of(context).pop();
+                        ).whenComplete(() {
+                          Project.refreshProject(context, widget.project.id, Project.progress_page);
+                        });
                       })
                   : null
             ]),

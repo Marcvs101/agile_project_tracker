@@ -19,7 +19,8 @@ import 'dart:async';
 class ProjectPage extends StatefulWidget {
   final Project project;
   final String devUid;
-  ProjectPage({Key key, this.project, this.devUid}) : super(key: key);
+  final int page;
+  ProjectPage({Key key, this.project, this.devUid, this.page}) : super(key: key);
 
   @override
   _ProjectPageState createState() => new _ProjectPageState();
@@ -35,7 +36,13 @@ const List<String> tabNames = const <String>[
 
 class _ProjectPageState extends State<ProjectPage> {
 
-  int _currentIndex = 2;
+  int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.page;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -218,8 +225,9 @@ class _ProjectPageState extends State<ProjectPage> {
                                   'project': widget.project.id,
                                   'developer': dev.id
                                 }
-                              );
-                              print("Administrator "+widget.devUid+" removes "+dev.id+" from project "+widget.project.id);                          
+                              ).whenComplete(() {
+                                Project.refreshProject(context, widget.project.id, Project.developers_page);
+                              });
                           });
                         if(removed)
                           Scaffold.of(context).showSnackBar(SnackBar(

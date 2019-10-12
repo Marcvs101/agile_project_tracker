@@ -74,9 +74,8 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                                 "developer": contributor.login,
                                                 "admins": true,
                                               }).whenComplete(() {
-                                            Project.refreshProject(context, widget.project.id);
+                                            Project.refreshProject(context, widget.project.id, Project.developers_page);
                                           });
-
                                         }
                                       )
                                     ],
@@ -101,7 +100,7 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                 "developer": _emailTextController.text,
                                 "admins":admin,
                               }).whenComplete(() {
-                                Project.refreshProject(context, widget.project.id);
+                                Project.refreshProject(context, widget.project.id, Project.developers_page);
                             });
                           }
                         },
