@@ -32,7 +32,8 @@ class _NewSprintPageState extends State<NewSprintPage> {
         return AlertDialog(
           title: Text('No User Story selected'),
           content: SingleChildScrollView(
-            child: new Text('You must select at least one User Story in order to create a Sprint!'),
+            child: new Text(
+                'You must select at least one User Story in order to create a Sprint!'),
           ),
           actions: <Widget>[
             FlatButton(
@@ -41,7 +42,10 @@ class _NewSprintPageState extends State<NewSprintPage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NewUserStoryPage(project: widget.project, sprint: true,)));
+                        builder: (context) => NewUserStoryPage(
+                              project: widget.project,
+                              sprint: true,
+                            )));
               },
             ),
           ],
@@ -78,24 +82,31 @@ class _NewSprintPageState extends State<NewSprintPage> {
                             vertical: 8.0, horizontal: 7.0),
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            values.forEach(
-                              (k,v){
-                                if(v) _ustories.add(k);
-                              }
-                            );
-                            _ustories.isNotEmpty ?
-                            CloudFunctions.instance.call(
-                              functionName: "AddSprint",
-                              parameters: {
-                                "project": widget.project.id,
-                                "name": _nameTextController.text,
-                                "description":_descrTextController.text,
-                                "schedule": date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString(),
-                                "userstories": _ustories,
-                              }).whenComplete(() {
-                              Project.refreshProject(context, widget.project.id, Project.progress_page);
-                            }) : noUserStorySelectedAlert();
-
+                            values.forEach((k, v) {
+                              if (v) _ustories.add(k);
+                            });
+                            if (date == null) date = DateTime.now();
+                            _ustories.isNotEmpty
+                                ? CloudFunctions.instance.call(
+                                    functionName: "AddSprint",
+                                    parameters: {
+                                        "project": widget.project.id,
+                                        "name": _nameTextController.text,
+                                        "description":
+                                            _descrTextController.text,
+                                        "schedule": date.day.toString() +
+                                            "-" +
+                                            date.month.toString() +
+                                            "-" +
+                                            date.year.toString(),
+                                        "userstories": _ustories,
+                                      }).whenComplete(() {
+                                    Project.refreshProject(
+                                        context,
+                                        widget.project.id,
+                                        Project.progress_page);
+                                  })
+                                : noUserStorySelectedAlert();
                           }
                         },
                         child: const Text("Confirm",
@@ -119,7 +130,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
               }
               var content = snapshot.data.documents;
 
-              if(firstime){
+              if (firstime) {
                 content.forEach((f) {
                   values[f.documentID] = false;
                   retrieve[f.documentID] = f.data['name'];
@@ -130,24 +141,22 @@ class _NewSprintPageState extends State<NewSprintPage> {
               return Container(
                 height: 250,
                 child: SingleChildScrollView(
-                  child: ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    children: values.keys.map((String key) {
-                        return new CheckboxListTile(
-                          title: new Text(retrieve[key]),
-                          value: values[key],
-                          onChanged: (bool value) {
-                            setState(() {
-                              values[key] = value;
-                            }); 
-                          },
-                        );
-                    }).toList())
-                ),
-              ) ;
-            })
-        );
+                    child: ListView(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: values.keys.map((String key) {
+                          return new CheckboxListTile(
+                            title: new Text(retrieve[key]),
+                            value: values[key],
+                            onChanged: (bool value) {
+                              setState(() {
+                                values[key] = value;
+                              });
+                            },
+                          );
+                        }).toList())),
+              );
+            }));
 
     return Scaffold(
       appBar: AppBar(
@@ -162,96 +171,106 @@ class _NewSprintPageState extends State<NewSprintPage> {
               child: ListView(
                 children: <Widget>[
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _nameTextController,
-                        decoration: const InputDecoration(
-                          hintText: "Insert new sprint's name: ",
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.blue),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                      Container(padding: EdgeInsets.all(10.0)),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: TextFormField(
-                            minLines: 1,
-                            maxLines: 3,
-                            autocorrect: false,
-                            keyboardType: TextInputType.multiline,
-                            controller: _descrTextController,
-                            decoration: InputDecoration(
-                              hintText: "Insert new sprint's description",
-                              filled: false,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(color: Colors.blue),
-                              ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _nameTextController,
+                          decoration: const InputDecoration(
+                            hintText: "Insert new sprint's name: ",
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.blue),
+                            ),
                           ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
                         ),
-                      ),
-                      Container(padding: EdgeInsets.all(10.0)),
-                      Container(
-                        child: Wrap(runSpacing: 20, children: [
-                          DateTimePickerFormField(
-                            inputType: InputType.date,
-                            format: DateFormat("dd-MM-yyyy"),
-                            initialDate: DateTime.now(), //DateTime(2019, 1, 1),
-                            editable: false,
-                            decoration: InputDecoration(
-                              prefixText: "Scheduled for: ",
+                        Container(padding: EdgeInsets.all(10.0)),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(0.0),
+                            child: TextFormField(
+                              minLines: 1,
+                              maxLines: 3,
+                              autocorrect: false,
+                              keyboardType: TextInputType.multiline,
+                              controller: _descrTextController,
+                              decoration: InputDecoration(
+                                hintText: "Insert new sprint's description",
+                                filled: false,
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.blue),
                                 ),
-                                labelText: 'Scheduled for: ',
-                                hasFloatingPlaceholder: false),
-                            onChanged: (dt) {
-                              setState(() => date = dt);
-                            },
-                          ),
-                          Center(child:
-                          Text("Select user stories",
-                            style: TextStyle(
-                                color: Color.fromRGBO(58, 66, 86, 0.9),
-                                fontSize: 16.0,
                               ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
                             ),
-                          )
-                        ]),
-                      ),
-                    ],
-                  ),
-                  _retrieveUs,
+                          ),
+                        ),
+                        Container(padding: EdgeInsets.all(10.0)),
+                        Container(
+                          child: Wrap(runSpacing: 20, children: [
+                            DateTimePickerFormField(
+                              inputType: InputType.date,
+                              format: DateFormat("dd-MM-yyyy"),
+                              initialDate:
+                                  DateTime.now(), //DateTime(2019, 1, 1),
+                              editable: false,
+                              decoration: InputDecoration(
+                                  prefixText: "Scheduled for: ",
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.blue),
+                                  ),
+                                  labelText: 'Scheduled for: ',
+                                  hasFloatingPlaceholder: false),
+                              onChanged: (dt) {
+                                setState(() => date = dt);
+                              },
+                            ),
+                            Center(
+                              child: Text(
+                                "Select user stories",
+                                style: TextStyle(
+                                  color: Color.fromRGBO(58, 66, 86, 0.9),
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            )
+                          ]),
+                        ),
+                        Container(
+                          height: 200,
+                          child: _retrieveUs,
+                        )
+                      ])
                 ],
               ))),
       bottomNavigationBar: makeBottom,
