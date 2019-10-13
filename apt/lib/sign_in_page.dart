@@ -195,12 +195,11 @@ class _SignInPageState extends State<SignInPage> {
             functionName: "UpdateUser",
             parameters: {
               "name": githubuser.login,
-            }).then((completed) {
+            }).whenComplete(() {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
         });
       });
     });
-
   }
 
 }

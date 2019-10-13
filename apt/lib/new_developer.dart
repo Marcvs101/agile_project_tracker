@@ -75,6 +75,9 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                                 "admins": true,
                                               }).whenComplete(() {
                                             Project.refreshProject(context, widget.project.id, Project.developers_page);
+                                          }).catchError((error) {
+                                            Navigator.of(context).pop();
+                                            globals.showErrorAlert(context);
                                           });
                                         }
                                       )
@@ -101,6 +104,8 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
                                 "admins":admin,
                               }).whenComplete(() {
                                 Project.refreshProject(context, widget.project.id, Project.developers_page);
+                            }).catchError((error) {
+                              globals.showErrorAlert(context);
                             });
                           }
                         },
@@ -118,52 +123,65 @@ class _NewDeveloperPageState extends State<NewDeveloperPage>{
           elevation: 0.1,
       ),
       body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: ListView(
-            children: <Widget>[
-              Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TextFormField(
-                          controller: _emailTextController,
-                          decoration: const InputDecoration(
-                              labelText: "Insert new developer's email: "),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (String value) {
-                            Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                            RegExp regex = new RegExp(pattern);
-                            if (!regex.hasMatch(value))
-                              return 'Enter Valid Email';
-                            else
-                              return null;
-                          }
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 4.0, horizontal: 50.0),
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("Admin"),
-                              Checkbox(
-                                value: admin,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    admin = value;
-                                  });
-                                },
-                              ),
-                            ],
+          key: _formKey,
+          child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: ListView(
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(padding: EdgeInsets.all(10.0)),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: TextFormField(
+                              controller: _emailTextController,
+                              decoration: const InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.blue),
+                                  ),
+                                  labelText: "Insert new developer's email: "),
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (String value) {
+                                Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                                RegExp regex = new RegExp(pattern);
+                                if (!regex.hasMatch(value))
+                                  return 'Enter Valid Email';
+                                else
+                                  return null;
+                              }
                           ),
                         ),
-                      ],
-                    )
-            ],
-          )
-        )
-      ),
+                      ),
+                      Container(padding: EdgeInsets.all(10.0)),
+                      Container(child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 5.0),
+                        child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("Will this user be an admin for the project?"),
+                            Checkbox(
+                              value: admin,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  admin = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),)
+                    ],
+                  )
+                ],
+              ))),
       bottomNavigationBar: makeBottom,
     );
   }

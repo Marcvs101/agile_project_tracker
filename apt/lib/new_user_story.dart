@@ -85,7 +85,16 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                       TextFormField(
                         controller: _nameTextController,
                         decoration: const InputDecoration(
-                            labelText: "Insert the user story's name: "),
+                          hintText: "Insert new user story's name ",
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please enter some text';
@@ -93,25 +102,58 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                           return null;
                         },
                       ),
-                      TextFormField(
-                        controller: _descrTextController,
-                        decoration: const InputDecoration(
-                            labelText: "Insert the user story's description: "),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
+                      /*TextFormField(
+                          controller: _descrTextController,
+                          decoration: const InputDecoration(
+                              labelText: "Insert new project's description: "),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),*/
+                      Container(padding: EdgeInsets.all(10.0)),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: TextFormField(
+                            minLines: 10,
+                            maxLines: 10,
+                            autocorrect: false,
+                            keyboardType: TextInputType.multiline,
+                            controller: _descrTextController,
+                            decoration: InputDecoration(
+                              hintText: "Insert new user story's description",
+                              filled: false,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.blue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                       ),
-                      Padding(
+                      Container(child: Padding(
                           padding: EdgeInsets.only(top: 20),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Set user story's value"),
+                                Center(
+                                  child: Text("Set user story's value"),
+                                ),
                                 Row(children: [
                                   Flexible(
                                     flex: 1,
@@ -121,7 +163,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                       max: 5,
                                       onChanged: (newRating) {
                                         setState(
-                                            () => _score = newRating.toInt());
+                                                () => _score = newRating.toInt());
                                       },
                                       value: _score.toDouble(),
                                     ),
@@ -135,7 +177,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                             .display1),
                                   ),
                                 ])
-                              ]))
+                              ])),),
                     ],
                   )
                 ],

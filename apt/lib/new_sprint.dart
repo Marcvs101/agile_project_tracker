@@ -161,57 +161,99 @@ class _NewSprintPageState extends State<NewSprintPage> {
               padding: EdgeInsets.all(20.0),
               child: ListView(
                 children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextFormField(
-                      controller: _nameTextController,
-                      decoration: const InputDecoration(
-                          labelText: "Insert new sprint's name: "),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _descrTextController,
-                      decoration: const InputDecoration(
-                          labelText: "Insert new sprint's description: "),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                    Wrap(runSpacing: 20, children: [
-                      DateTimePickerFormField(
-                        inputType: InputType.date,
-                        format: DateFormat("dd-MM-yyyy"),
-                        initialDate: DateTime.now(), //DateTime(2019, 1, 1),
-                        editable: false,
-                        decoration: InputDecoration(
-                            labelText: 'Schedule',
-                            hasFloatingPlaceholder: false),
-                        onChanged: (dt) {
-                          setState(() => date = dt);
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _nameTextController,
+                        decoration: const InputDecoration(
+                          hintText: "Insert new sprint's name: ",
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
                         },
                       ),
-                      Text(
-                        "Select user stories:",
-                        style: TextStyle(
-                            color: Color.fromRGBO(58, 66, 86, 0.9),
-                            fontSize: 16.0),
-                      )
-                    ]),
-                    _retrieveUs,
-                  ],
-                )
-              ]))),
+                      Container(padding: EdgeInsets.all(10.0)),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: TextFormField(
+                            minLines: 1,
+                            maxLines: 3,
+                            autocorrect: false,
+                            keyboardType: TextInputType.multiline,
+                            controller: _descrTextController,
+                            decoration: InputDecoration(
+                              hintText: "Insert new sprint's description",
+                              filled: false,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.blue),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      Container(padding: EdgeInsets.all(10.0)),
+                      Container(
+                        child: Wrap(runSpacing: 20, children: [
+                          DateTimePickerFormField(
+                            inputType: InputType.date,
+                            format: DateFormat("dd-MM-yyyy"),
+                            initialDate: DateTime.now(), //DateTime(2019, 1, 1),
+                            editable: false,
+                            decoration: InputDecoration(
+                              prefixText: "Scheduled for: ",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.blue),
+                                ),
+                                labelText: 'Scheduled for: ',
+                                hasFloatingPlaceholder: false),
+                            onChanged: (dt) {
+                              setState(() => date = dt);
+                            },
+                          ),
+                          Center(child:
+                          Text("Select user stories",
+                            style: TextStyle(
+                                color: Color.fromRGBO(58, 66, 86, 0.9),
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          )
+                        ]),
+                      ),
+                    ],
+                  ),
+                  _retrieveUs,
+                ],
+              ))),
       bottomNavigationBar: makeBottom,
     );
   }

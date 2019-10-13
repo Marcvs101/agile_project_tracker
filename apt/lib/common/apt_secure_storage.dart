@@ -5,3 +5,18 @@ import 'package:github/server.dart';
 
 final storage = new FlutterSecureStorage();
 dynamic github;
+
+Future<void> showErrorAlert(context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('OOPS!'),
+        content: SingleChildScrollView(
+          child: new Text('Something were wrong during computation. Please retry later.'),
+        ),
+      );
+    },
+  );
+}
