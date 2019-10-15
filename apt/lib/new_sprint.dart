@@ -189,6 +189,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                   BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.blue),
                             ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -220,6 +225,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                       BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.blue),
                                 ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -250,6 +260,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10.0)),
                                     borderSide: BorderSide(color: Colors.blue),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.red),
                                   ),
                                   labelText: 'Scheduled for: ',
                                   hasFloatingPlaceholder: false),

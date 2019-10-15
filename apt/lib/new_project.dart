@@ -13,7 +13,6 @@ class NewProjectPage extends StatefulWidget {
 }
 
 class _NewProjectPageState extends State<NewProjectPage> {
-
   TextEditingController _nameTextController = new TextEditingController();
   TextEditingController _descrTextController = new TextEditingController();
 
@@ -21,96 +20,99 @@ class _NewProjectPageState extends State<NewProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final makeBottom = Container(
         width: MediaQuery.of(context).size.width,
         height: 65.0,
         child: BottomAppBar(
             child: Center(
-              child: Column(children: <Widget>[
-                Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 7.0),
-                            color: Color.fromRGBO(58, 66, 86, 1.0),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text("Cancel",
-                                style: TextStyle(color: Colors.white))),
-                        new FlatButton(
-                            color: Color.fromRGBO(58, 66, 86, 1.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 7.0),
-                            onPressed: () {
-                              globals.github.repositories.listRepositories().toList().then((repos) {
-                                print(repos);
-                                  return showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return new SimpleDialog(
-                                          title: new Text("Select a repository"),
-                                          children: <Widget>[
-                                            for(var repo in repos) SimpleDialogOption(
-                                              child: Text(repo.name),
-                                              onPressed: () {
-                                                CloudFunctions.instance.call(
-                                                    functionName: "CreateNewProject",
-                                                    parameters: {
-                                                      "name": repo.name,
-                                                      "description": repo.description,
-                                                      "owner": widget.user.uid,
-                                                      "github": true,
-                                                      "userStories": [],
-                                                      "developers": [widget.user.uid],
-                                                      "admins":[widget.user.uid],
-                                                      "events":[],
-                                                      "sprints":[],
-                                                    });
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pop();
-                                              },
-                                            )
-                                          ],
-                                        );
-                                      },
-                                  );
-                                });
+          child: Column(children: <Widget>[
+            Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new FlatButton(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Cancel",
+                            style: TextStyle(color: Colors.white))),
+                    new FlatButton(
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        onPressed: () {
+                          globals.github.repositories
+                              .listRepositories()
+                              .toList()
+                              .then((repos) {
+                            print(repos);
+                            return showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return new SimpleDialog(
+                                  title: new Text("Select a repository"),
+                                  children: <Widget>[
+                                    for (var repo in repos)
+                                      SimpleDialogOption(
+                                        child: Text(repo.name),
+                                        onPressed: () {
+                                          CloudFunctions.instance.call(
+                                              functionName: "CreateNewProject",
+                                              parameters: {
+                                                "name": repo.name,
+                                                "description": repo.description,
+                                                "owner": widget.user.uid,
+                                                "github": true,
+                                                "userStories": [],
+                                                "developers": [widget.user.uid],
+                                                "admins": [widget.user.uid],
+                                                "events": [],
+                                                "sprints": [],
+                                              });
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                  ],
+                                );
                               },
-                            child: const Text("Import from Github",
-                                style: TextStyle(color: Colors.white))),
-                        new FlatButton(
-                            color: Color.fromRGBO(58, 66, 86, 1.0),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 7.0),
-                            onPressed: () {
-                              if (_formKey.currentState.validate()) {
-                                CloudFunctions.instance.call(
-                                    functionName: "CreateNewProject",
-                                    parameters: {
-                                      "name": _nameTextController.text,
-                                      "description": _descrTextController.text,
-                                      "owner": widget.user.uid,
-                                      "github": false,
-                                      "userStories": [],
-                                      "developers": [widget.user.uid],
-                                      "admins":[widget.user.uid],
-                                      "events":[],
-                                      "sprints":[],
-                                    });
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: const Text("Confirm",
-                                style: TextStyle(color: Colors.white)))
-                      ],
-                    )),
-              ]),
-            )));
+                            );
+                          });
+                        },
+                        child: const Text("Import from Github",
+                            style: TextStyle(color: Colors.white))),
+                    new FlatButton(
+                        color: Color.fromRGBO(58, 66, 86, 1.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 7.0),
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            CloudFunctions.instance.call(
+                                functionName: "CreateNewProject",
+                                parameters: {
+                                  "name": _nameTextController.text,
+                                  "description": _descrTextController.text,
+                                  "owner": widget.user.uid,
+                                  "github": false,
+                                  "userStories": [],
+                                  "developers": [widget.user.uid],
+                                  "admins": [widget.user.uid],
+                                  "events": [],
+                                  "sprints": [],
+                                });
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text("Confirm",
+                            style: TextStyle(color: Colors.white)))
+                  ],
+                )),
+          ]),
+        )));
 
     return Scaffold(
         appBar: AppBar(
@@ -131,14 +133,21 @@ class _NewProjectPageState extends State<NewProjectPage> {
                         TextFormField(
                           controller: _nameTextController,
                           decoration: const InputDecoration(
-                              hintText: "Insert new project's name: ",
+                            hintText: "Insert new project's name: ",
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.grey),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.blue),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.red),
                             ),
                           ),
                           validator: (value) {
@@ -162,12 +171,19 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                 hintText: "Insert new project's description",
                                 filled: false,
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.blue),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.red),
                                 ),
                               ),
                               validator: (value) {

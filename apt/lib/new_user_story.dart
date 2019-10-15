@@ -4,7 +4,8 @@ import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class NewUserStoryPage extends StatefulWidget {
-  NewUserStoryPage({Key key, @required this.project, @required this.sprint}) : super(key: key);
+  NewUserStoryPage({Key key, @required this.project, @required this.sprint})
+      : super(key: key);
 
   final Project project;
   final bool sprint;
@@ -49,14 +50,20 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             CloudFunctions.instance.call(
-                              functionName: "AddUserStory",
-                              parameters: {
-                                "project": widget.project.id,
-                                "name": _nameTextController.text,
-                                "description":_descrTextController.text,
-                                "score": _score,
-                              }).whenComplete(() {
-                                widget.sprint ? Sprint.refreshSprintForm(context, widget.project.id) : Project.refreshProject(context, widget.project.id, Project.userstories_page);
+                                functionName: "AddUserStory",
+                                parameters: {
+                                  "project": widget.project.id,
+                                  "name": _nameTextController.text,
+                                  "description": _descrTextController.text,
+                                  "score": _score,
+                                }).whenComplete(() {
+                              widget.sprint
+                                  ? Sprint.refreshSprintForm(
+                                      context, widget.project.id)
+                                  : Project.refreshProject(
+                                      context,
+                                      widget.project.id,
+                                      Project.userstories_page);
                             });
                           }
                         },
@@ -87,12 +94,19 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                         decoration: const InputDecoration(
                           hintText: "Insert new user story's name ",
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.blue),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.red),
                           ),
                         ),
                         validator: (value) {
@@ -102,19 +116,6 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                           return null;
                         },
                       ),
-                      /*TextFormField(
-                          controller: _descrTextController,
-                          decoration: const InputDecoration(
-                              labelText: "Insert new project's description: "),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
-                        ),*/
                       Container(padding: EdgeInsets.all(10.0)),
                       Container(
                         child: Padding(
@@ -129,12 +130,19 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                               hintText: "Insert new user story's description",
                               filled: false,
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.blue),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.red),
                               ),
                             ),
                             validator: (value) {
@@ -146,38 +154,40 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                           ),
                         ),
                       ),
-                      Container(child: Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: Text("Set user story's value"),
-                                ),
-                                Row(children: [
-                                  Flexible(
-                                    flex: 1,
-                                    child: Slider(
-                                      activeColor: Colors.indigoAccent,
-                                      min: 0,
-                                      max: 5,
-                                      onChanged: (newRating) {
-                                        setState(
-                                                () => _score = newRating.toInt());
-                                      },
-                                      value: _score.toDouble(),
+                      Container(
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text("Set user story's value"),
+                                  ),
+                                  Row(children: [
+                                    Flexible(
+                                      flex: 1,
+                                      child: Slider(
+                                        activeColor: Colors.indigoAccent,
+                                        min: 0,
+                                        max: 5,
+                                        onChanged: (newRating) {
+                                          setState(
+                                              () => _score = newRating.toInt());
+                                        },
+                                        value: _score.toDouble(),
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 50.0,
-                                    alignment: Alignment.center,
-                                    child: Text('${_score.toInt()}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .display1),
-                                  ),
-                                ])
-                              ])),),
+                                    Container(
+                                      width: 50.0,
+                                      alignment: Alignment.center,
+                                      child: Text('${_score.toInt()}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .display1),
+                                    ),
+                                  ])
+                                ])),
+                      ),
                     ],
                   )
                 ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-
 class NewEventPage extends StatefulWidget {
   NewEventPage({Key key, @required this.project}) : super(key: key);
 
@@ -10,27 +9,24 @@ class NewEventPage extends StatefulWidget {
 
   @override
   _NewEventPageState createState() => _NewEventPageState();
-
 }
 
-class _NewEventPageState extends State<NewEventPage>{
-
-  TextEditingController _nameTextController = new TextEditingController(); 
+class _NewEventPageState extends State<NewEventPage> {
+  TextEditingController _nameTextController = new TextEditingController();
   TextEditingController _descrTextController = new TextEditingController();
-  String type=""; 
+  String type = "";
   DateTime date;
-  
+
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context){
-
+  Widget build(BuildContext context) {
     final makeBottom = Container(
         width: MediaQuery.of(context).size.width,
         height: 65.0,
         child: BottomAppBar(
             child: Center(
-              child: Column(children: <Widget>[
+          child: Column(children: <Widget>[
             Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
@@ -52,17 +48,21 @@ class _NewEventPageState extends State<NewEventPage>{
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             date = DateTime.now();
-                            var d = date.day.toString()+"-"+date.month.toString()+"-"+date.year.toString();
-                            CloudFunctions.instance.call(
-                              functionName: "AddEvent",
-                              parameters: {
-                                "project": widget.project.id,
-                                "name": _nameTextController.text,
-                                "description": _descrTextController.text,
-                                "type": type,
-                                "date": d
-                              }).whenComplete(() {
-                              Project.refreshProject(context, widget.project.id, Project.events_page);
+                            var d = date.day.toString() +
+                                "-" +
+                                date.month.toString() +
+                                "-" +
+                                date.year.toString();
+                            CloudFunctions.instance
+                                .call(functionName: "AddEvent", parameters: {
+                              "project": widget.project.id,
+                              "name": _nameTextController.text,
+                              "description": _descrTextController.text,
+                              "type": type,
+                              "date": d
+                            }).whenComplete(() {
+                              Project.refreshProject(context, widget.project.id,
+                                  Project.events_page);
                             });
                           }
                         },
@@ -73,14 +73,13 @@ class _NewEventPageState extends State<NewEventPage>{
           ]),
         )));
 
-
-String _selected = "Select the event's type";
+    String _selected = "Select the event's type";
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(58, 66, 86, 1),
-          title: Text("Add new event"),
-          elevation: 0.1,
+        backgroundColor: Color.fromRGBO(58, 66, 86, 1),
+        title: Text("Add new event"),
+        elevation: 0.1,
       ),
       body: Form(
           key: _formKey,
@@ -96,12 +95,19 @@ String _selected = "Select the event's type";
                         decoration: const InputDecoration(
                           hintText: "Insert new event's name: ",
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.blue),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.red),
                           ),
                         ),
                         validator: (value) {
@@ -111,7 +117,6 @@ String _selected = "Select the event's type";
                           return null;
                         },
                       ),
-
                       Container(padding: EdgeInsets.all(10.0)),
                       Container(
                         child: new DropdownButton<String>(
@@ -122,21 +127,23 @@ String _selected = "Select the event's type";
                             'Backlog Grooming',
                             'Scrum of Scrums',
                             'Sprint Review',
-                            'Sprint Retrospective'].map((String value) {
+                            'Sprint Retrospective'
+                          ].map((String value) {
                             return new DropdownMenuItem<String>(
                               value: value,
-                              child: new Text(value, style: TextStyle(fontSize: 14) ,),
+                              child: new Text(
+                                value,
+                                style: TextStyle(fontSize: 14),
+                              ),
                             );
                           }).toList(),
-
                           onChanged: (val) {
                             type = val;
-                            setState(() {
-
-                            });
+                            setState(() {});
                           },
-                          hint: type==""?Text(_selected):Text(type),
-                        ),),
+                          hint: type == "" ? Text(_selected) : Text(type),
+                        ),
+                      ),
                       Container(padding: EdgeInsets.all(10.0)),
                       Container(
                         child: Padding(
@@ -151,11 +158,13 @@ String _selected = "Select the event's type";
                               hintText: "Insert new event's description",
                               filled: false,
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.blue),
                               ),
                             ),
@@ -168,14 +177,11 @@ String _selected = "Select the event's type";
                           ),
                         ),
                       ),
-
                     ],
                   )
                 ],
               ))),
-
       bottomNavigationBar: makeBottom,
     );
   }
-
 }
