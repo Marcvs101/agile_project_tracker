@@ -55,25 +55,26 @@ class _ProjectPageState extends State<ProjectPage> {
           style: TextStyle(fontSize: 18.0),
     )));
 
-    IconData getIcons(dynamic obj) {
+    Icon getIcons(dynamic obj) {
+      Icon i;
       IconData ico;
       if (obj is Developer) {
         if (widget.project.owner == obj.id)
-          ico = Icons.verified_user;
+          {ico = Icons.verified_user; i = Icon(ico,color: Colors.blue,);}
         else if (widget.project.admins.contains(obj.id))
-          ico = Icons.supervised_user_circle;
+          {ico = Icons.supervised_user_circle;i = Icon(ico,color: Colors.blue,);}
         else
-          ico = Icons.account_circle;
+          {ico = Icons.account_circle;i = Icon(ico,color: Colors.blue,);}
       } 
       else if (obj is UserStory){
-        if(obj.completed == "") ico = Icons.close;
-        else ico = Icons.check;
+        if(obj.completed == "") {ico = Icons.close;i = Icon(ico,color: Colors.red,);}
+        else {ico = Icons.check; i = Icon(ico,color: Colors.green,);}
       }
       else if (obj is Sprint){
-        if(obj.status) ico = Icons.check;
-        else ico = Icons.close;
+        if(obj.status) {ico = Icons.check; i = Icon(ico,color: Colors.green,);}
+        else {ico = Icons.close;i = Icon(ico,color: Colors.red,);}
       }
-      return ico;
+      return i;
     }
   
     ListTile makeListTileUS(dynamic obj) => ListTile(
@@ -84,7 +85,7 @@ class _ProjectPageState extends State<ProjectPage> {
         decoration: new BoxDecoration(
             border: new Border(
                 right: new BorderSide(width: 1.0, color: Colors.white24))),
-        child: Icon(getIcons(obj),color: Colors.white,),
+        child: getIcons(obj)
       ),
       title: Text(
         obj.name,
@@ -110,6 +111,7 @@ class _ProjectPageState extends State<ProjectPage> {
     ListTile makeListTileEv(dynamic obj) => ListTile(
       contentPadding:
           EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Icon(Icons.access_time,color: Colors.white,),
       title: Text(
         obj.name,
         style: TextStyle(
@@ -144,7 +146,7 @@ class _ProjectPageState extends State<ProjectPage> {
         decoration: new BoxDecoration(
             border: new Border(
                 right: new BorderSide(width: 1.0, color: Colors.white24))),
-        child: Icon(getIcons(obj),color: Colors.white,),
+        child: getIcons(obj)
       ),
       title: Text(
         obj.name,
@@ -170,7 +172,7 @@ class _ProjectPageState extends State<ProjectPage> {
         decoration: new BoxDecoration(
             border: new Border(
                 right: new BorderSide(width: 1.0, color: Colors.white24))),
-        child: Icon(getIcons(obj),color: Colors.white,),
+        child: getIcons(obj)
       ),
       title: Text(
         obj.name,
