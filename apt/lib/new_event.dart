@@ -167,7 +167,13 @@ class _NewEventPageState extends State<NewEventPage> {
                                     BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.blue),
                               ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
                             ),
+
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Please enter some text';
