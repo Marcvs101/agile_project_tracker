@@ -152,7 +152,7 @@ exports.RevokeUserStory = functions.https.onCall(async (data, context) => {
                 if (adminlist.includes(uid)) {
 
                     //Cerca sprint
-                    const sprintRef = db.collection("userStories").doc(sprintId);
+                    const sprintRef = db.collection("sprints").doc(sprintId);
                     const sprintDoc = await sprintRef.get();
                     if (!sprintDoc.exists) {
                         console.log('Sprint inesistente');
@@ -248,7 +248,7 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
                 if (adminlist.includes(uid)) {
 
                     //Cerca sprint
-                    const sprintRef = db.collection("userStories").doc(sprintId);
+                    const sprintRef = db.collection("sprints").doc(sprintId);
                     const sprintDoc = await sprintRef.get();
                     if (!sprintDoc.exists) {
                         console.log('Sprint inesistente');
