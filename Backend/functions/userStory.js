@@ -138,6 +138,11 @@ exports.RevokeUserStory = functions.https.onCall(async (data, context) => {
             let projectId = userStoryDocData["project"];
             let sprintId = userStoryDocData["sprint"];
 
+            if (sprintId == ""){
+                console.log("La user story ",userStoryId," non fa parte di nessuno sprint");
+                throw new functions.https.HttpsError("not-found", "La user story "+String(userStoryId)+" non fa parte di nessuno sprint");
+            }
+
             //Cerca il progetto
             const projectRef = db.collection('projects').doc(projectId);
             const projectDoc = await projectRef.get();
@@ -180,7 +185,7 @@ exports.RevokeUserStory = functions.https.onCall(async (data, context) => {
                                 return true;
                             } else {
                                 //Controlla se sprint è completato
-                                if (sprintLib.checkCompleted(sprintDocData)) {
+                                if (await sprintLib.checkCompleted(sprintDocData)) {
                                     sprintDocData["status"] = true;
                                 }
 
@@ -234,6 +239,11 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
             let projectId = userStoryDocData["project"];
             let sprintId = userStoryDocData["sprint"];
 
+            if (sprintId == ""){
+                console.log("La user story ",userStoryId," non fa parte di nessuno sprint");
+                throw new functions.https.HttpsError("not-found", "La user story "+String(userStoryId)+" non fa parte di nessuno sprint");
+            }
+
             //Cerca il progetto
             const projectRef = db.collection('projects').doc(projectId);
             const projectDoc = await projectRef.get();
@@ -264,7 +274,7 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
                             let setUserStoryDoc = await userStoryRef.set(userStoryDocData, { merge: true });
 
                             //Controlla se sprint è completato
-                            if (sprintLib.checkCompleted(sprintDocData)) {
+                            if (await sprintLib.checkCompleted(sprintDocData)) {
                                 sprintDocData["status"] = true;
                             }
 
@@ -288,7 +298,7 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
 
         }
     } catch (err) {
-        console.log('Errore database');
+        console.log('Errore database',err);
         throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
