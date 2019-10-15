@@ -278,7 +278,7 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
                                 sprintDocData["status"] = true;
                             }
 
-                            let setSprintDoc = await sprintRef.set(SprintDocData, { merge: true });
+                            let setSprintDoc = await sprintRef.set(sprintDocData, { merge: true });
 
                             console.log("La user story ", userStoryId, " è stata completata, secondo l'utente ", uid);
                             return true;
@@ -298,7 +298,7 @@ exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
 
         }
     } catch (err) {
-        console.log('Errore database',err);
+        console.log('Errore database');
         throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
