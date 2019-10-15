@@ -53,18 +53,19 @@ class _UserStoryPageState extends State<UserStoryPage> {
                 children: <Widget>[
                   for (var commit in commits)
                     SimpleDialogOption(
-                      child: Text(commit.commit.sha.substring(0, 7) +
+                      child: Text(commit.sha.substring(0, 7) +
                           " - " +
                           commit.commit.message),
                       onPressed: () {
                         CloudFunctions.instance.call(
-                          functionName: "CompleteUs",
-                          parameters: {
-                            "completed":commit.commit.sha,
-                            "userStory": widget.userStory.id
-                          }
+                            functionName: "CompleteUserStory",
+                            parameters: {
+                              "completed": commit.sha,
+                              "userStory": widget.userStory.id
+                            }
                         ).whenComplete(() {
-                          Project.refreshProject(context, widget.project.id, Project.userstories_page);
+                          Project.refreshProject(context, widget.project.id,
+                              Project.userstories_page);
                         });
                       },
                     )
@@ -74,7 +75,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
           );
         });
       }) : CloudFunctions.instance.call(
-          functionName: "CompleteUs",
+          functionName: "CompleteUserStory",
           parameters: {
             "completed": "Completed",
             "userStory": widget.userStory.id
@@ -87,7 +88,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
     void _revoke() {
 
         CloudFunctions.instance.call(
-          functionName: "RevokeUs",
+          functionName: "RevokeUserStory",
           parameters: {
             "userStory": widget.userStory.id,
           }
@@ -120,11 +121,12 @@ class _UserStoryPageState extends State<UserStoryPage> {
             actions: <Widget>[
               new PopupMenuButton<int>(
                   itemBuilder: (context) => [
+                        if(widget.userStory.sprint != "")
                         PopupMenuItem(
                           value: 1,
                           child: Text("Complete this user story"),
                         ),
-                        if (widget.project.admins.contains(widget.devUid))
+                        if (widget.userStory.sprint != "" && widget.project.admins.contains(widget.devUid))
                           PopupMenuItem(
                             value: 2,
                             child: Text("Revoke user story"),

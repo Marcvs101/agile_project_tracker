@@ -118,7 +118,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
           ]),
         )));
 
-    final _retrieveUs = Container(
+    final _retrieveUs = new Container(
         padding: EdgeInsets.all(20),
         child: new StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance
