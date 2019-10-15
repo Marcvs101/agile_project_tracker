@@ -1,6 +1,7 @@
 //Librerie
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const sprintLib = require('./sprint');
 
 let db = admin.firestore();
 
@@ -111,5 +112,183 @@ exports.RemoveUserStory = functions.https.onCall(async (data, context) => {
     } else {
         console.log("L'utente: ", uid, " ha eliminato la user story: ", userStoryId, " non associato ad alcun progetto");
         return { "userStory": userStoryId };
+    }
+});
+
+//Revoca user story
+exports.RevokeUserStory = functions.https.onCall(async (data, context) => {
+    // Checking that the user is authenticated.
+    if (!context.auth) {
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
+    }
+
+    const uid = context.auth.uid;
+    const userStoryId = data["userStory"];
+
+    //Cerca la user story
+    const userStoryRef = db.collection('userStories').doc(userStoryId);
+    try {
+        const userStoryDoc = await userStoryRef.get();
+        if (!userStoryDoc.exists) {
+            console.log('User Story inesistente');
+            throw new functions.https.HttpsError("not-found", "User Story inesistente");
+        } else {
+            let userStoryDocData = userStoryDoc.data();
+
+            let projectId = userStoryDocData["project"];
+            let sprintId = userStoryDocData["sprint"];
+
+            //Cerca il progetto
+            const projectRef = db.collection('projects').doc(projectId);
+            const projectDoc = await projectRef.get();
+            if (!projectDoc.exists) {
+                console.log('Progetto inesistente');
+                throw new functions.https.HttpsError("not-found", "Progetto inesistente");
+            } else {
+                let projectDocData = projectDoc.data();
+
+                let adminlist = projectDocData["admins"];
+
+                if (adminlist.includes(uid)) {
+
+                    //Cerca sprint
+                    const sprintRef = db.collection("userStories").doc(sprintId);
+                    const sprintDoc = await sprintRef.get();
+                    if (!sprintDoc.exists) {
+                        console.log('Sprint inesistente');
+                        throw new functions.https.HttpsError("not-found", "Sprint inesistente");
+                    } else {
+                        let sprintDocData = sprintDoc.data();
+
+                        let userStorylist = sprintDocData["userStories"];
+
+                        if (userStorylist.includes(userStoryId)) {
+                            //gestisci user story
+                            userStoryDocData["completed"] = "";
+                            userStoryDocData["sprint"] = "";
+                            let setUserStoryDoc = await userStoryRef.set(userStoryDocData, { merge: true });
+
+                            //Togli user story
+                            userStorylist = userStorylist.filter(item => item !== userStoryId);
+                            sprintDocData["userStories"] = userStorylist;
+
+                            //Se nessuna user story, crepa sprint, altrimenti aggiorna
+                            if (userStorylist.length == 0) {
+                                let delSprint = await sprintRef.delete();
+
+                                console.log("La user story ", userStoryId, " è stata revocata, secondo l'utente ", uid, " causando l'eliminazione dello sprint ", sprintId);
+                                return true;
+                            } else {
+                                //Controlla se sprint è completato
+                                if (sprintLib.checkCompleted(sprintDocData)) {
+                                    sprintDocData["status"] = true;
+                                }
+
+                                let setSprintDoc = await sprintRef.set(SprintDocData, { merge: true });
+                            }
+
+                            console.log("La user story ", userStoryId, " è stata revocata, secondo l'utente ", uid);
+                            return true;
+
+                        } else {
+                            console.log("La user story ", userStoryId, " non fa parte dello sprint ", sprintId);
+                            throw new functions.https.HttpsError("not-found", "La user story " + String(userStoryId) + " non fa parte dello sprint " + String(sprintId));
+                        }
+                    }
+
+                } else {
+                    console.log("L'utente ", uid, " non fa parte del progetto ", projectId);
+                    throw new functions.https.HttpsError("not-found", "L'utente " + String(uid) + " non fa parte del progetto " + String(projectId));
+                }
+
+            }
+
+        }
+    } catch (err) {
+        console.log('Errore database');
+        throw new functions.https.HttpsError("internal", "Errore database");
+    }
+});
+
+//Completa user story
+exports.CompleteUserStory = functions.https.onCall(async (data, context) => {
+    // Checking that the user is authenticated.
+    if (!context.auth) {
+        throw new functions.https.HttpsError("unauthenticated", "Necessaria autenticazione");
+    }
+
+    const uid = context.auth.uid;
+    const userStoryId = data["userStory"];
+    const completed = data["completed"];
+
+    //Cerca la user story
+    const userStoryRef = db.collection('userStories').doc(userStoryId);
+    try {
+        const userStoryDoc = await userStoryRef.get();
+        if (!userStoryDoc.exists) {
+            console.log('User Story inesistente');
+            throw new functions.https.HttpsError("not-found", "User Story inesistente");
+        } else {
+            let userStoryDocData = userStoryDoc.data();
+
+            let projectId = userStoryDocData["project"];
+            let sprintId = userStoryDocData["sprint"];
+
+            //Cerca il progetto
+            const projectRef = db.collection('projects').doc(projectId);
+            const projectDoc = await projectRef.get();
+            if (!projectDoc.exists) {
+                console.log('Progetto inesistente');
+                throw new functions.https.HttpsError("not-found", "Progetto inesistente");
+            } else {
+                let projectDocData = projectDoc.data();
+
+                let adminlist = projectDocData["admins"];
+
+                if (adminlist.includes(uid)) {
+
+                    //Cerca sprint
+                    const sprintRef = db.collection("userStories").doc(sprintId);
+                    const sprintDoc = await sprintRef.get();
+                    if (!sprintDoc.exists) {
+                        console.log('Sprint inesistente');
+                        throw new functions.https.HttpsError("not-found", "Sprint inesistente");
+                    } else {
+                        let sprintDocData = sprintDoc.data();
+
+                        let userStorylist = sprintDocData["userStories"];
+
+                        if (userStorylist.includes(userStoryId)) {
+                            //gestisci user story
+                            userStoryDocData["completed"] = completed;
+                            let setUserStoryDoc = await userStoryRef.set(userStoryDocData, { merge: true });
+
+                            //Controlla se sprint è completato
+                            if (sprintLib.checkCompleted(sprintDocData)) {
+                                sprintDocData["status"] = true;
+                            }
+
+                            let setSprintDoc = await sprintRef.set(SprintDocData, { merge: true });
+
+                            console.log("La user story ", userStoryId, " è stata completata, secondo l'utente ", uid);
+                            return true;
+
+                        } else {
+                            console.log("La user story ", userStoryId, " non fa parte dello sprint ", sprintId);
+                            throw new functions.https.HttpsError("not-found", "La user story " + String(userStoryId) + " non fa parte dello sprint " + String(sprintId));
+                        }
+                    }
+
+                } else {
+                    console.log("L'utente ", uid, " non fa parte del progetto ", projectId);
+                    throw new functions.https.HttpsError("not-found", "L'utente " + String(uid) + " non fa parte del progetto " + String(projectId));
+                }
+
+            }
+
+        }
+    } catch (err) {
+        console.log('Errore database');
+        throw new functions.https.HttpsError("internal", "Errore database");
     }
 });

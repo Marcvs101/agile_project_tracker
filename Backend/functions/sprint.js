@@ -46,6 +46,68 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
 
             docData["sprints"] = sprintlist;
 
+            //Associa userstory a sprint
+            userStories.forEach(async element => {
+                const userStoryRef = db.collection("userStories").doc(element);
+                const userStoryDoc = await userStoryRef.get();
+                if (!userStoryDoc.exists) {
+                    console.log('User story inesistente');
+                    throw new functions.https.HttpsError("not-found", "User story inesistente");
+                } else {
+                    let userStoryDocData = userStoryDoc.data();
+
+                    if (userStoryDocData["sprint"] == "") {
+                        userStoryDocData["sprint"] = sprint.id;
+                    } else {
+                        //Recovery
+                        userStories.forEach(async recovery => {
+                            const RecoveryRef = db.collection("userStories").doc(recovery);
+                            const RecoveryDoc = await RecoveryRef.get();
+                            if (!RecoveryDoc.exists) {
+                                console.log('User story inesistente');
+                                throw new functions.https.HttpsError("not-found", "User story inesistente");
+                            } else {
+                                let RecoveryDocData = RecoveryDoc.data();
+
+                                if (RecoveryDocData["sprint"] == sprint.id) {
+                                    RecoveryDocData["sprint"] = "";
+                                    let setuserStoryDoc = RecoveryRef.set(RecoveryDocData, { merge: true });
+                                }
+                            }
+                        });
+
+                        console.log('La user story ', element, " appartiene già ad un altro sprint");
+                        throw new functions.https.HttpsError("not-found", 'La user story ' + String(element) + " appartiene già ad un altro sprint");
+                    }
+
+                    let userStoryProject = userStoryDocData["project"];
+
+                    if (userStoryProject == projectId) {
+                        let setuserStoryDoc = userStoryRef.set(userStoryDocData, { merge: true });
+                    } else {
+                        //Recovery
+                        userStories.forEach(async recovery => {
+                            const RecoveryRef = db.collection("userStories").doc(recovery);
+                            const RecoveryDoc = await RecoveryRef.get();
+                            if (!RecoveryDoc.exists) {
+                                console.log('User story inesistente');
+                                throw new functions.https.HttpsError("not-found", "User story inesistente");
+                            } else {
+                                let RecoveryDocData = RecoveryDoc.data();
+
+                                if (RecoveryDocData["sprint"] == sprint.id) {
+                                    RecoveryDocData["sprint"] = "";
+                                    let setuserStoryDoc = RecoveryRef.set(RecoveryDocData, { merge: true });
+                                }
+                            }
+                        });
+
+                        console.log('La user story ', element, " non appartiene al progetto ", projectId);
+                        throw new functions.https.HttpsError("not-found", 'La user story ' + String(element) + " non appartiene al progetto " + String(projectId));
+                    }
+                }
+            });
+
             let setDoc = projectRef.set(docData, { merge: true });
 
             console.log("L'utente: ", uid, " ha creato lo sprint: ", sprint.id, " nel progetto: ", projectId);
@@ -67,6 +129,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
     const uid = context.auth.uid;
     const sprintId = data["sprint"];
     let projectId = null;
+    let userStorylist = null;
 
     //Cerca lo sprint
     const sprintRef = db.collection("sprints").doc(sprintId);
@@ -76,7 +139,10 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
             console.log('Sprint inesistente');
             throw new functions.https.HttpsError("not-found", "Sprint inesistente");
         } else {
-            projectId = doc.get("project");
+            let docData = doc.data();
+
+            projectId = docData["project"];
+            userStorylist = docData["userStories"];
 
             let deleteSprint = sprintRef.delete();
         }
@@ -85,6 +151,30 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError("internal", "Errore database");
     }
 
+    //Se ci sono le user story, aggiorna i campi
+    if (userStorylist) {
+        try {
+            userStorylist.forEach(async element => {
+                const userStoryRef = db.collection("userStories").doc(element);
+                const userStoryDoc = await userStoryRef.get();
+                if (!userStoryDoc.exists) {
+                    console.log('User story inesistente');
+                    throw new functions.https.HttpsError("not-found", "User story inesistente");
+                } else {
+                    let userStoryDocData = userStoryDoc.data();
+
+                    userStoryDocData["sprint"] = "";
+
+                    let setUserStoryDoc = await userStoryRef.set(userStoryDocData, { merge: true });
+                }
+            });
+        } catch (err) {
+            console.log('Errore database');
+            throw new functions.https.HttpsError("internal", "Errore database");
+        }
+    }
+
+    //Se associato al progetto, aggiorna i campi
     if (projectId) {
         const projectRef = db.collection('projects').doc(projectId);
         try {
@@ -114,3 +204,24 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
         return { "sprint": sprintId };
     }
 });
+
+exports.checkCompleted = async function (data) {
+    let userStorylist = data["userStories"];
+
+    let risultato = true;
+
+    userStorylist.forEach(async element => {
+        const userStoryRef = db.collection("userStories").doc(element);
+        const userStoryDoc = await userStoryRef.get();
+        if (!userStoryDoc.exists) {
+            console.log('User story inesistente');
+            throw new functions.https.HttpsError("not-found", "User story inesistente");
+        } else {
+            let userStoryDocData = userStoryDoc.data();
+
+            if (userStoryDocData["completed"] == "") { risultato = false; }
+        }
+    });
+
+    return risultato;
+};
