@@ -40,7 +40,7 @@ class Sprint {
           context,
           MaterialPageRoute(
               builder: (context) => NewSprintPage(project: project,)
-          )
+          ),
       );
     });
   }

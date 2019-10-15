@@ -90,7 +90,6 @@ class _UserStoryPageState extends State<UserStoryPage> {
           functionName: "RevokeUs",
           parameters: {
             "userStory": widget.userStory.id,
-            "sprint": widget.userStory.sprint
           }
         ).whenComplete(() {
           Project.refreshProject(context, widget.project.id, Project.userstories_page);
@@ -148,8 +147,8 @@ class _UserStoryPageState extends State<UserStoryPage> {
                         _delete();
                         break;
                       default:
+                        break;
                     }
-                    Navigator.of(context).pop();
                   })
             ]),
         body: Column(children: <Widget>[

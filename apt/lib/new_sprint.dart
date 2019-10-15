@@ -1,6 +1,7 @@
 import 'package:apt/new_user_story.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'model/project.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -39,6 +40,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
             FlatButton(
               child: Text('Add a User Story now'),
               onPressed: () {
+                Navigator.of(context).pop();
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
