@@ -46,14 +46,23 @@ class _ProjectPageState extends State<ProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    final getDescription = Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(20.0),
+    final getDescription = Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Container(
+        width: MediaQuery.of(context).size.width, padding: EdgeInsets.all(50.0),
+        decoration: new BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          border: new Border.all(
+            color: Colors.grey,
+            style: BorderStyle.solid
+          ),
+        ),
         child: new SingleChildScrollView(
             child: Text(
-          widget.project.description != null ? widget.project.description : "(No description found for this project)",
-          style: TextStyle(fontSize: 18.0),
-    )));
+              widget.project.description != null ? widget.project.description : "(No description found for this project)",
+          style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),
+              textAlign: TextAlign.center,
+    ))));
 
     Icon getIcons(dynamic obj) {
       Icon i;

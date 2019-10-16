@@ -48,9 +48,10 @@ class _UserStoryPageState extends State<UserStoryPage> {
           return showDialog(
             context: context,
             builder: (BuildContext context) {
-              return new SimpleDialog(
-                title: new Text("Select a git commit"),
-                children: <Widget>[
+              if(commits.isNotEmpty) {
+                return new SimpleDialog(
+                  title: new Text("Select a git commit"),
+                  children: <Widget>[
                   for (var commit in commits)
                     SimpleDialogOption(
                       child: Text(commit.sha.substring(0, 7) +
@@ -71,6 +72,16 @@ class _UserStoryPageState extends State<UserStoryPage> {
                     )
                 ],
               );
+              }
+              else{
+                return AlertDialog(
+                    title: Text('No Git Commits for this project!'),
+                    content: SingleChildScrollView(
+                      child: new Text(
+                      'For completing a Github project you must select a commit related to the user story!'),
+                  ),
+                );
+              }
             },
           );
         });

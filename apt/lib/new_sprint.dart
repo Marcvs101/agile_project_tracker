@@ -47,7 +47,9 @@ class _NewSprintPageState extends State<NewSprintPage> {
                         builder: (context) => NewUserStoryPage(
                               project: widget.project,
                               sprint: true,
-                            )));
+                            )
+                    )
+                );
               },
             ),
           ],
