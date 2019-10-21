@@ -63,6 +63,7 @@ flutter:
   assets:
     - assets/images/scrum_black.png
     - assets/images/scrum_white.png
+    - assets/images/github.jpg
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
