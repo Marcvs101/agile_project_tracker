@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                             parameters: {
                               'project': pr.id
                             }
-                          );
+                          ).whenComplete(() {Navigator.of(context).pop();});
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {

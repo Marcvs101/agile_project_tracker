@@ -502,6 +502,37 @@ class _ProjectPageState extends State<ProjectPage> {
           });
     }
 
+    Future<void> _noUserStoryAlert() async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No User Story for this project'),
+            content: SingleChildScrollView(
+              child: new Text(
+                  'You must create at least one User Story in order to create a Sprint!'),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Add a User Story now'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NewUserStoryPage(
+                            project: widget.project,
+                          )
+                      )
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     void _addDeveloper() {
       Navigator.push(
           context,
@@ -532,7 +563,6 @@ class _ProjectPageState extends State<ProjectPage> {
           MaterialPageRoute(
               builder: (context) => NewUserStoryPage(
                     project: widget.project,
-                    sprint: false,
                   )));
     }
 
@@ -575,13 +605,13 @@ class _ProjectPageState extends State<ProjectPage> {
                 switch (value) {
                   case 1:
                     _leave();
-
                     break;
                   case 2:
                     _addDeveloper();
                     break;
                   case 3:
-                    _addSprint();
+                    widget.project.userStories.isNotEmpty ?
+                    _addSprint() : _noUserStoryAlert();
                     break;
                   case 4:
                     _addEvent();

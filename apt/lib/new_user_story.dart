@@ -4,11 +4,10 @@ import 'model/project.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class NewUserStoryPage extends StatefulWidget {
-  NewUserStoryPage({Key key, @required this.project, @required this.sprint})
+  NewUserStoryPage({Key key, @required this.project,})
       : super(key: key);
 
   final Project project;
-  final bool sprint;
 
   @override
   _NewUserStoryPageState createState() => _NewUserStoryPageState();
@@ -57,10 +56,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                   "description": _descrTextController.text,
                                   "score": _score,
                                 }).whenComplete(() {
-                              widget.sprint
-                                  ? Sprint.refreshSprintForm(
-                                      context, widget.project.id)
-                                  : Project.refreshProject(
+                                      Project.refreshProject(
                                       context,
                                       widget.project.id,
                                       Project.userstories_page);

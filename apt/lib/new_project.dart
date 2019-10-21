@@ -77,7 +77,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                               builder: (BuildContext context) {
                                                 return Center(child: CircularProgressIndicator(),);
                                               });
-
                                         },
                                       )
                                   ],
