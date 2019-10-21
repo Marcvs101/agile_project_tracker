@@ -13,7 +13,7 @@ import 'new_developer.dart';
 import 'new_event.dart';
 import 'new_sprint.dart';
 import 'new_user_story.dart';
-import 'dart:async';
+
 
 
 class ProjectPage extends StatefulWidget {
@@ -46,23 +46,141 @@ class _ProjectPageState extends State<ProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    final getDescription = Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Container(
-        width: MediaQuery.of(context).size.width, padding: EdgeInsets.all(50.0),
-        decoration: new BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          border: new Border.all(
-            color: Colors.grey,
-            style: BorderStyle.solid
-          ),
+
+    final getDescription = 
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: 
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Text("Project details:", 
+                    style: TextStyle(fontSize:18),)
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width-75,
+                          child:Text(
+                            "UserStories  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+                            style: TextStyle(fontSize:16),
+                            maxLines: 1,
+                          ),
+                        ),
+                        Text(
+                          widget.project.userStories.length.toString(),
+                          style: TextStyle(fontSize:16),
+                          textAlign: TextAlign.left,
+                        )
+                      ],
+                    )
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width-75,
+                          child:Text(
+                            "Administrators  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+                            style: TextStyle(fontSize:16),
+                            maxLines: 1,
+                          ),
+                        ),
+                        Text(
+                          widget.project.admins.length.toString()+"/"+widget.project.developers.length.toString(),
+                          style: TextStyle(fontSize:16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    )
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width-80,
+                          child:Text(
+                            "Events  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+                            style: TextStyle(fontSize:16),
+                            maxLines: 1,
+                          ),
+                        ),
+                        Text(
+                          widget.project.events.length.toString(),
+                          style: TextStyle(fontSize:16),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    )
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width-80,
+                          child:Text(
+                            "Github project . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+                            style: TextStyle(fontSize:16),
+                            maxLines: 1,
+                          ),
+                        ),
+                        Container(
+                          child:
+                          widget.project.github?
+                          Icon(Icons.check,color: Colors.green,):
+                          Icon(Icons.close,color: Colors.red,)
+                        )
+                      ],
+                    )
+                )
+              ],
+            ),
         ),
-        child: new SingleChildScrollView(
-            child: Text(
-              widget.project.description != null ? widget.project.description : "(No description found for this project)",
-          style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),
-              textAlign: TextAlign.center,
-    ))));
+        Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Container(
+              height: 150,
+              width: MediaQuery.of(context).size.width, padding: EdgeInsets.all(20.0),
+              decoration: new BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                border: new Border.all(
+                  color: Colors.grey,
+                  style: BorderStyle.solid
+                ),
+              ),
+              child:new SingleChildScrollView(
+                  child: Text(
+                    widget.project.description != null ? widget.project.description : "(No description found for this project)",
+                    style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),
+                    textAlign: TextAlign.center,
+                    strutStyle: StrutStyle(leading: 1),
+                  )
+                )
+            )
+        ),
+        
+        
+
+      ]
+    );
 
     Icon getIcons(dynamic obj) {
       Icon i;
@@ -100,6 +218,7 @@ class _ProjectPageState extends State<ProjectPage> {
         obj.name,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+        overflow: TextOverflow.ellipsis,
       ),
       trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
         onTap: () {
@@ -125,6 +244,7 @@ class _ProjectPageState extends State<ProjectPage> {
         obj.name,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+            overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
         obj.date,
@@ -158,7 +278,7 @@ class _ProjectPageState extends State<ProjectPage> {
         child: getIcons(obj)
       ),
       title: Text(
-        obj.name,
+        obj.name,overflow: TextOverflow.ellipsis,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
       ),
@@ -184,7 +304,7 @@ class _ProjectPageState extends State<ProjectPage> {
         child: getIcons(obj)
       ),
       title: Text(
-        obj.name,
+        obj.name,overflow: TextOverflow.ellipsis,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
       ),
@@ -254,7 +374,6 @@ class _ProjectPageState extends State<ProjectPage> {
     StreamBuilder<QuerySnapshot> _retrieveUS() {
 
       return new StreamBuilder<QuerySnapshot>(
-        // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
               .collection('userStories')
               .snapshots(),
@@ -281,7 +400,6 @@ class _ProjectPageState extends State<ProjectPage> {
     StreamBuilder<QuerySnapshot> _retrieveEv() {
 
       return new StreamBuilder<QuerySnapshot>(
-        // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
               .collection('events')
               .snapshots(),
@@ -309,7 +427,6 @@ class _ProjectPageState extends State<ProjectPage> {
     StreamBuilder<QuerySnapshot> _retrieveProg() {
       
       return new StreamBuilder<QuerySnapshot> (
-        // Interacts with Firestore (not CloudFunction)
           stream: Firestore.instance
               .collection('sprints')
               .snapshots(),
@@ -396,8 +513,7 @@ class _ProjectPageState extends State<ProjectPage> {
             style: TextStyle(color: Colors.white, fontSize: 30.0)
           ),
           backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
-          actions: <Widget>[
-            //widget.project.admins.contains(widget.devUid)? 
+          actions: <Widget>[ 
             new PopupMenuButton<int>(
               itemBuilder: (context) => [
                 PopupMenuItem(

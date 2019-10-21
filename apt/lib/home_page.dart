@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
         project.name,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+        overflow: TextOverflow.ellipsis,
       ),
       trailing:
       Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
@@ -176,7 +177,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: topAppBar,
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white,
       body: _retrieveProjects(),
       floatingActionButton: new FloatingActionButton.extended(
         backgroundColor: Color.fromRGBO(58, 66, 86, 0.9),
