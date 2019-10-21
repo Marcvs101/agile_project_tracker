@@ -160,6 +160,11 @@ class _HomePageState extends State<HomePage> {
                               'project': pr.id
                             }
                           );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Center(child: CircularProgressIndicator(),);
+                              });
                         }
                       });
                       removed

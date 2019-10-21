@@ -65,6 +65,11 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                       widget.project.id,
                                       Project.userstories_page);
                             });
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(child: CircularProgressIndicator(),);
+                                });
                           }
                         },
                         child: const Text("Confirm",

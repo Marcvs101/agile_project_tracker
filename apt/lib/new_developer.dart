@@ -120,6 +120,11 @@ class _NewDeveloperPageState extends State<NewDeveloperPage> {
                             }).catchError((error) {
                               globals.showErrorAlert(context);
                             });
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(child: CircularProgressIndicator(),);
+                                });
                           }
                         },
                         child: const Text("Confirm",

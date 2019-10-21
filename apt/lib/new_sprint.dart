@@ -90,8 +90,8 @@ class _NewSprintPageState extends State<NewSprintPage> {
                               if (v) _ustories.add(k);
                             });
                             if (date == null) date = DateTime.now();
-                            _ustories.isNotEmpty
-                                ? CloudFunctions.instance.call(
+                            if(_ustories.isNotEmpty)
+                                { CloudFunctions.instance.call(
                                     functionName: "AddSprint",
                                     parameters: {
                                         "project": widget.project.id,
@@ -109,8 +109,13 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                         context,
                                         widget.project.id,
                                         Project.progress_page);
-                                  })
-                                : noUserStorySelectedAlert();
+                                  });
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Center(child: CircularProgressIndicator(),);
+                                    });
+                                } else {noUserStorySelectedAlert();}
                           }
                         },
                         child: const Text("Confirm",

@@ -49,7 +49,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                               .listRepositories()
                               .toList()
                               .then((repos) {
-                            print(repos);
                             return showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -72,9 +71,13 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                                 "admins": [widget.user.uid],
                                                 "events": [],
                                                 "sprints": [],
+                                              }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Center(child: CircularProgressIndicator(),);
                                               });
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
+
                                         },
                                       )
                                   ],
@@ -103,8 +106,12 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                   "admins": [widget.user.uid],
                                   "events": [],
                                   "sprints": [],
+                                }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(child: CircularProgressIndicator(),);
                                 });
-                            Navigator.of(context).pop();
                           }
                         },
                         child: const Text("Confirm",

@@ -196,10 +196,15 @@ class _SignInPageState extends State<SignInPage> {
             parameters: {
               "name": githubuser.login,
             }).whenComplete(() {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage(user: user, auth: widget.auth,)), (_) => false);
         });
       });
     });
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Center(child: CircularProgressIndicator(),);
+        });
   }
 
 }

@@ -136,10 +136,10 @@ class _ProjectPageState extends State<ProjectPage> {
               ),
               child: new SingleChildScrollView(
                   child: Text(
-                widget.project.description != null
+                widget.project.description != ""
                     ? widget.project.description
                     : "(No description found for this project)",
-                style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),
+                style: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic, color: widget.project.description != "" ? Colors.black : Colors.grey),
                 textAlign: TextAlign.center,
                 strutStyle: StrutStyle(leading: 1),
               )))),
@@ -147,7 +147,7 @@ class _ProjectPageState extends State<ProjectPage> {
         heightFactor: 2.8,
         child: widget.project.github
             ? Image.asset(
-                'assets/images/github.jpg',
+                'assets/images/github.png',
                 scale: 4,
               )
             : Container(),
@@ -389,6 +389,11 @@ class _ProjectPageState extends State<ProjectPage> {
                                 Project.refreshProject(context,
                                     widget.project.id, Project.developers_page);
                               });
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Center(child: CircularProgressIndicator(),);
+                                  });
                             });
                             if (removed)
                               Scaffold.of(context).showSnackBar(SnackBar(
@@ -489,9 +494,12 @@ class _ProjectPageState extends State<ProjectPage> {
     void _leave() {
       CloudFunctions.instance.call(functionName: "LeaveProject", parameters: {
         "project": widget.project.id,
-      });
-      print("User " + widget.devUid + " leaves project " + widget.project.id);
-      Navigator.of(context).pop();
+      }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Center(child: CircularProgressIndicator(),);
+          });
     }
 
     void _addDeveloper() {
@@ -567,6 +575,7 @@ class _ProjectPageState extends State<ProjectPage> {
                 switch (value) {
                   case 1:
                     _leave();
+
                     break;
                   case 2:
                     _addDeveloper();

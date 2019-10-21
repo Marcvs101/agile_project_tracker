@@ -64,6 +64,11 @@ class _NewEventPageState extends State<NewEventPage> {
                               Project.refreshProject(context, widget.project.id,
                                   Project.events_page);
                             });
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(child: CircularProgressIndicator(),);
+                                });
                           }
                         },
                         child: const Text("Confirm",

@@ -68,6 +68,11 @@ class _UserStoryPageState extends State<UserStoryPage> {
                           Project.refreshProject(context, widget.project.id,
                               Project.userstories_page);
                         });
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Center(child: CircularProgressIndicator(),);
+                            });
                       },
                     )
                 ],
@@ -94,6 +99,11 @@ class _UserStoryPageState extends State<UserStoryPage> {
       ).whenComplete(() {
         Project.refreshProject(context, widget.project.id, Project.userstories_page);
       });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Center(child: CircularProgressIndicator(),);
+          });
     }
 
     void _revoke() {
@@ -106,6 +116,11 @@ class _UserStoryPageState extends State<UserStoryPage> {
         ).whenComplete(() {
           Project.refreshProject(context, widget.project.id, Project.userstories_page);
         });
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Center(child: CircularProgressIndicator(),);
+            });
 
     }
 
@@ -119,6 +134,11 @@ class _UserStoryPageState extends State<UserStoryPage> {
         ).whenComplete(() {
           Project.refreshProject(context, widget.project.id, Project.userstories_page);
         });
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Center(child: CircularProgressIndicator(),);
+            });
 
     }
 

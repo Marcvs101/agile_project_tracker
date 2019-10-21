@@ -125,6 +125,11 @@ class _SprintPageState extends State<SprintPage> {
                         ).whenComplete(() {
                           Project.refreshProject(context, widget.project.id, Project.progress_page);
                         });
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Center(child: CircularProgressIndicator(),);
+                            });
                       })
                   : null
             ]),

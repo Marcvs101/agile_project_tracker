@@ -54,6 +54,11 @@ class _EventPageState extends State<EventPage> {
                     ).whenComplete(() {
                     Project.refreshProject(context, widget.project.id, Project.events_page);
                     });
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Center(child: CircularProgressIndicator(),);
+                        });
                   })
             ]),
         body: Column(children: <Widget>[
