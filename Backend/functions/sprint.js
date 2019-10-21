@@ -47,7 +47,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
             docData["sprints"] = sprintlist;
 
             //Associa userstory a sprint
-            userStories.forEach(async element => {
+            for (const element of userStories){
                 const userStoryRef = db.collection("userStories").doc(element);
                 const userStoryDoc = await userStoryRef.get();
                 if (!userStoryDoc.exists) {
@@ -60,7 +60,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
                         userStoryDocData["sprint"] = sprint.id;
                     } else {
                         //Recovery
-                        userStories.forEach(async recovery => {
+                        for (const recovery of userStories){
                             const RecoveryRef = db.collection("userStories").doc(recovery);
                             const RecoveryDoc = await RecoveryRef.get();
                             if (!RecoveryDoc.exists) {
@@ -74,7 +74,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
                                     let setuserStoryDoc = RecoveryRef.set(RecoveryDocData, { merge: true });
                                 }
                             }
-                        });
+                        };
 
                         console.log('La user story ', element, " appartiene già ad un altro sprint");
                         throw new functions.https.HttpsError("not-found", 'La user story ' + String(element) + " appartiene già ad un altro sprint");
@@ -86,7 +86,7 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
                         let setuserStoryDoc = userStoryRef.set(userStoryDocData, { merge: true });
                     } else {
                         //Recovery
-                        userStories.forEach(async recovery => {
+                        for (const recovery of userStories){
                             const RecoveryRef = db.collection("userStories").doc(recovery);
                             const RecoveryDoc = await RecoveryRef.get();
                             if (!RecoveryDoc.exists) {
@@ -100,13 +100,13 @@ exports.AddSprint = functions.https.onCall(async (data, context) => {
                                     let setuserStoryDoc = RecoveryRef.set(RecoveryDocData, { merge: true });
                                 }
                             }
-                        });
+                        };
 
                         console.log('La user story ', element, " non appartiene al progetto ", projectId);
                         throw new functions.https.HttpsError("not-found", 'La user story ' + String(element) + " non appartiene al progetto " + String(projectId));
                     }
                 }
-            });
+            };
 
             let setDoc = projectRef.set(docData, { merge: true });
 
@@ -154,7 +154,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
     //Se ci sono le user story, aggiorna i campi
     if (userStorylist) {
         try {
-            userStorylist.forEach(async element => {
+            for (const element of userStorylist){
                 const userStoryRef = db.collection("userStories").doc(element);
                 const userStoryDoc = await userStoryRef.get();
                 if (!userStoryDoc.exists) {
@@ -164,10 +164,11 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
                     let userStoryDocData = userStoryDoc.data();
 
                     userStoryDocData["sprint"] = "";
+                    userStoryDocData["completed"] = "";
 
                     let setUserStoryDoc = await userStoryRef.set(userStoryDocData, { merge: true });
                 }
-            });
+            };
         } catch (err) {
             console.log('Errore database');
             throw new functions.https.HttpsError("internal", "Errore database");
@@ -208,9 +209,7 @@ exports.RemoveSprint = functions.https.onCall(async (data, context) => {
 exports.checkCompleted = async function (data) {
     let userStorylist = data["userStories"];
 
-    let risultato = true;
-
-    userStorylist.forEach(async element => {
+    for (const element of userStorylist){
         const userStoryRef = db.collection("userStories").doc(element);
         const userStoryDoc = await userStoryRef.get();
         if (!userStoryDoc.exists) {
@@ -219,9 +218,11 @@ exports.checkCompleted = async function (data) {
         } else {
             let userStoryDocData = userStoryDoc.data();
 
-            if (userStoryDocData["completed"] == "") { risultato = false; }
+            if (userStoryDocData["completed"] == "") {
+                return false;
+            }
         }
-    });
+    };
 
-    return risultato;
+    return true;
 };

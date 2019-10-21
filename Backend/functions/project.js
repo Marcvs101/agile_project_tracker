@@ -77,7 +77,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 	try {
 		const projectQueryResult = await projectsQuery.get();
 		if (!projectQueryResult.empty) {
-			projectQueryResult.forEach((element) => {
+			for (const element of projectQueryResult){
 				if (element.exists) {
 					console.log("Result exists - good");
 					let datiElemento = element.data();
@@ -94,7 +94,7 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 					result[element.id]['github'] = datiElemento['github'];
 					result[element.id]['completed'] = datiElemento['completed'];
 				}
-			});
+			};
 		}
 
 		console.log("uid: ", String(uid), " ha richiesto di visionare tutti i suoi progetti");

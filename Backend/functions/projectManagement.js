@@ -126,21 +126,21 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
         let emailQuery = utenteRef.where('email', '==', String(targetDev));
         const emailQueryResult = await emailQuery.get();
         if (!emailQueryResult.empty) {
-            emailQueryResult.forEach((element) => {
+            for (const element of emailQueryResult){
                 if (element.exists) {
                     utente = element.id
                 }
-            });
+            };
         }
 
         let usernameQuery = utenteRef.where('name', '==', String(targetDev));
         const usernameQueryResult = await usernameQuery.get();
         if (!usernameQueryResult.empty) {
-            usernameQueryResult.forEach((element) => {
+            for (const element of usernameQueryResult) {
                 if (element.exists) {
                     utente = element.id
                 }
-            });
+            };
         }
 
     } catch (err) {
@@ -165,7 +165,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
             console.log('Progetto trovato', docData);
             //Qui saranno necessari controlli di sicurezza
 
-            if ((docData["admins"].includes(uid) || docData["owner"] == uid) && !docData["developers"].includes(targetDev)) {
+            if ((docData["admins"].includes(uid) || docData["owner"] == uid) && !docData["developers"].includes(utente)) {
                 let devlist = docData["developers"];
                 devlist.push(utente);
 
@@ -177,14 +177,14 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
 
                 let setDoc = await projectRef.set(docData, { merge: true });
 
-                console.log("L'utente: ", targetDev, " è stato aggiunto al progetto: ", projectId, " dall'utente: ", uid);
-                return "L'utente: " + String(targetDev) + " è stato aggiunto al progetto: " + String(projectId) + " dall'utente: " + String(uid);
-            } else if (!docData["sviluppatori"].includes(targetDev)) {
-                console.log("L'utente: ", targetDev, " fa già parte del progetto: ", projectId);
-                return new functions.https.HttpsError(422, "L'utente: " + String(targetDev) + " fa già parte del progetto: " + String(projectId));
+                console.log("L'utente: ", targetDev, "(", utente, ") è stato aggiunto al progetto: ", projectId, " dall'utente: ", uid);
+                return "L'utente: " + String(targetDev) + "(" + String(utente) + ") è stato aggiunto al progetto: " + String(projectId) + " dall'utente: " + String(uid);
+            } else if (docData["developers"].includes(utente)) {
+                console.log("L'utente: ", targetDev, "(", utente, ") fa già parte del progetto: ", projectId);
+                return new functions.https.HttpsError(422, "L'utente: " + String(targetDev) + "(" + String(utente) + ") fa già parte del progetto: " + String(projectId));
             } else {
-                console.log("L'utente: ", uid, " non dispone dei permessi necessari per cacciare: ", targetDev, " dal progetto: ", projectId);
-                return "L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetDev) + " dal progetto: " + String(projectId);
+                console.log("L'utente: ", uid, " non dispone dei permessi necessari per cacciare: ", targetDev, "(", utente, ") dal progetto: ", projectId);
+                return "L'utente: " + String(uid) + " non dispone dei permessi necessari per cacciare: " + String(targetDev) + "(" + String(utente) + ") dal progetto: " + String(projectId);
             }
         }
     } catch (err) {

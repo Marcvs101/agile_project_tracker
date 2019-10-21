@@ -189,7 +189,7 @@ exports.RevokeUserStory = functions.https.onCall(async (data, context) => {
                                     sprintDocData["status"] = true;
                                 }
 
-                                let setSprintDoc = await sprintRef.set(SprintDocData, { merge: true });
+                                let setSprintDoc = await sprintRef.set(sprintDocData, { merge: true });
                             }
 
                             console.log("La user story ", userStoryId, " è stata revocata, secondo l'utente ", uid);
