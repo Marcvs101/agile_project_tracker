@@ -14,7 +14,8 @@ exports.crepaUser = async function (uid) {
         let ownerQuery = projectRef.where('owner', '==', String(uid));
         const ownerQueryResult = await ownerQuery.get();
         if (!ownerQueryResult.empty) {
-            for (const element of ownerQueryResult){
+            const ownerQueryResultDocs = ownerQueryResult.docs;
+            for (const element of ownerQueryResultDocs){
                 if (element.exists) {
                     await exports.deleteProject(element.id, uid);
                 }
@@ -24,9 +25,10 @@ exports.crepaUser = async function (uid) {
         let adminQuery = projectRef.where('admins', 'array-contains', String(uid));
         const adminQueryResult = await adminQuery.get();
         if (!adminQueryResult.empty) {
-            for (const element of adminQueryResult){
+            const adminQueryResultDocs = adminQueryResult.docs;
+            for (const element of adminQueryResultDocs){
                 if (element.exists) {
-                    let datiElemento = element.data();
+                    let docData = element.data();
                     let adminlist = docData["admins"];
                     if (adminlist.length == 1) {
                         await exports.deleteProject(element.id, uid);
@@ -43,9 +45,10 @@ exports.crepaUser = async function (uid) {
         let developerQuery = projectRef.where('developers', 'array-contains', String(uid));
         const developerQueryResult = await developerQuery.get();
         if (!developerQueryResult.empty) {
-            for (const element of developerQueryResult){
+            const developerQueryResultDocs = developerQueryResult.docs;
+            for (const element of developerQueryResultDocs){
                 if (element.exists) {
-                    let datiElemento = element.data();
+                    let docData = element.data();
                     let devlist = docData["developers"];
                     devlist = devlist.filter(item => item !== uid);
                     docData["developers"] = devlist;
@@ -83,7 +86,8 @@ exports.crepaProject = async function (projectId, uid) {
                     let eventQuery = eventRef.where('project', '==', String(projectId));
                     const eventQueryResult = await eventQuery.get();
                     if (!eventQueryResult.empty) {
-                        for (const element of eventQueryResult){
+                        const eventQueryResultDocs = eventQueryResult.docs;
+                        for (const element of eventQueryResultDocs){
                             if (element.exists) {
                                 let DeleteEvent = await eventRef.doc(element.id).delete();
                             }
@@ -101,7 +105,8 @@ exports.crepaProject = async function (projectId, uid) {
                     let sprintQuery = sprintRef.where('project', '==', String(projectId));
                     const sprintQueryResult = await sprintQuery.get();
                     if (!sprintQueryResult.empty) {
-                        for (const element of sprintQueryResult){
+                        const sprintQueryResultDocs = sprintQueryResult.docs;
+                        for (const element of sprintQueryResultDocs){
                             if (element.exists) {
                                 let DeleteSprint = await sprintRef.doc(element.id).delete();
                             }
@@ -119,7 +124,8 @@ exports.crepaProject = async function (projectId, uid) {
                     let userStoryQuery = userStoryRef.where('project', '==', String(projectId));
                     const userStoryQueryResult = await userStoryQuery.get();
                     if (!userStoryQueryResult.empty) {
-                        for (const element of userStoryQueryResult){
+                        const userStoryQueryResultDocs = userStoryQueryResult.docs;
+                        for (const element of userStoryQueryResultDocs){
                             if (element.exists) {
                                 let DeleteUserStory = userStoryRef.doc(element.id).delete();
                             }

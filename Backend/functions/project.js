@@ -77,7 +77,8 @@ exports.GetProjectsForUser = functions.https.onCall(async (data, context) => {
 	try {
 		const projectQueryResult = await projectsQuery.get();
 		if (!projectQueryResult.empty) {
-			for (const element of projectQueryResult){
+			const projectQueryResultDocs = projectQueryResult.docs;
+			for (const element of projectQueryResultDocs){
 				if (element.exists) {
 					console.log("Result exists - good");
 					let datiElemento = element.data();

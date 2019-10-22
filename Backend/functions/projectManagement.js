@@ -126,21 +126,23 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
         let emailQuery = utenteRef.where('email', '==', String(targetDev));
         const emailQueryResult = await emailQuery.get();
         if (!emailQueryResult.empty) {
-            for (const element of emailQueryResult){
+            const emailQueryResultDocs = emailQueryResult.docs;
+            for (const element of emailQueryResultDocs){
                 if (element.exists) {
                     utente = element.id
                 }
-            };
+            }
         }
 
         let usernameQuery = utenteRef.where('name', '==', String(targetDev));
         const usernameQueryResult = await usernameQuery.get();
         if (!usernameQueryResult.empty) {
-            for (const element of usernameQueryResult) {
+            const usernameQueryResultDocs = usernameQueryResult.docs;
+            for (const element of usernameQueryResultDocs){
                 if (element.exists) {
                     utente = element.id
                 }
-            };
+            }
         }
 
     } catch (err) {
@@ -149,7 +151,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
     }
 
     if (utente == null) {
-        console.log("L'utente: " + targetDev + " non è registrato");
+        console.log("L'utente: " + String(targetDev) + " non è registrato");
         throw new functions.https.HttpsError("not-found", "L'utente: " + String(targetDev) + " non è registrato");
     }
 
@@ -188,7 +190,7 @@ exports.AddDeveloper = functions.https.onCall(async (data, context) => {
             }
         }
     } catch (err) {
-        console.log("Errore Database ");
+        console.log("Errore Database");
         throw new functions.https.HttpsError("internal", "Errore database");
     }
 });
