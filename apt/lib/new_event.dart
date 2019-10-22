@@ -66,6 +66,7 @@ class _NewEventPageState extends State<NewEventPage> {
                             });
                             showDialog(
                                 context: context,
+                                barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return Center(child: CircularProgressIndicator(),);
                                 });
@@ -98,7 +99,7 @@ class _NewEventPageState extends State<NewEventPage> {
                       TextFormField(
                         controller: _nameTextController,
                         decoration: const InputDecoration(
-                          hintText: "Insert new event's name: ",
+                          hintText: "Insert new event's name ",
                           enabledBorder: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
@@ -112,6 +113,11 @@ class _NewEventPageState extends State<NewEventPage> {
                           errorBorder: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.red),
                           ),
                         ),
@@ -173,6 +179,11 @@ class _NewEventPageState extends State<NewEventPage> {
                                 borderSide: BorderSide(color: Colors.blue),
                               ),
                               errorBorder: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
                                 borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.red),

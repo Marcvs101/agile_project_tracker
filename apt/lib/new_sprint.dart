@@ -95,6 +95,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                   });
                                 showDialog(
                                     context: context,
+                                    barrierDismissible: false,
                                     builder: (BuildContext context) {
                                       return Center(child: CircularProgressIndicator(),);
                                     });
@@ -170,6 +171,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                   BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.red),
                             ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
@@ -206,6 +212,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                       BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
                               ),
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -240,6 +251,11 @@ class _NewSprintPageState extends State<NewSprintPage> {
                                   errorBorder: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.red),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
                                     borderSide: BorderSide(color: Colors.red),
                                   ),
                                   labelText: 'Scheduled for: ',

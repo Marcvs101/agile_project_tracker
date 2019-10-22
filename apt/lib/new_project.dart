@@ -74,6 +74,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                               }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
                                           showDialog(
                                               context: context,
+                                              barrierDismissible: false,
                                               builder: (BuildContext context) {
                                                 return Center(child: CircularProgressIndicator(),);
                                               });
@@ -108,6 +109,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                 }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
                             showDialog(
                                 context: context,
+                                barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return Center(child: CircularProgressIndicator(),);
                                 });
@@ -139,7 +141,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                         TextFormField(
                           controller: _nameTextController,
                           decoration: const InputDecoration(
-                            hintText: "Insert new project's name: ",
+                            hintText: "Insert new project's name ",
                             enabledBorder: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.0)),
@@ -153,6 +155,11 @@ class _NewProjectPageState extends State<NewProjectPage> {
                             errorBorder: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10.0)),
+                              borderSide: BorderSide(color: Colors.red),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(10.0)),
                               borderSide: BorderSide(color: Colors.red),
                             ),
                           ),
@@ -189,6 +196,11 @@ class _NewProjectPageState extends State<NewProjectPage> {
                                 errorBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
                               ),

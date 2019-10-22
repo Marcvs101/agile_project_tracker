@@ -122,6 +122,7 @@ class _NewDeveloperPageState extends State<NewDeveloperPage> {
                             });
                             showDialog(
                                 context: context,
+                                barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return Center(child: CircularProgressIndicator(),);
                                 });
@@ -171,7 +172,12 @@ class _NewDeveloperPageState extends State<NewDeveloperPage> {
                                         BorderRadius.all(Radius.circular(10.0)),
                                     borderSide: BorderSide(color: Colors.red),
                                   ),
-                                  labelText: "Insert new developer's email: "),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                    borderSide: BorderSide(color: Colors.red),
+                                  ),
+                                  labelText: "Insert new developer's email "),
                               keyboardType: TextInputType.emailAddress,
                               validator: (String value) {
                                 Pattern pattern =

@@ -63,6 +63,7 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                             });
                             showDialog(
                                 context: context,
+                                barrierDismissible: false,
                                 builder: (BuildContext context) {
                                   return Center(child: CircularProgressIndicator(),);
                                 });
@@ -109,6 +110,11 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                                 BorderRadius.all(Radius.circular(10.0)),
                             borderSide: BorderSide(color: Colors.red),
                           ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10.0)),
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
                         ),
                         validator: (value) {
                           if (value.isEmpty) {
@@ -143,6 +149,11 @@ class _NewUserStoryPageState extends State<NewUserStoryPage> {
                               errorBorder: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                                 borderSide: BorderSide(color: Colors.red),
                               ),
                             ),

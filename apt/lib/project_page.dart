@@ -391,6 +391,7 @@ class _ProjectPageState extends State<ProjectPage> {
                               });
                               showDialog(
                                   context: context,
+                                  barrierDismissible: false,
                                   builder: (BuildContext context) {
                                     return Center(child: CircularProgressIndicator(),);
                                   });
@@ -561,6 +562,7 @@ class _ProjectPageState extends State<ProjectPage> {
       }).whenComplete(() {Navigator.popUntil(context, (route) => route.isFirst);});
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return Center(child: CircularProgressIndicator(),);
           });

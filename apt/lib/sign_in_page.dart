@@ -202,6 +202,7 @@ class _SignInPageState extends State<SignInPage> {
     });
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return Center(child: CircularProgressIndicator(),);
         });

@@ -70,6 +70,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
                         });
                         showDialog(
                             context: context,
+                            barrierDismissible: false,
                             builder: (BuildContext context) {
                               return Center(child: CircularProgressIndicator(),);
                             });
@@ -101,6 +102,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
       });
       showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return Center(child: CircularProgressIndicator(),);
           });
@@ -118,6 +120,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
         });
         showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return Center(child: CircularProgressIndicator(),);
             });
@@ -136,6 +139,7 @@ class _UserStoryPageState extends State<UserStoryPage> {
         });
         showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return Center(child: CircularProgressIndicator(),);
             });

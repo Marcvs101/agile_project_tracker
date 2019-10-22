@@ -56,6 +56,7 @@ class _EventPageState extends State<EventPage> {
                     });
                     showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (BuildContext context) {
                           return Center(child: CircularProgressIndicator(),);
                         });
