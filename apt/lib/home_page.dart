@@ -134,49 +134,63 @@ class _HomePageState extends State<HomePage> {
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData || snapshot.data == null) {
+              print("null");
               return Container();
             }
-            var content = snapshot.data.documents;
-            return new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: content.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var dp = content[index];
-                  Project pr = new Project.fromJson(dp);
-                  return Dismissible(
-                    child: makeCard(pr),
-                    key: Key(UniqueKey().toString()),
-                    background: Container(color: Colors.red),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (DismissDirection direction) {
-                      bool removed = false;
-                      setState(() {
-                        if (widget.user.uid == pr.owner) {
-                          removed = true;
-                          CloudFunctions.instance.call(
-                            functionName: 'DeleteProject',
-                            parameters: {
-                              'project': pr.id
+            else{
+              var content = snapshot.data.documents;
+              if(content.isNotEmpty) {
+                return new ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: content.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var dp = content[index];
+                      Project pr = new Project.fromJson(dp);
+                      return Dismissible(
+                        child: makeCard(pr),
+                        key: Key(UniqueKey().toString()),
+                        background: Container(color: Colors.red),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (DismissDirection direction) {
+                          bool removed = false;
+                          setState(() {
+                            if (widget.user.uid == pr.owner) {
+                              removed = true;
+                              CloudFunctions.instance.call(
+                                  functionName: 'DeleteProject',
+                                  parameters: {
+                                    'project': pr.id
+                                  }
+                              );
                             }
-                          ).whenComplete(() {Navigator.of(context).pop();});
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Center(child: CircularProgressIndicator(),);
-                              });
-                        }
-                      });
-                      removed
-                          ? Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " + pr.name + " removed")))
-                          : Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text("Project " +
-                              pr.name +
-                              " cannot be removed")));
-                    },
-                  );
-                });
+                          });
+                          removed
+                              ? Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("Project " + pr.name + " removed")))
+                              : Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("Project " +
+                                  pr.name +
+                                  " cannot be removed")));
+                        },
+                      );
+                    });
+              }
+              else{
+                return Center(
+                  child: new ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20.0),
+                      children: [
+                        Center(child: Image.asset("assets/images/notfound.png")),
+                        Center(child: Container(padding: EdgeInsets.all(10.0))),
+                        Center(child: Text('You have no projects yet.', style: TextStyle(color: Colors.grey, fontSize: 16),)),
+                      ]
+                  ),
+                );
+              }
+            }
           });
     }
 

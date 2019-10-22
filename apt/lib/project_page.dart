@@ -415,19 +415,41 @@ class _ProjectPageState extends State<ProjectPage> {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
             }
-            var content = snapshot.data.documents;
-            return new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: content.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var dp = content[index];
-                  if (widget.project.userStories.contains(dp.documentID)) {
-                    UserStory us = new UserStory.fromJson(dp);
-                    return makeCardUS(us);
-                  } else
-                    return Container();
-                });
+            else{
+              var content = snapshot.data.documents;
+              List<UserStory> usList = new List<UserStory>();
+              content.forEach((dp){
+                if (widget.project.userStories.contains(dp.documentID)) {
+                  UserStory us = new UserStory.fromJson(dp);
+                  usList.add(us);
+                }
+              });
+              if(usList.isNotEmpty) {
+                return new ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: usList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var dp = usList[index];
+                      return makeCardUS(dp);
+                      }
+                    );
+              }
+              else{
+                return Center(
+                  child: new ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20.0),
+                      children: [
+                        Center(child: Image.asset("assets/images/notfound.png")),
+                        Center(child: Container(padding: EdgeInsets.all(10.0))),
+                        Center(child: Text('No user stories for this project.', style: TextStyle(color: Colors.grey, fontSize: 16),)),
+                      ]
+                  ),
+                );
+              }
+            }
           });
     }
 
@@ -438,19 +460,40 @@ class _ProjectPageState extends State<ProjectPage> {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
             }
-            var content = snapshot.data.documents;
-            return new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: content.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var dp = content[index];
-                  if (widget.project.events.contains(dp.documentID)) {
-                    Event ev = new Event.fromJson(dp);
-                    return makeCardEv(ev);
-                  } else
-                    return Container();
-                });
+            else {
+              var content = snapshot.data.documents;
+              List<Event> evList = new List<Event>();
+              content.forEach((dp){
+                if (widget.project.events.contains(dp.documentID)) {
+                  Event ev = new Event.fromJson(dp);
+                  evList.add(ev);
+                }
+              });
+              if(evList.isNotEmpty) {
+                return new ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: evList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var ev = evList[index];
+                      return makeCardEv(ev);
+                    });
+              }
+              else{
+                return Center(
+                  child: new ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20.0),
+                      children: [
+                        Center(child: Image.asset("assets/images/notfound.png")),
+                        Center(child: Container(padding: EdgeInsets.all(10.0))),
+                        Center(child: Text('No events for this project.', style: TextStyle(color: Colors.grey, fontSize: 16),)),
+                      ]
+                  ),
+                );
+              }
+            }
           });
     }
 
@@ -461,19 +504,40 @@ class _ProjectPageState extends State<ProjectPage> {
             if (!snapshot.hasData || snapshot.data == null) {
               return Container();
             }
-            var content = snapshot.data.documents;
-            return new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: content.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var dp = content[index];
-                  if (widget.project.sprints.contains(dp.documentID)) {
-                    Sprint spr = new Sprint.fromJson(dp);
-                    return makeCardSpr(spr);
-                  } else
-                    return Container();
-                });
+            else {
+              var content = snapshot.data.documents;
+              List<Sprint> sprList = new List<Sprint>();
+              content.forEach((dp) {
+                if(widget.project.sprints.contains(dp.documentID)){
+                  Sprint spr = new Sprint.fromJson(dp);
+                  sprList.add(spr);
+                }
+              });
+              if(sprList.isNotEmpty) {
+                return new ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: sprList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var spr = sprList[index];
+                      return makeCardSpr(spr);
+                    });
+              }
+              else{
+                return Center(
+                  child: new ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20.0),
+                      children: [
+                        Center(child: Image.asset("assets/images/notfound.png")),
+                        Center(child: Container(padding: EdgeInsets.all(10.0))),
+                        Center(child: Text('No sprints for this project.', style: TextStyle(color: Colors.grey, fontSize: 16),)),
+                      ]
+                  ),
+                );
+              }
+            }
           });
     }
 
@@ -605,7 +669,7 @@ class _ProjectPageState extends State<ProjectPage> {
                 if (widget.project.admins.contains(widget.devUid))
                   PopupMenuItem(
                     value: 5,
-                    child: Text("Add UserStory"),
+                    child: Text("Add user story"),
                   ),
               ],
               onSelected: (value) {
