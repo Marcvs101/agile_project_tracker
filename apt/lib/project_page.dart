@@ -507,10 +507,10 @@ class _ProjectPageState extends State<ProjectPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('No User Story for this project'),
+            title: Text('No User Story available'),
             content: SingleChildScrollView(
               child: new Text(
-                  'You must create at least one User Story in order to create a Sprint!'),
+                  'You must create at least one new User Story in order to create a new Sprint!'),
             ),
             actions: <Widget>[
               FlatButton(
@@ -544,10 +544,17 @@ class _ProjectPageState extends State<ProjectPage> {
     }
 
     void _addSprint() {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NewSprintPage(project: widget.project)));
+      Firestore.instance
+          .collection('userStories')
+          .where('project', isEqualTo: widget.project.id)
+          .where('sprint', isEqualTo: "").getDocuments().then((data){
+            var content = data.documents;
+            content.isEmpty ? _noUserStoryAlert() :
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NewSprintPage(project: widget.project, content: content,)));
+      });
     }
 
     void _addEvent() {
@@ -610,8 +617,7 @@ class _ProjectPageState extends State<ProjectPage> {
                     _addDeveloper();
                     break;
                   case 3:
-                    widget.project.userStories.isNotEmpty ?
-                    _addSprint() : _noUserStoryAlert();
+                    _addSprint();
                     break;
                   case 4:
                     _addEvent();

@@ -33,16 +33,4 @@ class Sprint {
     "userStories": userStories,
   };
 
-  static void refreshSprintForm(context, id) {
-    Firestore.instance.collection('projects').document(id).get().then((ds) {
-      Project project = new Project.fromJson(ds);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NewSprintPage(project: project,)
-          ),
-      );
-    });
-  }
-
 }

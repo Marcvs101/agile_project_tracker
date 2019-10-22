@@ -4,14 +4,18 @@ import 'package:apt/sign_in_page.dart';
 import 'package:apt/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:github/server.dart';
 import 'package:apt/common/apt_secure_storage.dart' as globals;
 
 void main(){
-  runApp(new MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: new MyApp(),
-  ));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).whenComplete(() {
+    runApp(new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: new MyApp(),
+    ));
+  });
+
 }
 
 class MyApp extends StatefulWidget {

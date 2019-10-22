@@ -7,9 +7,10 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class NewSprintPage extends StatefulWidget {
-  NewSprintPage({Key key, @required this.project}) : super(key: key);
+  NewSprintPage({Key key, @required this.project, @required this.content}) : super(key: key);
 
   final Project project;
+  final List<DocumentSnapshot> content;
 
   @override
   _NewSprintPageState createState() => _NewSprintPageState();
@@ -107,29 +108,15 @@ class _NewSprintPageState extends State<NewSprintPage> {
           ]),
         )));
 
-    final _retrieveUs = new Container(
-        padding: EdgeInsets.all(20),
-        child: new StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance
-                .collection('userStories')
-                .where('project', isEqualTo: widget.project.id)
-                .where('sprint', isEqualTo: "")
-                .snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData || snapshot.data == null) {
-                return Container();
-              }
-              var content = snapshot.data.documents;
-
+    _retrieveUs() {
               if (firstime) {
-                content.forEach((f) {
+                widget.content.forEach((f) {
                   values[f.documentID] = false;
                   retrieve[f.documentID] = f.data['name'];
                 });
                 firstime = false;
               }
-
-              return Container(
+              return new Container(
                 height: 250,
                 child: SingleChildScrollView(
                     child: ListView(
@@ -147,7 +134,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                           );
                         }).toList())),
               );
-            }));
+            }
 
     return Scaffold(
       appBar: AppBar(
@@ -274,7 +261,7 @@ class _NewSprintPageState extends State<NewSprintPage> {
                         ),
                         Container(
                           height: 200,
-                          child: _retrieveUs,
+                          child: _retrieveUs(),
                         )
                       ])
                 ],
